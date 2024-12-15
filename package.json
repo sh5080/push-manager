@@ -2,13 +2,13 @@
   "name": "push-manager",
   "private": true,
   "workspaces": [
-    "src/app",
+    "src/web",
     "src/server",
     "src/shared"
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "dev:app": "yarn workspace @push-manager/app dev",
+    "dev:web": "yarn workspace @push-manager/web dev",
     "dev:server": "yarn workspace @push-manager/server dev",
     "lint": "yarn workspaces run lint"
   },
