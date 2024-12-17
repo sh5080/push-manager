@@ -1,4 +1,4 @@
-import { ProdPushDto } from "@shared/dtos/push";
+import { ProdPushDto } from "@push-manager/shared/dtos/push.dto";
 
 export interface IPushService {
   createBulkPush(
