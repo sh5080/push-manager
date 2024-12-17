@@ -7,7 +7,7 @@
     "src/shared"
   ],
   "scripts": {
-    "build": "yarn workspace @push-manager/shared build && yarn workspaces run build",
+    "build": "yarn workspaces run build",
     "dev:app": "yarn workspace @push-manager/app dev",
     "dev:server": "yarn workspace @push-manager/server dev",
     "lint": "yarn workspaces run lint"
