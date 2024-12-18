@@ -8,8 +8,14 @@ export interface TypeOrmConfig {
 }
 
 export interface PushConfig {
-  key: string;
-  secret: string;
+  keyPrd: string;
+  secretPrd: string;
+  keyStg: string;
+  secretStg: string;
+  keyFreed: string;
+  secretFreed: string;
+  keyFreed2: string;
+  secretFreed2: string;
   testIdentify: string;
 }
 
