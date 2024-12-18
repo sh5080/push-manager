@@ -1,4 +1,6 @@
+import { AppIdEnum } from "../types/constants/common.const";
 import { IPushQueue } from "../types/entities/pushQueue.entity";
+import { IsEnum, Min, Max } from "class-validator";
 
 export interface TestPushDto
   extends Omit<
@@ -41,4 +43,24 @@ export interface ProdPushDto
    * @example 'YYYY-MM-DD HH:MM' 형식의 문자열
    */
   sendDateString: string;
+}
+
+export interface PushResponse {
+  pushes: IPushQueue[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+export class GetRecentPushesDto {
+  @IsEnum(AppIdEnum, {
+    message: "유효하지 않은 targetMode입니다. (FREED: 0, TEST: 1, PROD: 2)",
+  })
+  targetMode!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+
+  @Min(1, { message: "limit는 최소 1 이상이어야 합니다." })
+  @Max(100, { message: "limit는 최대 100까지만 가능합니다." })
+  limit?: number;
 }
