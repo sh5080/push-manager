@@ -2,25 +2,24 @@ import express from "express";
 import cors from "cors";
 
 import { pushRoutes } from "./routes/push.route";
-import { DatabaseService } from "./database";
 import { envConfig } from "@push-manager/shared/configs/env.config";
 import { responseMiddleware } from "./middlewares/response.middleware";
 import { errorMiddleware } from "./middlewares/error.middleware";
+import { AppDataSource } from "./configs/database";
 
 const app = express();
 const port = envConfig.server.port;
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
 app.use(express.json());
 
 // 데이터베이스 초기화
-DatabaseService.getInstance()
-  .getConnection()
+AppDataSource.initialize()
   .then(() => console.log("Database connected"))
   .catch(console.error);
 
