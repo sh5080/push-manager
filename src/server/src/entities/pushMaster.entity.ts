@@ -9,7 +9,7 @@ export class PushMaster {
   @Column()
   PMODE!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   STEP!: (typeof StepEnum)[keyof typeof StepEnum];
 
   @CreateDateColumn()

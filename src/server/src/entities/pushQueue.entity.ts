@@ -78,7 +78,7 @@ export class PushQueue implements IPushQueue {
    * 메시지 발송 단계
    * @default 'R'
    */
-  @Column({ default: StepEnum.PENDING })
+  @Column({ type: "varchar", default: StepEnum.PENDING })
   STEP!: (typeof StepEnum)[keyof typeof StepEnum];
 
   /**
@@ -89,7 +89,7 @@ export class PushQueue implements IPushQueue {
    * - 'STOE': 타겟 발송 (우선 발송)
    * - 'DEFT': 대량 발송
    */
-  @Column({ default: PModeEnum.TARGET })
+  @Column({ type: "varchar", default: PModeEnum.TARGET })
   PMODE!: (typeof PModeEnum)[keyof typeof PModeEnum];
 
   /**
@@ -105,7 +105,7 @@ export class PushQueue implements IPushQueue {
    * - '0001': 바로 발송 (기본값)
    * - '0002': 예약 발송
    */
-  @Column({ default: SendStatEnum.SEND_NOW })
+  @Column({ type: "varchar", default: SendStatEnum.SEND_NOW })
   SEND_STAT!: (typeof SendStatEnum)[keyof typeof SendStatEnum];
   /**
    * 안드로이드 사운드
@@ -201,13 +201,13 @@ export class PushQueue implements IPushQueue {
    * 안드로이드 우선 순위 (H: 높음 / M: 중간)
    * @default 'M'
    */
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   AND_PRIORITY?: (typeof AndPriorityEnum)[keyof typeof AndPriorityEnum];
 
   /**
    * 에티켓 적용 여부 (기본값: 'N')
    */
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   ISETIQUETTE?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
 
   /**
@@ -225,14 +225,14 @@ export class PushQueue implements IPushQueue {
   /**
    * 오픈 처리 제한시간 (2h, 4h, 1d, 3d, 5d, 1w)
    */
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   OFB_TIME?: (typeof OfbTimeEnum)[keyof typeof OfbTimeEnum];
 
   /**
    * 광고 동의 (1000 동의, 0000 부동의)
    * @default '1000'
    */
-  @Column({ default: OptAgreeEnum.AGREE })
+  @Column({ type: "varchar", default: OptAgreeEnum.AGREE })
   OPTAGREE!: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
 
   /**
@@ -244,7 +244,7 @@ export class PushQueue implements IPushQueue {
   /**
    * 태그 조건 (0001: or, 0002: and)
    */
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   BESCHMODE?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
 
   /**
