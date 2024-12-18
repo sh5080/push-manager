@@ -3,8 +3,9 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./",
-    "declaration": true
+    "declaration": true,
+    "experimentalDecorators": true
   },
-  "include": ["**/*"],
+  "include": ["**/*", "../server/src/utils/logger.ts"],
   "exclude": ["node_modules", "dist"]
 }
