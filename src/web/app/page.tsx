@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { pushController } from "@/server/controllers/pushController";
+import { PushAPI } from "./apis/push.api";
 
 export default async function DashboardPage() {
-  const pushService = pushController.getPushService();
-  // const recentPushes = await pushService.getRecentPushes(5);
-  // const stats = await pushService.getPushStats();
+  const pushAPI = PushAPI.getInstance();
+  const recentPushes = await pushAPI.getRecentPushes(5);
 
   return (
     <div className="min-h-screen bg-gray-50">
