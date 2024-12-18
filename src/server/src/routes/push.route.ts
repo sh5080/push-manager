@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { PushController } from "../controllers/push.controller";
+import { PushService } from "../services/push.service";
+import { PushRepository } from "../repositories/push.repository";
 
 const router = Router();
-const pushController = new PushController();
+const pushService = new PushService(new PushRepository());
+const pushController = new PushController(pushService);
 
 router.post("/bulk", pushController.createBulkPush);
 router.get("/recent", pushController.getRecentPushes);

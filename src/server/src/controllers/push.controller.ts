@@ -1,71 +1,66 @@
-import { Request, Response } from "express";
-import { PushService } from "../services/push.service";
+import { NextFunction, Request, Response } from "express";
+import { NotFoundException } from "../types/error.type";
+import { IPushService } from "../interfaces/push.interface";
 
 export class PushController {
-  private pushService: PushService;
+  constructor(private readonly pushService: IPushService) {}
 
-  constructor() {
-    this.pushService = new PushService();
-  }
-
-  createBulkPush = async (req: Request, res: Response) => {
+  createBulkPush = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { identifyArray, ...pushDto } = req.body;
       const campaignCode = await this.pushService.createBulkPush(
         identifyArray,
         pushDto
       );
-      res.status(201).json({ campaignCode });
+      res.success({ campaignCode });
     } catch (error) {
       console.error("Error in bulk push creation:", error);
-      res
-        .status(500)
-        .json({ error: "푸시 메시지 생성 중 오류가 발생했습니다." });
+      next(error);
     }
   };
 
-  getRecentPushes = async (req: Request, res: Response) => {
+  getRecentPushes = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const limit = Number(req.query.limit) || 10;
       const pushes = await this.pushService.getRecentPushes(limit);
-      res.json(pushes);
+      res.success(pushes);
     } catch (error) {
-      res.status(500).json({ error: "최근 푸시 조회 중 오류가 발생했습니다." });
+      next(error);
     }
   };
 
-  getPushHistory = async (req: Request, res: Response) => {
+  getPushHistory = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
       const history = await this.pushService.getPushHistory(page, limit);
-      res.json(history);
+      res.success(history);
     } catch (error) {
-      res.status(500).json({ error: "푸시 이력 조회 중 오류가 발생했습니다." });
+      next(error);
     }
   };
 
-  getPushStats = async (_req: Request, res: Response) => {
+  getPushStats = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const stats = await this.pushService.getPushStats();
-      res.json(stats);
+      res.success(stats);
     } catch (error) {
-      res.status(500).json({ error: "푸시 통계 조회 중 오류가 발생했습니다." });
+      next(error);
     }
   };
 
-  getPushDetail = async (req: Request, res: Response) => {
+  getPushDetail = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const campaignCode = Number(req.params.campaignCode);
       const push = await this.pushService.getPushDetail(campaignCode);
 
       if (!push) {
-        return res.status(404).json({ error: "푸시를 찾을 수 없습니다." });
+        throw new NotFoundException("푸시를 찾을 수 없습니다.");
       }
 
-      res.json(push);
+      res.success(push);
     } catch (error) {
-      res.status(500).json({ error: "푸시 상세 조회 중 오류가 발생했습니다." });
+      next(error);
     }
   };
 }

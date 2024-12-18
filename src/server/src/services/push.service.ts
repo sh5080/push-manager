@@ -11,11 +11,7 @@ import {
 } from "@push-manager/shared/types/constants/pushQueue.const";
 
 export class PushService implements IPushService {
-  private repository: PushRepository;
-
-  constructor() {
-    this.repository = new PushRepository();
-  }
+  constructor(private readonly repository: PushRepository) {}
 
   async createBulkPush(
     identifyArray: string[],
