@@ -1,10 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-
-interface SuccessResponse<T> {
-  success: true;
-  data?: T;
-  message?: string;
-}
+import { SuccessResponse } from "@push-manager/shared/types/response.type";
 
 export const responseMiddleware = () => {
   return (req: Request, res: Response, next: NextFunction) => {
