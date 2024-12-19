@@ -1,79 +1,69 @@
-import { Logger } from "typeorm";
 import { createLogger, format, transports } from "winston";
-import * as fs from "fs";
-import * as path from "path";
 import "winston-daily-rotate-file";
+import * as path from "path";
+import * as fs from "fs";
 
-export class QueryLogger implements Logger {
-  constructor() {
-    // logs 디렉토리 생성
-    const logDir = path.join(process.cwd(), "logs");
+export class DatabaseLogger {
+  private static instance: DatabaseLogger;
+  private logger: any;
+
+  private constructor() {
+    const logDir = path.join(process.cwd(), "logs", "database");
     if (!fs.existsSync(logDir)) {
-      fs.mkdirSync(logDir);
+      fs.mkdirSync(logDir, { recursive: true });
     }
+
+    this.logger = createLogger({
+      format: format.combine(
+        format.timestamp(),
+        format.printf(({ timestamp, level, message, ...meta }) => {
+          return `[${timestamp}] ${level.toUpperCase()}: ${message}\n${
+            Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ""
+          }`;
+        })
+      ),
+      transports: [
+        new transports.DailyRotateFile({
+          filename: "logs/database/query-%DATE%.log",
+          datePattern: "YYYY-MM-DD",
+          zippedArchive: true,
+          maxFiles: "30d",
+          maxSize: "100m",
+          level: "info",
+        }),
+        new transports.DailyRotateFile({
+          filename: "logs/database/error-%DATE%.log",
+          datePattern: "YYYY-MM-DD",
+          zippedArchive: true,
+          maxFiles: "30d",
+          maxSize: "100m",
+          level: "error",
+        }),
+      ],
+    });
   }
-  private logger = createLogger({
-    format: format.combine(format.timestamp(), format.json()),
-    transports: [
-      new transports.DailyRotateFile({
-        filename: "logs/query-%DATE%.log",
-        datePattern: "YYYY-MM-DD",
-        zippedArchive: true,
-        maxFiles: "365d",
-        maxSize: "100m",
-      }),
-    ],
-  });
+
+  public static getInstance(): DatabaseLogger {
+    if (!DatabaseLogger.instance) {
+      DatabaseLogger.instance = new DatabaseLogger();
+    }
+    return DatabaseLogger.instance;
+  }
 
   logQuery(query: string, parameters?: any) {
-    this.logger.info("Query 실행", {
+    this.logger.info("SQL Query", {
       query,
       parameters,
-      timestamp: new Date().toISOString(),
+      stack: new Error().stack?.split("\n").slice(2).join("\n"),
     });
   }
 
-  logQueryError(error: string | Error, query: string, parameters?: any) {
-    this.logger.error("Query 에러", {
-      error: error instanceof Error ? error.message : error,
+  logError(error: Error, query?: string, parameters?: any) {
+    this.logger.error("Database Error", {
+      error: error.message,
+      stack: error.stack,
       query,
       parameters,
-      timestamp: new Date().toISOString(),
     });
-  }
-
-  logQuerySlow(time: number, query: string, parameters?: any) {
-    this.logger.warn("Slow Query 감지", {
-      time,
-      query,
-      parameters,
-      timestamp: new Date().toISOString(),
-    });
-  }
-
-  logSchemaBuild(message: string) {
-    this.logger.info("Schema Build", {
-      message,
-      timestamp: new Date().toISOString(),
-    });
-  }
-
-  logMigration(message: string) {
-    this.logger.info("Migration", {
-      message,
-      timestamp: new Date().toISOString(),
-    });
-  }
-
-  log(level: "log" | "info" | "warn", message: any) {
-    switch (level) {
-      case "log":
-      case "info":
-        this.logger.info(message);
-        break;
-      case "warn":
-        this.logger.warn(message);
-        break;
-    }
   }
 }
