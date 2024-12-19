@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express from "express";
 import cors from "cors";
 
@@ -12,7 +13,7 @@ const port = envConfig.server.port;
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: envConfig.web.url + ":" + envConfig.web.port,
     credentials: true,
   })
 );

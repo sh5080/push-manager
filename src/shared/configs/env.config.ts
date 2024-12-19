@@ -19,8 +19,9 @@ const envSchema = Joi.object({
   PUSH_APP_KEY_FREED: Joi.string().required(),
   PUSH_APP_SECRET_FREED: Joi.string().required(),
   PUSH_APP_TEST_IDENTIFY: Joi.string().required(),
-  SERVER_PORT: Joi.number().required(),
-  FRONTEND_URL: Joi.string().required(),
+  NEXT_PUBLIC_SERVER_PORT: Joi.number().required(),
+  NEXT_PUBLIC_FRONTEND_URL: Joi.string().required(),
+  NEXT_PUBLIC_FRONTEND_PORT: Joi.number().required(),
 });
 
 const { error, value: envVars } = envSchema.validate(process.env, {
@@ -53,9 +54,10 @@ export const envConfig: EnvConfig = {
     testIdentify: envVars.PUSH_APP_TEST_IDENTIFY,
   },
   web: {
-    url: envVars.FRONTEND_URL,
+    url: envVars.NEXT_PUBLIC_FRONTEND_URL,
+    port: envVars.NEXT_PUBLIC_FRONTEND_PORT,
   },
   server: {
-    port: envVars.SERVER_PORT,
+    port: envVars.NEXT_PUBLIC_SERVER_PORT,
   },
 };
