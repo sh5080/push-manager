@@ -1,0 +1,47 @@
+import { clientConfig } from "@push-manager/shared/configs/client.config";
+import { SuccessResponse } from '@push-manager/shared/types/response.type';
+
+export class BaseAPI {
+  protected baseURL: string;
+  private static loadingCallback?: () => void;
+  private static hideLoadingCallback?: () => void;
+
+  constructor() {
+    this.baseURL = `${clientConfig.web.url}:${clientConfig.server.port}`;
+  }
+
+  public static setLoadingCallbacks(
+    showLoading: () => void,
+    hideLoading: () => void
+  ) {
+    BaseAPI.loadingCallback = showLoading;
+    BaseAPI.hideLoadingCallback = hideLoading;
+  }
+
+  protected async customFetch<T>(
+    path: string,
+    options?: RequestInit
+  ): Promise<T> {
+    try {
+      BaseAPI.loadingCallback?.();
+      const response = await fetch(this.getFullURL(path), options);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const serverResponse = await response.json() as SuccessResponse<T>;
+      if (!serverResponse.success) {
+        throw new Error(serverResponse.message || "API request failed");
+      }
+      
+      return serverResponse.data!;
+    } finally {
+      BaseAPI.hideLoadingCallback?.();
+    }
+  }
+
+  protected getFullURL(path: string): string {
+    return `${this.baseURL}${path}`;
+  }
+} 
