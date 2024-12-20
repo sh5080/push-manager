@@ -25,16 +25,16 @@ export class PushStsMsg implements IPushStsMsg {
   userId?: string;
 
   @Column({ name: "APPID", length: 50, nullable: true })
-  appId?: string;
+  appid?: string;
 
   @Column({ name: "SENDDATE", type: "date", nullable: true })
-  sendDate?: Date;
+  senddate?: Date;
 
   @Column({ name: "CRONDATE", type: "date", nullable: true })
-  cronDate?: Date;
+  crondate?: Date;
 
   @Column({ name: "CRON_COMPLATEDATE", type: "date", nullable: true })
-  cronCompleteDate?: Date;
+  cronComplatedate?: Date;
 
   @CreateDateColumn({ name: "WDATE", type: "date" })
   wdate!: Date;
@@ -46,7 +46,7 @@ export class PushStsMsg implements IPushStsMsg {
   step?: (typeof StepEnum)[keyof typeof StepEnum];
 
   @Column({ name: "RESULTDATE", type: "date", nullable: true })
-  resultDate?: Date;
+  resultdate?: Date;
 
   @Column({ name: "ANDROID_SOUND", length: 50, nullable: true })
   androidSound?: string;
@@ -84,22 +84,22 @@ export class PushStsMsg implements IPushStsMsg {
   customValue3?: string;
 
   @Column({ name: "IOS_ERRORMESSAGE", length: 200, nullable: true })
-  iosErrorMessage?: string;
+  iosErrormessage?: string;
 
   @Column({ name: "FNAME", length: 256, nullable: true })
   fname?: string;
 
   @Column({ name: "ISANDROID", length: 1, nullable: true })
-  isAndroid?: string;
+  isandroid?: string;
 
   @Column({ name: "ISIOS", length: 1, nullable: true })
-  isIos?: string;
+  isios?: string;
 
   @Column({ name: "AND_ERRORMESSAGE", length: 200, nullable: true })
-  androidErrorMessage?: string;
+  andErrormessage?: string;
 
   @Column({ name: "ERRORMESSAGE", length: 200, nullable: true })
-  errorMessage?: string;
+  errormessage?: string;
 
   @Column({ name: "TMP_MESSAGE", length: 4000, nullable: true })
   tmpMessage?: string;
@@ -126,10 +126,10 @@ export class PushStsMsg implements IPushStsMsg {
   link?: string;
 
   @Column({ name: "IDLIST_FLAG", length: 4, nullable: true })
-  idListFlag?: string;
+  idlistFlag?: string;
 
   @Column({ name: "ISBULK", length: 1, nullable: true })
-  isBulk?: string;
+  isbulk?: string;
 
   @Column({ name: "LABEL_CODE", length: 10, nullable: true })
   labelCode?: string;
@@ -138,10 +138,10 @@ export class PushStsMsg implements IPushStsMsg {
   title?: string;
 
   @Column({ name: "BGCOLOR", length: 7, nullable: true })
-  bgColor?: string;
+  bgcolor?: string;
 
   @Column({ name: "FONTCOLOR", length: 7, nullable: true })
-  fontColor?: string;
+  fontcolor?: string;
 
   @Column({
     name: "SENDSPEED",
@@ -150,7 +150,7 @@ export class PushStsMsg implements IPushStsMsg {
     default: 3,
     nullable: true,
   })
-  sendSpeed?: number;
+  sendspeed?: number;
 
   @Column({
     type: "varchar",
@@ -159,7 +159,7 @@ export class PushStsMsg implements IPushStsMsg {
     default: "Y",
     nullable: true,
   })
-  isEtiquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
+  isetiquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
 
   @Column({
     name: "ETIQUETTE_STIME",
@@ -220,7 +220,7 @@ export class PushStsMsg implements IPushStsMsg {
     default: OptAgreeEnum.DISAGREE,
     nullable: true,
   })
-  optAgree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
+  optagree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
 
   @Column({
     name: "SEND_STAT",
@@ -235,5 +235,5 @@ export class PushStsMsg implements IPushStsMsg {
   targetFilter?: string;
 
   @Column({ name: "CRONIDX", type: "number", precision: 11, nullable: true })
-  cronIdx?: number;
+  cronidx?: number;
 }
