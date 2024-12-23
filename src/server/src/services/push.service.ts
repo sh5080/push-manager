@@ -1,97 +1,92 @@
 import { IPushService } from "../interfaces/push.interface";
-import { PushQueue } from "../entities/pushQueue.entity";
-import { splitLongText } from "@push-manager/shared/utils/splitLongText";
 
 import {
+  CreatePushDto,
   GetRecentPushesDto,
-  ProdPushDto,
 } from "@push-manager/shared/dtos/push.dto";
-import {
-  StepEnum,
-  PModeEnum,
-} from "@push-manager/shared/types/constants/pushQueue.const";
+
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
 import { PushStsMsg } from "../entities/pushStsMsg.entity";
-import {
-  APP_CONFIG,
-  AppIdEnum,
-} from "@push-manager/shared/types/constants/common.const";
-import { envConfig } from "@push-manager/shared/configs/env.config";
+import { APP_CONFIG } from "../configs/app.config";
+import { AppDataSource } from "../configs/database";
+import { PushMasterRepository } from "../repositories/pushMaster.repository";
 
 export class PushService implements IPushService {
-  constructor(private readonly pushStsMsgRepository: PushStsMsgRepository) {}
+  constructor(
+    private readonly pushMasterRepository: PushMasterRepository,
+    private readonly pushStsMsgRepository: PushStsMsgRepository
+  ) {}
 
-  // async createBulkPush(
-  //   identifyArray: string[],
-  //   dto: ProdPushDto,
-  //   maxBatchSize: number = 1000
-  // ): Promise<number> {
-  //   const now = new Date();
-  //   const SENDDATE = parseDateTime(dto.sendDateString);
+  async createPushes(
+    identifyArray: string[],
+    dto: CreatePushDto,
+    maxBatchSize: number = 1000
+  ): Promise<number> {
+    const now = new Date();
+    const SENDDATE = dto.sendDateString;
 
-  //   if (!SENDDATE || isNaN(SENDDATE.getTime())) {
-  //     throw new Error(`유효하지 않은 날짜 문자열: ${dto.sendDateString}`);
-  //   }
+    // if (!SENDDATE || isNaN(SENDDATE.getTime())) {
+    //   throw new Error(`유효하지 않은 날짜 문자열: ${dto.sendDateString}`);
+    // }
 
-  //   const queryRunner = AppDataSource.createQueryRunner();
-  //   await queryRunner.startTransaction();
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.startTransaction();
 
-  //   try {
-  //     // 캠페인 코드 생성
-  //     const campaignCode = await this.repository.getNextCampaignCode(
-  //       queryRunner
-  //     );
+    try {
+      // 캠페인 코드 생성
+      const lastCampaign =
+        await this.pushMasterRepository.getLastCampaignCode();
+      const campaignCode = (lastCampaign[0].CMPNCODE || 0) + 1;
+      // 마스터 레코드 생성
+      await this.pushMasterRepository.createMasterRecord(queryRunner, {
+        campaignCode,
+        pmode: PModeEnum.CAMP,
+        step: StepEnum.PENDING,
+        startDate: now,
+      });
 
-  //     // 마스터 레코드 생성
-  //     await this.repository.createMasterRecord(queryRunner, {
-  //       campaignCode,
-  //       pmode: PModeEnum.CAMP,
-  //       step: StepEnum.PENDING,
-  //       startDate: now,
-  //     });
+      // 중복 제거된 식별자 처리
+      const uniqueIdentifies = [...new Set(identifyArray)];
+      const duplicateCount = identifyArray.length - uniqueIdentifies.length;
 
-  //     // 중복 제거된 식별자 처리
-  //     const uniqueIdentifies = [...new Set(identifyArray)];
-  //     const duplicateCount = identifyArray.length - uniqueIdentifies.length;
+      if (duplicateCount > 0) {
+        console.log(`중복된 식별자 ${duplicateCount}건이 발견되었습니다.`);
+      }
 
-  //     if (duplicateCount > 0) {
-  //       console.log(`중복된 식별자 ${duplicateCount}건이 발견되었습니다.`);
-  //     }
+      // 배치 처리
+      for (let i = 0; i < uniqueIdentifies.length; i += maxBatchSize) {
+        const batchIdentifies = uniqueIdentifies.slice(i, i + maxBatchSize);
+        const nextQueueIdx = await this.repository.getNextQueueIdx(queryRunner);
 
-  //     // 배치 처리
-  //     for (let i = 0; i < uniqueIdentifies.length; i += maxBatchSize) {
-  //       const batchIdentifies = uniqueIdentifies.slice(i, i + maxBatchSize);
-  //       const nextQueueIdx = await this.repository.getNextQueueIdx(queryRunner);
+        const pushBatch = this.createPushBatch(
+          batchIdentifies,
+          dto,
+          nextQueueIdx,
+          campaignCode,
+          now,
+          SENDDATE
+        );
 
-  //       const pushBatch = this.createPushBatch(
-  //         batchIdentifies,
-  //         dto,
-  //         nextQueueIdx,
-  //         campaignCode,
-  //         now,
-  //         SENDDATE
-  //       );
+        await this.repository.insertPushBatch(queryRunner, pushBatch);
+      }
 
-  //       await this.repository.insertPushBatch(queryRunner, pushBatch);
-  //     }
+      // 마스터 레코드 업데이트
+      await this.repository.updateMasterRecord(queryRunner, {
+        campaignCode,
+        endDate: now,
+        step: StepEnum.RESULT,
+      });
 
-  //     // 마스터 레코드 업데이트
-  //     await this.repository.updateMasterRecord(queryRunner, {
-  //       campaignCode,
-  //       endDate: now,
-  //       step: StepEnum.RESULT,
-  //     });
-
-  //     await queryRunner.commitTransaction();
-  //     return campaignCode;
-  //   } catch (error) {
-  //     console.error("대량 푸시 데이터 삽입 중 오류 발생:", error);
-  //     await queryRunner.rollbackTransaction();
-  //     throw error;
-  //   } finally {
-  //     await queryRunner.release();
-  //   }
-  // }
+      await queryRunner.commitTransaction();
+      return campaignCode;
+    } catch (error) {
+      console.error("대량 푸시 데이터 삽입 중 오류 발생:", error);
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
 
   // private createPushBatch(
   //   identifies: string[],
