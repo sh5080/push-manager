@@ -1,6 +1,19 @@
+import { Type } from "class-transformer";
 import { AppIdEnum } from "../types/constants/common.const";
 import { IPushQueue } from "../types/entities/pushQueue.entity";
-import { IsEnum, Min, Max } from "class-validator";
+import {
+  IsEnum,
+  Min,
+  Max,
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsUrl,
+  IsArray,
+  ArrayMinSize,
+  IsDateString,
+} from "class-validator";
+import "reflect-metadata";
 
 export interface TestPushDto
   extends Omit<
@@ -62,5 +75,38 @@ export class GetRecentPushesDto {
 
   @Min(1, { message: "limit는 최소 1 이상이어야 합니다." })
   @Max(100, { message: "limit는 최대 100까지만 가능합니다." })
+  @Type(() => Number)
   limit?: number;
+}
+
+export class CreatePushDto {
+  @IsString()
+  @IsNotEmpty({ message: "푸시 제목은 필수입니다." })
+  title!: string;
+
+  @IsString()
+  @IsNotEmpty({ message: "푸시 내용은 필수입니다." })
+  content!: string;
+
+  @IsArray()
+  @ArrayMinSize(1, { message: "최소 1개 이상의 식별자가 필요합니다." })
+  @IsString({ each: true })
+  identifyArray!: string[];
+
+  @IsOptional()
+  @IsDateString({}, { message: "유효한 날짜 형식이 아닙니다." })
+  sendDateString?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: "유효한 이미지 URL을 입력해주세요." })
+  fname?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: "유효한 URL을 입력해주세요." })
+  plink?: string;
+
+  @IsEnum(AppIdEnum, {
+    message: "유효하지 않은 targetMode입니다. (FREED: 0, TEST: 1, PROD: 2)",
+  })
+  targetMode!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
 }
