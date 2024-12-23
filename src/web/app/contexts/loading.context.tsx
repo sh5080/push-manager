@@ -1,7 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import LoadingSpinner from '../common/components/spinner.component';
+import { BaseAPI } from '../apis/base.api';
 
 interface LoadingContextType {
   showLoading: () => void;
@@ -15,6 +16,10 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
 
   const showLoading = () => setLoading(true);
   const hideLoading = () => setLoading(false);
+
+  useEffect(() => {
+    BaseAPI.setLoadingCallbacks(showLoading, hideLoading);
+  }, []);
 
   return (
     <LoadingContext.Provider value={{ showLoading, hideLoading }}>

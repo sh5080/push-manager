@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createPush } from "@/app/push/actions";
+
 
 export default function PushBaseForm() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function PushBaseForm() {
 
     try {
       const formData = new FormData(event.currentTarget);
-      await createPush(formData);
+      // TODO api 호출
       router.push("/push/success");
     } catch (error) {
       console.error("푸시 생성 실패:", error);

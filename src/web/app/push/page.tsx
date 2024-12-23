@@ -1,48 +1,70 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  PageHeader,
+  CreateButton,
+} from "../common/components/pageHeader.component";
+import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
+import LoadingSpinner from "app/common/components/spinner.component";
+import { RecentPushes } from "./components/recentPush.component";
+import { SendPushModal } from "./modals/sendPush.modal";
 
 export default function PushPage() {
+  const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
+  const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchPushes();
+  }, []);
+
+  const fetchPushes = async () => {
+    try {
+      const response = await fetch("/api/push");
+      const data = await response.json();
+      setPushes(data);
+    } catch (error) {
+      console.error("Failed to fetch pushes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-8">푸시 메시지 관리</h1>
+    <div className="min-h-screen py-8">
+      <div className="container mx-auto px-4">
+        <PageHeader
+          title="푸시 알림 관리"
+          description={
+            <span className="whitespace-pre-line">
+              타겟 푸시 알림을 생성하고 발송 현황을 관리할 수 있습니다.{"\n"}
+              전체푸시는 기존 핑거푸시 콘솔을 사용해주세요.
+            </span>
+          }
+          actions={
+            <>
+              <CreateButton
+                text="타겟 푸시 발송"
+                onClick={() => setIsModalOpen(true)}
+              />
+            </>
+          }
+        />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* 타겟 푸시 섹션 */}
-        <div className="border rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">타겟 푸시</h2>
-          <div className="space-y-4">
-            <Link
-              href="/push/target/send"
-              className="block w-full bg-blue-500 text-white text-center py-2 rounded hover:bg-blue-600"
-            >
-              타겟 푸시 발송
-            </Link>
-            <Link
-              href="/push/target/history"
-              className="block w-full border border-gray-300 text-center py-2 rounded hover:bg-gray-50"
-            >
-              발송 이력 조회
-            </Link>
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="mb-6 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+            <RecentPushes />
           </div>
-        </div>
+        )}
 
-        {/* 전체 푸시 섹션 */}
-        <div className="border rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">전체 푸시</h2>
-          <div className="space-y-4">
-            <Link
-              href="/push/all/send"
-              className="block w-full bg-green-500 text-white text-center py-2 rounded hover:bg-green-600"
-            >
-              전체 푸시 발송
-            </Link>
-            <Link
-              href="/push/all/history"
-              className="block w-full border border-gray-300 text-center py-2 rounded hover:bg-gray-50"
-            >
-              발송 이력 조회
-            </Link>
-          </div>
-        </div>
+        <SendPushModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
     </div>
   );
