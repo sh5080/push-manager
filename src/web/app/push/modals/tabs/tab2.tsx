@@ -73,8 +73,12 @@ export function PushConditionTab({
           value={sendDateString}
           onChange={(e) => onChange("sendDateString", e.target.value)}
         />
+        {/* TODO 발송 시간 설정 유효성검증 기능 추가 필요 */}
         <p className="mt-1 text-sm text-gray-500">
-          설정하지 않으면 즉시 발송됩니다.
+          안정적인 발송을 위해 현재 시간보다 1000건 당 1분 뒤로 설정해주세요.
+        </p>
+        <p className="mt-1 text-sm text-gray-500">
+          과거 시간으로 식별자가 삽입될 경우 발송에 실패할 수 있습니다.
         </p>
       </div>
 
