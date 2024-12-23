@@ -24,7 +24,7 @@ AppDataSource.initialize()
   .then(() => console.log("Database connected"))
   .catch(console.error);
 
-// 라들웨어 등록
+// 미들웨어 등록
 app.use(responseMiddleware());
 
 // 라우트 설정
