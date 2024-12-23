@@ -6,19 +6,19 @@ import { validateDto } from "@push-manager/shared/utils/validate.util";
 export class PushController {
   constructor(private readonly pushService: IPushService) {}
 
-  // createBulkPush = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const { identifyArray, ...pushDto } = req.body;
-  //     const campaignCode = await this.pushService.createBulkPush(
-  //       identifyArray,
-  //       pushDto
-  //     );
-  //     res.success({ campaignCode });
-  //   } catch (error) {
-  //     console.error("Error in bulk push creation:", error);
-  //     next(error);
-  //   }
-  // };
+  createPushes = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { identifyArray, ...pushDto } = req.body;
+      const campaignCode = await this.pushService.createPushes(
+        identifyArray,
+        pushDto
+      );
+      res.success({ campaignCode });
+    } catch (error) {
+      console.error("Error in bulk push creation:", error);
+      next(error);
+    }
+  };
 
   getRecentPushes = async (req: Request, res: Response, next: NextFunction) => {
     try {
