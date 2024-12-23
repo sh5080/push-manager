@@ -10,6 +10,10 @@ import { PushStsMsg } from "../entities/pushStsMsg.entity";
 import { APP_CONFIG } from "../configs/app.config";
 import { AppDataSource } from "../configs/database";
 import { PushMasterRepository } from "../repositories/pushMaster.repository";
+import {
+  PModeEnum,
+  StepEnum,
+} from "@push-manager/shared/types/constants/pushQueue.const";
 
 export class PushService implements IPushService {
   constructor(
@@ -38,11 +42,10 @@ export class PushService implements IPushService {
         await this.pushMasterRepository.getLastCampaignCode();
       const campaignCode = (lastCampaign[0].CMPNCODE || 0) + 1;
       // 마스터 레코드 생성
-      await this.pushMasterRepository.createMasterRecord(queryRunner, {
+      await this.pushMasterRepository.createMasterRecord({
         campaignCode,
         pmode: PModeEnum.CAMP,
         step: StepEnum.PENDING,
-        startDate: now,
       });
 
       // 중복 제거된 식별자 처리
@@ -56,7 +59,7 @@ export class PushService implements IPushService {
       // 배치 처리
       for (let i = 0; i < uniqueIdentifies.length; i += maxBatchSize) {
         const batchIdentifies = uniqueIdentifies.slice(i, i + maxBatchSize);
-        const nextQueueIdx = await this.repository.getNextQueueIdx(queryRunner);
+        const nextQueueIdx = await this.pushStsMsgRepository.getNextQueueIdx();
 
         const pushBatch = this.createPushBatch(
           batchIdentifies,
