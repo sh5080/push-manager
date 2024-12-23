@@ -25,6 +25,7 @@ export interface ServerConfig {
 
 export interface WebConfig {
   url: string;
+  port: number;
 }
 
 export interface EnvConfig {

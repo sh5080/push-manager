@@ -1,34 +1,32 @@
-import Link from "next/link";
+"use client";
+
+import { usePathname } from "next/navigation";
+import { menuItems, SidebarItem } from "./sidebarItem.component";
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
+  const isActiveRoute = (path: string) => {
+    if (path === "/" && pathname === "/") {
+      return true;
+    }
+    if (path !== "/" && pathname.startsWith(path)) {
+      return true;
+    }
+    return false;
+  };
+
   return (
-    <nav className="h-full flex items-center">
-      <ul className="w-full space-y-2 px-4">
-        <li>
-          <Link 
-            href="/" 
-            className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            대시보드
-          </Link>
-        </li>
-        <li>
-          <Link 
-            href="/push" 
-            className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            푸시 발송
-          </Link>
-        </li>
-        <li>
-          <Link 
-            href="/push/history" 
-            className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            푸시 조회
-          </Link>
-        </li>
-      </ul>
-    </nav>
+    <div className="w-[200px] min-h-screen bg-[#FAFBFC] fixed left-0 top-0 flex flex-col font-pretendard border-r border-gray-200">
+      <nav className="mt-8 flex flex-col px-3">
+        <div className="flex flex-col space-y-1.5">
+          {menuItems.map((item) => (
+            <div key={item.path}>
+              <SidebarItem item={item} isActive={isActiveRoute(item.path)} />
+            </div>
+          ))}
+        </div>
+      </nav>
+    </div>
   );
 }
