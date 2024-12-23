@@ -2,9 +2,13 @@ import { Router } from "express";
 import { PushController } from "../controllers/push.controller";
 import { PushService } from "../services/push.service";
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
+import { PushMasterRepository } from "../repositories/pushMaster.repository";
 
 const router = Router();
-const pushService = new PushService(new PushStsMsgRepository());
+const pushService = new PushService(
+  new PushMasterRepository(),
+  new PushStsMsgRepository()
+);
 const pushController = new PushController(pushService);
 
 router.post("/", pushController.createPushes);
