@@ -1,49 +1,45 @@
-import {
-  Repository,
-  ObjectLiteral,
-  SelectQueryBuilder,
-  EntityTarget,
-} from "typeorm";
-import { DatabaseLogger } from "../utils/logger.util";
-import { AppDataSource } from "../configs/database";
+import { DataSource, ObjectType, SelectQueryBuilder } from "typeorm";
+import { transformDbToEntity } from "../utils/transform.util";
 
-export class BaseRepository<T extends ObjectLiteral> {
-  protected logger = DatabaseLogger.getInstance();
+export class BaseRepository<T extends Record<string, any>> {
+  constructor(
+    protected readonly dataSource: DataSource,
+    private readonly entityClass: new () => T
+  ) {}
 
-  protected getRepository(entity: EntityTarget<T>): Repository<T> {
-    return AppDataSource.getRepository(entity);
+  protected getRepository(entity: ObjectType<T>) {
+    if (!this.dataSource) {
+      throw new Error("DataSource is not initialized");
+    }
+    return this.dataSource.getRepository(entity);
   }
 
   protected async execute<R>(
     queryBuilder: SelectQueryBuilder<T>,
-    executeFn: (qb: SelectQueryBuilder<T>) => Promise<R>
-  ): Promise<R> {
-    this.logger.logQuery(queryBuilder.getQuery(), queryBuilder.getParameters());
-
+    callback: (qb: SelectQueryBuilder<T>) => Promise<any[]>
+  ): Promise<T[]> {
     try {
-      return await executeFn(queryBuilder);
-    } catch (error) {
-      this.logger.logError(
-        error as Error,
-        queryBuilder.getQuery(),
-        queryBuilder.getParameters()
+      const rawResults = await callback(queryBuilder);
+      return rawResults.map((row) =>
+        transformDbToEntity(row, this.entityClass)
       );
+    } catch (error) {
       throw error;
     }
   }
 
-  protected async executeRawQuery<R>(
+  protected async executeRaw(
     query: string,
     parameters: any[] = []
-  ): Promise<R> {
-    this.logger.logQuery(query, parameters);
-
+  ): Promise<T[]> {
     try {
-      return await this.getRepository(
-        this.constructor as EntityTarget<T>
-      ).query(query, parameters);
+      const rawResults = await this.dataSource.query(query, parameters);
+      const result = rawResults.map((row: any) =>
+        transformDbToEntity(row, this.entityClass)
+      );
+      console.log("result: ", result);
+      return result;
     } catch (error) {
-      this.logger.logError(error as Error, query, parameters);
       throw error;
     }
   }
