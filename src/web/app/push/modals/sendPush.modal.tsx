@@ -35,6 +35,7 @@ interface PushFormData {
   targetMode: (typeof AppIdEnum)[keyof typeof AppIdEnum];
   imageEnabled: boolean;
   linkEnabled: boolean;
+  isTestMode: boolean;
 }
 
 export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
@@ -49,6 +50,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     targetMode: AppIdEnum.PROD,
     imageEnabled: false,
     linkEnabled: false,
+    isTestMode: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isParsingFile, setIsParsingFile] = useState(false);
@@ -258,6 +260,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
                 <PushContentTab
                   title={formData.title}
                   content={formData.content}
+                  isTestMode={formData.isTestMode}
                   onChange={handleChange}
                 />
               </TabPanel>
