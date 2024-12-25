@@ -14,11 +14,17 @@ import {
   PModeEnum,
   StepEnum,
 } from "@push-manager/shared/types/constants/pushQueue.const";
+import { PushQueueRepository } from "../repositories/pushQueue.repository";
+import { convertToSysdate } from "../utils/transform.util";
+import { PushQueue } from "../entities/pushQueue.entity";
+import { createPushBaseData } from "../utils/push.util";
+import { CreateBasePushDto } from "../types/push.type";
 
 export class PushService implements IPushService {
   constructor(
     private readonly pushMasterRepository: PushMasterRepository,
-    private readonly pushStsMsgRepository: PushStsMsgRepository
+    private readonly pushStsMsgRepository: PushStsMsgRepository,
+    private readonly pushQueueRepository: PushQueueRepository
   ) {}
 
   async createPushes(
@@ -26,27 +32,31 @@ export class PushService implements IPushService {
     dto: CreatePushDto,
     maxBatchSize: number = 1000
   ): Promise<number> {
-    const now = new Date();
-    const SENDDATE = dto.sendDateString;
-
-    // if (!SENDDATE || isNaN(SENDDATE.getTime())) {
-    //   throw new Error(`유효하지 않은 날짜 문자열: ${dto.sendDateString}`);
-    // }
+    const now = () => "SYSDATE";
+    const SENDDATE = convertToSysdate(dto.sendDateString!);
 
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.startTransaction();
 
     try {
-      // 캠페인 코드 생성
-      const lastCampaign =
-        await this.pushMasterRepository.getLastCampaignCode();
-      const campaignCode = (lastCampaign[0].CMPNCODE || 0) + 1;
-      // 마스터 레코드 생성
-      await this.pushMasterRepository.createMasterRecord({
+      const lastCampaign = await this.pushMasterRepository.getLastCampaignCode(
+        queryRunner
+      );
+
+      const campaignCode = lastCampaign[0].cmpncode + 1;
+      await this.pushMasterRepository.createMasterRecord(queryRunner, {
         campaignCode,
         pmode: PModeEnum.CAMP,
         step: StepEnum.PENDING,
+        startDate: SENDDATE,
       });
+      const baseDto: CreateBasePushDto = {
+        dto,
+        campaignCode,
+        sendDate: SENDDATE,
+        now,
+      };
+      const baseData = createPushBaseData(baseDto);
 
       // 중복 제거된 식별자 처리
       const uniqueIdentifies = [...new Set(identifyArray)];
@@ -59,25 +69,24 @@ export class PushService implements IPushService {
       // 배치 처리
       for (let i = 0; i < uniqueIdentifies.length; i += maxBatchSize) {
         const batchIdentifies = uniqueIdentifies.slice(i, i + maxBatchSize);
-        const nextQueueIdx = await this.pushStsMsgRepository.getNextQueueIdx();
+        const nextQueueIdx = await this.pushQueueRepository.getNextQueueIdx(
+          queryRunner
+        );
 
         const pushBatch = this.createPushBatch(
           batchIdentifies,
-          dto,
           nextQueueIdx,
-          campaignCode,
-          now,
-          SENDDATE
+          baseData
         );
 
-        await this.repository.insertPushBatch(queryRunner, pushBatch);
+        await this.pushQueueRepository.insertPushBatch(queryRunner, pushBatch);
       }
 
       // 마스터 레코드 업데이트
-      await this.repository.updateMasterRecord(queryRunner, {
+      await this.pushMasterRepository.updateMasterRecord(queryRunner, {
         campaignCode,
-        endDate: now,
-        step: StepEnum.RESULT,
+        endDate: () => "SYSDATE",
+        step: StepEnum.TRANSACTION,
       });
 
       await queryRunner.commitTransaction();
@@ -91,60 +100,18 @@ export class PushService implements IPushService {
     }
   }
 
-  // private createPushBatch(
-  //   identifies: string[],
-  //   dto: ProdPushDto,
-  //   startQueueIdx: number,
-  //   campaignCode: number,
-  //   now: Date,
-  //   sendDate: Date
-  // ): Partial<PushQueue>[] {
-  //   return identifies.map((identify, index) => {
-  //     const longTextParts = splitLongText(dto.MSGCONTENTS);
-
-  //     return {
-  //       QUEUEIDX: startQueueIdx + index,
-  //       APPKEY: dto.APPKEY,
-  //       APPSECRET: dto.APPSECRET,
-  //       MSGTITLE: dto.MSGTITLE,
-  //       SENDDATE: sendDate,
-  //       MSGCONTENTS: longTextParts[1] ? "" : dto.MSGCONTENTS,
-  //       IDENTIFY: identify,
-  //       STEP: StepEnum.PENDING,
-  //       PMODE: PModeEnum.CAMP,
-  //       FNAME: dto.FNAME,
-  //       SEND_STAT: dto.SEND_STAT,
-  //       PLINK: dto.PLINK,
-  //       CUSTOM_KEY_1:
-  //         dto.CUSTOM_KEY_1 === "empty" ? "" : dto.CUSTOM_KEY_1 || "linktype",
-  //       CUSTOM_VALUE_1:
-  //         dto.CUSTOM_VALUE_1 === "empty" ? "" : dto.CUSTOM_VALUE_1 || "pushbox",
-  //       CUSTOM_KEY_2: dto.CUSTOM_KEY_2,
-  //       CUSTOM_VALUE_2: dto.CUSTOM_VALUE_2,
-  //       CUSTOM_KEY_3: dto.CUSTOM_KEY_3 || "alt",
-  //       CUSTOM_VALUE_3: dto.CUSTOM_VALUE_3,
-  //       LABEL_CODE: dto.LABEL_CODE,
-  //       BGCOLOR: dto.BGCOLOR,
-  //       FONTCOLOR: dto.FONTCOLOR,
-  //       AND_PRIORITY: dto.AND_PRIORITY,
-  //       ISETIQUETTE: dto.ISETIQUETTE,
-  //       ETIQUETTE_STIME: dto.ETIQUETTE_STIME,
-  //       ETIQUETTE_ETIME: dto.ETIQUETTE_ETIME,
-  //       OFB_TIME: dto.OFB_TIME,
-  //       OPTAGREE: dto.OPTAGREE,
-  //       PTAG: dto.PTAG,
-  //       BESCHMODE: dto.BESCHMODE,
-  //       LNGT_MESSAGE1: longTextParts[1] ? longTextParts[0] : "",
-  //       LNGT_MESSAGE2: longTextParts[1] || "",
-  //       LNGT_MESSAGE3: longTextParts[2] || "",
-  //       LNGT_MESSAGE4: longTextParts[3] || "",
-  //       WDATE: now,
-  //       UDATE: now,
-  //       CMPNCODE: campaignCode,
-  //     };
-  //   });
-  // }
-
+  private createPushBatch(
+    identifies: string[],
+    startQueueIdx: number,
+    baseData: Partial<PushQueue>
+  ): Partial<PushQueue>[] {
+    return identifies.map((identify, index) => ({
+      ...baseData,
+      QUEUEIDX: startQueueIdx + index,
+      IDENTIFY: identify,
+      SENDDATE: () => `SYSDATE + 1/1440`,
+    }));
+  }
   async getRecentPushes(dto: GetRecentPushesDto): Promise<PushStsMsg[]> {
     try {
       const { appId } = APP_CONFIG[dto.targetMode];
