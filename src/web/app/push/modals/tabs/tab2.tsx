@@ -3,7 +3,7 @@ import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 import { HiQuestionMarkCircle } from "react-icons/hi2";
 
 interface PushConditionTabProps {
-  targetMode: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+  appId: (typeof AppIdEnum)[keyof typeof AppIdEnum];
   sendDateString: string;
   fname: string;
   plink: string;
@@ -16,7 +16,7 @@ interface PushConditionTabProps {
 }
 
 export function PushConditionTab({
-  targetMode,
+  appId,
   sendDateString,
   fname,
   plink,
@@ -41,10 +41,10 @@ export function PushConditionTab({
                 <input
                   type="radio"
                   id={id}
-                  name="targetMode"
+                  name="appId"
                   value={value}
-                  checked={targetMode === value}
-                  onChange={(e) => onChange("targetMode", e.target.value)}
+                  checked={appId === value}
+                  onChange={(e) => onChange("appId", e.target.value)}
                   className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                 />
                 <label htmlFor={id} className="ml-2 text-sm text-gray-700">
@@ -53,7 +53,7 @@ export function PushConditionTab({
               </div>
             ))}
           </div>
-          {targetMode === AppIdEnum.PROD && (
+          {appId === AppIdEnum.PROD && (
             <p className="text-sm text-yellow-600">
               ⚠️ 운영 환경으로 발송됩니다. 신중하게 확인해주세요.
             </p>
@@ -75,7 +75,8 @@ export function PushConditionTab({
         />
         {/* TODO 발송 시간 설정 유효성검증 기능 추가 필요 */}
         <p className="mt-1 text-sm text-gray-500">
-          안정적인 발송을 위해 현재 시간보다 1000건 당 1분 뒤로 설정해주세요.
+          안정적인 발송을 위해 현재 시간보다 최소한 100건 당 1분 뒤로
+          설정해주세요.
         </p>
         <p className="mt-1 text-sm text-gray-500">
           과거 시간으로 식별자가 삽입될 경우 발송에 실패할 수 있습니다.
