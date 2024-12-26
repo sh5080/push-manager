@@ -14,6 +14,13 @@ import {
   IsDateString,
 } from "class-validator";
 import "reflect-metadata";
+import {
+  AndPriorityEnum,
+  BeschModeEnum,
+  IsEtiquetteEnum,
+  OfbTimeEnum,
+  OptAgreeEnum,
+} from "../types/constants/pushQueue.const";
 
 export interface TestPushDto
   extends Omit<
@@ -93,9 +100,9 @@ export class CreatePushDto {
   @IsString({ each: true })
   identifyArray!: string[];
 
-  @IsOptional()
   @IsDateString({}, { message: "유효한 날짜 형식이 아닙니다." })
-  sendDateString?: string;
+  @IsNotEmpty({ message: "발송 시간은 필수입니다." })
+  sendDateString!: string;
 
   @IsOptional()
   @IsUrl({}, { message: "유효한 이미지 URL을 입력해주세요." })
@@ -106,7 +113,65 @@ export class CreatePushDto {
   plink?: string;
 
   @IsEnum(AppIdEnum, {
-    message: "유효하지 않은 targetMode입니다. (FREED: 0, TEST: 1, PROD: 2)",
+    message: "유효하지 않은 appId입니다. (FREED: 0, TEST: 1, PROD: 2)",
   })
-  targetMode!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+  appId!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+
+  @IsOptional()
+  @IsString()
+  customKey1?: string;
+
+  @IsOptional()
+  @IsString()
+  customValue1?: string;
+
+  @IsOptional()
+  @IsString()
+  labelCode?: string;
+
+  @IsOptional()
+  @IsString()
+  bgColor?: string;
+
+  @IsOptional()
+  @IsString()
+  fontColor?: string;
+
+  @IsEnum(AndPriorityEnum, {
+    message: "유효하지 않은 andPriority입니다. (MEDIUM: M, HIGH: H)",
+  })
+  @IsOptional()
+  andPriority?: (typeof AndPriorityEnum)[keyof typeof AndPriorityEnum];
+
+  @IsEnum(IsEtiquetteEnum, {
+    message: "유효하지 않은 isetIquette입니다. (NO: N, YES: Y)",
+  })
+  @IsOptional()
+  isetIquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
+
+  @IsOptional()
+  etiqueStime?: number;
+
+  @IsOptional()
+  etiqueEtime?: number;
+
+  @IsOptional()
+  @IsEnum(OfbTimeEnum, {
+    message: "유효하지 않은 ofbTime입니다. (ONE_W: 1, ONE_M: 2, ONE_D: 3)",
+  })
+  ofbTime?: (typeof OfbTimeEnum)[keyof typeof OfbTimeEnum];
+
+  @IsOptional()
+  @IsEnum(OptAgreeEnum, {
+    message: "유효하지 않은 optAgree입니다. (AGREE: A, DISAGREE: D)",
+  })
+  optAgree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
+
+  @IsOptional()
+  @IsString()
+  ptag?: string;
+
+  @IsOptional()
+  @IsString()
+  beschMode?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
 }
