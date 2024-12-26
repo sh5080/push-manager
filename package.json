@@ -8,15 +8,16 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "dev:web": "dotenv -e src/shared/.env yarn workspace @push-manager/web dev",
+    "dev:web": "cross-env PORT=$NEXT_PUBLIC_FRONTEND_PORT dotenv -e src/shared/.env yarn workspace @push-manager/web dev",
     "dev:server": "dotenv -e src/shared/.env yarn workspace @push-manager/server dev",
     "lint": "yarn workspaces run lint"
   },
   "devDependencies": {
-    "dotenv-cli": "^7.4.1",
-    "typescript": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.0.0"
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^7.4.1",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
   }
 }
