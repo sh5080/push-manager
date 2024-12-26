@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "dev:web": "cross-env PORT=$NEXT_PUBLIC_FRONTEND_PORT dotenv -e src/shared/.env yarn workspace @push-manager/web dev",
+    "dev:web": "dotenv -e src/shared/.env -- node -e \"process.env.PORT=process.env.NEXT_PUBLIC_FRONTEND_PORT\" && yarn workspace @push-manager/web dev",
     "dev:server": "dotenv -e src/shared/.env yarn workspace @push-manager/server dev",
     "lint": "yarn workspaces run lint"
   },
