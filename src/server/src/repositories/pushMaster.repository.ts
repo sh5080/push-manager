@@ -9,11 +9,12 @@ export class PushMasterRepository extends BaseRepository<PushMaster> {
     super(AppDataSource, PushMaster);
   }
 
-  async getLastCampaignCode(): Promise<PushMaster[]> {
-    const queryBuilder = this.getRepository(PushMaster)
-      .createQueryBuilder("master")
-      .select("master.CMPNCODE", "CMPNCODE")
-      .orderBy("master.CMPNCODE", "DESC");
+  async getLastCampaignCode(queryRunner: QueryRunner): Promise<PushMaster[]> {
+    const queryBuilder = queryRunner.manager
+      .getRepository(PushMaster)
+      .createQueryBuilder("MASTER")
+      .select("MASTER.CMPNCODE", "CMPNCODE")
+      .orderBy("MASTER.CMPNCODE", "DESC");
 
     return this.execute(queryBuilder, async (qb) => {
       const result = await qb.getRawOne();
@@ -21,16 +22,39 @@ export class PushMasterRepository extends BaseRepository<PushMaster> {
     });
   }
 
-  async createMasterRecord(dto: {
-    campaignCode: number;
-    pmode: string;
-    step: (typeof StepEnum)[keyof typeof StepEnum];
-  }) {
-    const result = await this.getRepository(PushMaster).insert({
-      CMPNCODE: dto.campaignCode,
-      PMODE: dto.pmode,
-      STEP: dto.step,
-      RSTART_DATE: new Date(),
+  async createMasterRecord(
+    queryRunner: QueryRunner,
+    dto: {
+      campaignCode: number;
+      pmode: string;
+      step: (typeof StepEnum)[keyof typeof StepEnum];
+      startDate: () => string;
+    }
+  ) {
+    const masterRepository = queryRunner.manager.getRepository(PushMaster);
+    return masterRepository.insert({
+      cmpncode: dto.campaignCode,
+      pmode: dto.pmode,
+      step: dto.step,
+      rstart_date: dto.startDate,
     });
+  }
+
+  async updateMasterRecord(
+    queryRunner: QueryRunner,
+    data: {
+      campaignCode: number;
+      endDate: () => string;
+      step: (typeof StepEnum)[keyof typeof StepEnum];
+    }
+  ) {
+    const masterRepository = queryRunner.manager.getRepository(PushMaster);
+    return masterRepository.update(
+      { cmpncode: data.campaignCode },
+      {
+        rend_date: data.endDate,
+        step: data.step,
+      }
+    );
   }
 }
