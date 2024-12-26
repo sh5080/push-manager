@@ -48,19 +48,19 @@ export class PushQueue implements IPushQueue {
    * @default 1분
    */
   @Column("timestamp")
-  SENDDATE!: Date;
+  SENDDATE!: () => string;
 
   /**
    * 발송완료일시
    */
   @Column("timestamp", { nullable: true })
-  RESULTDATE?: Date;
+  RESULTDATE?: string;
 
   /**
    * 핑거푸시로부터 피드백 일시
    */
   @Column("timestamp", { nullable: true })
-  FEEDBACKDATE?: Date;
+  FEEDBACKDATE?: string;
 
   /**
    * 메시지 내용 (필수 입력)
@@ -292,14 +292,14 @@ export class PushQueue implements IPushQueue {
   /**
    * 작성일자 (기본값: 현재 시간)
    */
-  @CreateDateColumn()
-  WDATE!: Date;
+  @Column({ type: "timestamp", nullable: true })
+  WDATE!: () => string;
 
   /**
    * 수정일자 (기본값: 현재 시간)
    */
-  @UpdateDateColumn()
-  UDATE!: Date;
+  @Column({ type: "timestamp", nullable: true })
+  UDATE!: () => string;
 
   /**
    * 캠페인 코드
