@@ -1,20 +1,20 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn } from "typeorm";
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
 
 @Entity("TBL_FP_MASTER")
 export class PushMaster {
-  @PrimaryColumn()
-  CMPNCODE!: number;
+  @PrimaryColumn({ name: "CMPNCODE", type: "number" })
+  cmpncode!: number;
 
-  @Column()
-  PMODE!: string;
+  @Column({ name: "PMODE", type: "varchar" })
+  pmode!: string;
 
-  @Column({ type: "varchar" })
-  STEP!: (typeof StepEnum)[keyof typeof StepEnum];
+  @Column({ name: "STEP", type: "varchar" })
+  step!: (typeof StepEnum)[keyof typeof StepEnum];
 
-  @CreateDateColumn()
-  RSTART_DATE!: Date;
+  @Column({ name: "RSTART_DATE", type: "timestamp", nullable: true })
+  rstart_date!: Date;
 
-  @Column({ type: "timestamp", nullable: true })
-  REND_DATE?: Date;
+  @Column({ name: "REND_DATE", type: "timestamp", nullable: true })
+  rend_date?: Date;
 }

@@ -15,9 +15,9 @@ export interface IPushQueue {
   APPKEY: string;
   APPSECRET: string;
   MSGTITLE: string;
-  SENDDATE?: Date;
-  RESULTDATE?: Date;
-  FEEDBACKDATE?: Date;
+  SENDDATE?: () => string;
+  RESULTDATE?: string;
+  FEEDBACKDATE?: string;
   MSGCONTENTS: string;
   IDENTIFY: string;
   STEP?: (typeof StepEnum)[keyof typeof StepEnum];
@@ -48,6 +48,6 @@ export interface IPushQueue {
   PTAG?: string;
   BESCHMODE?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
 
-  WDATE?: Date;
-  UDATE?: Date;
+  WDATE?: () => string;
+  UDATE?: () => string;
 }
