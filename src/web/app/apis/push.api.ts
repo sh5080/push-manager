@@ -50,21 +50,14 @@ export class PushAPI extends BaseAPI {
   }
 
   async sendPush(dto: CreatePushDto): Promise<SendPushResponse> {
-    await validateDto(CreatePushDto, dto);
-    const formData = new FormData();
-
-    if (dto.identifyArray) {
-      formData.append("identifyArray", dto.identifyArray.join("\n"));
-    }
-    if (dto.fname) {
-      formData.append("imageUrl", dto.fname);
-    }
-    formData.append("title", dto.title);
-    formData.append("content", dto.content);
+    const validatedDto = await validateDto(CreatePushDto, {
+      ...dto,
+      sendDateString: dto.sendDateString?.replace("T", " "),
+    });
 
     return this.customFetch<SendPushResponse>("/api/push", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify(validatedDto),
     });
   }
 }
