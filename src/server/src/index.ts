@@ -18,7 +18,7 @@ app.use(
   })
 );
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // 데이터베이스 초기화
 AppDataSource.initialize()
   .then(() => console.log("Database connected"))
