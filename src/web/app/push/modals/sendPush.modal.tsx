@@ -27,12 +27,12 @@ interface SendPushModalProps {
 interface PushFormData {
   targetFile: File | null;
   identifyArray: string[];
-  fname: string; // 이미지 URL
-  plink: string; // 외부 링크
-  sendDateString: string; // 발송 날짜 및 시각
+  fname: string;
+  plink: string;
+  sendDateString: string;
   title: string;
   content: string;
-  targetMode: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+  appId: (typeof AppIdEnum)[keyof typeof AppIdEnum];
   imageEnabled: boolean;
   linkEnabled: boolean;
   isTestMode: boolean;
@@ -47,7 +47,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     sendDateString: "",
     title: "",
     content: "",
-    targetMode: AppIdEnum.PROD,
+    appId: AppIdEnum.PROD,
     imageEnabled: false,
     linkEnabled: false,
     isTestMode: false,
@@ -108,6 +108,15 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     }
   };
 
+  const handleUpdateIdentifiers = (newIds: string) => {
+    const newIdentifiers = newIds.split("\n").filter((id) => id.trim());
+
+    setFormData((prev) => ({
+      ...prev,
+      identifyArray: newIdentifiers,
+    }));
+  };
+
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
@@ -123,16 +132,20 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       if (formData.identifyArray.length === 0) {
         throw new Error("타겟 대상을 입력하거나 파일을 업로드해주세요.");
       }
+      if (!formData.sendDateString) {
+        throw new Error("발송 시간을 설정해주세요.");
+      }
 
       const pushApi = PushAPI.getInstance();
+      console.log("formData: ", formData);
       const response = await pushApi.sendPush({
         identifyArray: formData.identifyArray,
         ...(formData.imageEnabled && { fname: formData.fname }),
         ...(formData.linkEnabled && { plink: formData.plink }),
-        sendDateString: formData.sendDateString || new Date().toISOString(),
+        sendDateString: formData.sendDateString,
         title: formData.title,
         content: formData.content,
-        targetMode: formData.targetMode,
+        appId: formData.appId,
       });
 
       if (response.success) {
@@ -241,12 +254,13 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
                   isParsingFile={isParsingFile}
                   onFileUpload={handleFileUpload}
                   onLoadIdentifiers={handleLoadIdentifiers}
+                  onUpdateIdentifiers={handleUpdateIdentifiers}
                 />
               </TabPanel>
 
               <TabPanel>
                 <PushConditionTab
-                  targetMode={formData.targetMode}
+                  appId={formData.appId}
                   sendDateString={formData.sendDateString}
                   fname={formData.fname}
                   plink={formData.plink}
