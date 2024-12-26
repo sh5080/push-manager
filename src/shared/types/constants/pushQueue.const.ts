@@ -3,7 +3,7 @@ export const StepEnum = {
   SENDING: "S",
   COMPLETED: "C",
   FAILED: "F",
-  RESULT: "T",
+  TRANSACTION: "T",
 } as const;
 
 export const PModeEnum = {
