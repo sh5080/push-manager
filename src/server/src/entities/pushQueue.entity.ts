@@ -22,64 +22,64 @@ export class PushQueue implements IPushQueue {
   /**
    * 큐 인덱스
    */
-  @PrimaryGeneratedColumn()
-  QUEUEIDX!: number;
+  @PrimaryGeneratedColumn({ name: "QUEUEIDX" })
+  queueIdx!: number;
 
   /**
    * 핑거푸시에서 제공되는 앱 키 (필수 입력)
    */
-  @Column()
-  APPKEY!: string;
+  @Column({ name: "APPKEY" })
+  appKey!: string;
 
   /**
    * 핑거푸시에서 제공되는 앱 시크릿 키 (필수 입력)
    */
-  @Column()
-  APPSECRET!: string;
+  @Column({ name: "APPSECRET" })
+  appSecret!: string;
 
   /**
    * 메시지 제목 (필수 입력)
    */
-  @Column()
-  MSGTITLE!: string;
+  @Column({ name: "MSGTITLE" })
+  msgTitle!: string;
 
   /**
    * 메시지 발송일시(예약일시) (필수 입력)
    * @default 1분
    */
-  @Column("timestamp")
-  SENDDATE!: () => string;
+  @Column("timestamp", { name: "SENDDATE" })
+  sendDate!: () => string;
 
   /**
    * 발송완료일시
    */
-  @Column("timestamp", { nullable: true })
-  RESULTDATE?: string;
+  @Column("timestamp", { nullable: true, name: "RESULTDATE" })
+  resultDate?: string;
 
   /**
    * 핑거푸시로부터 피드백 일시
    */
-  @Column("timestamp", { nullable: true })
-  FEEDBACKDATE?: string;
+  @Column("timestamp", { nullable: true, name: "FEEDBACKDATE" })
+  feedbackDate?: string;
 
   /**
    * 메시지 내용 (필수 입력)
    */
-  @Column()
-  MSGCONTENTS!: string;
+  @Column({ name: "MSGCONTENTS" })
+  msgContents!: string;
 
   /**
    * 식별자(사용자 아이디) (필수 입력)
    */
-  @Column()
-  IDENTIFY!: string;
+  @Column({ name: "IDENTIFY" })
+  identify!: string;
 
   /**
    * 메시지 발송 단계
    * @default 'R'
    */
-  @Column({ type: "varchar", default: StepEnum.PENDING })
-  STEP!: (typeof StepEnum)[keyof typeof StepEnum];
+  @Column({ type: "varchar", default: StepEnum.PENDING, name: "STEP" })
+  step!: (typeof StepEnum)[keyof typeof StepEnum];
 
   /**
    * 발송 모드를 설정합니다.
@@ -89,14 +89,14 @@ export class PushQueue implements IPushQueue {
    * - 'STOE': 타겟 발송 (우선 발송)
    * - 'DEFT': 대량 발송
    */
-  @Column({ type: "varchar", default: PModeEnum.TARGET })
-  PMODE!: (typeof PModeEnum)[keyof typeof PModeEnum];
+  @Column({ type: "varchar", default: PModeEnum.TARGET, name: "PMODE" })
+  pMode!: (typeof PModeEnum)[keyof typeof PModeEnum];
 
   /**
    * 첨부 이미지 경로 (url 형식으로 입력)
    */
-  @Column({ nullable: true })
-  FNAME?: string;
+  @Column({ nullable: true, name: "FNAME" })
+  fName?: string;
 
   /**
    * 발송 상태를 설정합니다.
@@ -105,205 +105,217 @@ export class PushQueue implements IPushQueue {
    * - '0001': 바로 발송 (기본값)
    * - '0002': 예약 발송
    */
-  @Column({ type: "varchar", default: SendStatEnum.SEND_NOW })
-  SEND_STAT!: (typeof SendStatEnum)[keyof typeof SendStatEnum];
+  @Column({
+    type: "varchar",
+    default: SendStatEnum.SEND_NOW,
+    name: "SEND_STAT",
+  })
+  sendStat!: (typeof SendStatEnum)[keyof typeof SendStatEnum];
   /**
    * 안드로이드 사운드
    * @default 'default'
    */
-  @Column({ default: "default" })
-  ANDROID_SOUND?: "default";
+  @Column({ default: "default", name: "ANDROID_SOUND" })
+  androidSound?: "default";
 
   /**
    * 안드로이드 배지 수
    * @default 0
    */
-  @Column({ default: 0 })
-  ANDROID_BADGE?: number;
+  @Column({ default: 0, name: "ANDROID_BADGE" })
+  androidBadge?: number;
 
   /**
    * iOS 사운드
    * @default 'default'
    */
-  @Column({ default: "default" })
-  IOS_SOUND?: "default";
+  @Column({ default: "default", name: "IOS_SOUND" })
+  iosSound?: "default";
 
   /**
    * iOS 배지 수
    * @default 0
    */
-  @Column({ default: 0 })
-  IOS_BADGE?: number;
+  @Column({ default: 0, name: "IOS_BADGE" })
+  iosBadge?: number;
 
   /**
    * 외부 링크
    */
-  @Column({ nullable: true })
-  PLINK?: string;
+  @Column({ nullable: true, name: "PLINK" })
+  pLink?: string;
 
   /**
    * 추가적인 변수키1
    * @default 'linktype'
    */
-  @Column({ nullable: true })
-  CUSTOM_KEY_1?: string;
+  @Column({ nullable: true, name: "CUSTOM_KEY_1" })
+  customKey1?: string;
 
   /**
    * 추가적인 변수값1
    * @default 'pushbox'
    */
-  @Column({ nullable: true })
-  CUSTOM_VALUE_1?: string;
+  @Column({ nullable: true, name: "CUSTOM_VALUE_1" })
+  customValue1?: string;
 
   /**
    * 추가적인 변수키2
    */
-  @Column({ nullable: true })
-  CUSTOM_KEY_2?: string;
+  @Column({ nullable: true, name: "CUSTOM_KEY_2" })
+  customKey2?: string;
 
   /**
    * 추가적인 변수값2
    */
-  @Column({ nullable: true })
-  CUSTOM_VALUE_2?: string;
+  @Column({ nullable: true, name: "CUSTOM_VALUE_2" })
+  customValue2?: string;
 
   /**
    * 추가적인 변수키3
    */
-  @Column({ nullable: true })
-  CUSTOM_KEY_3?: string;
+  @Column({ nullable: true, name: "CUSTOM_KEY_3" })
+  customKey3?: string;
 
   /**
    * 추가적인 변수값3
    */
-  @Column({ nullable: true })
-  CUSTOM_VALUE_3?: string;
+  @Column({ nullable: true, name: "CUSTOM_VALUE_3" })
+  customValue3?: string;
 
   /**
    * 라벨코드(콘솔 > 앱관리 > 메시지라벨)
    */
-  @Column({ nullable: true })
-  LABEL_CODE?: string;
+  @Column({ nullable: true, name: "LABEL_CODE" })
+  labelCode?: string;
 
   /**
    * 배경 색상 (#080000)
    */
-  @Column({ nullable: true })
-  BGCOLOR?: string;
+  @Column({ nullable: true, name: "BGCOLOR" })
+  bgColor?: string;
 
   /**
    * 폰트 색상 (#FBF3F3)
    */
-  @Column({ nullable: true })
-  FONTCOLOR?: string;
+  @Column({ nullable: true, name: "FONTCOLOR" })
+  fontColor?: string;
 
   /**
    * 안드로이드 우선 순위 (H: 높음 / M: 중간)
    * @default 'M'
    */
-  @Column({ type: "varchar", nullable: true })
-  AND_PRIORITY?: (typeof AndPriorityEnum)[keyof typeof AndPriorityEnum];
+  @Column({ type: "varchar", nullable: true, name: "AND_PRIORITY" })
+  andPriority?: (typeof AndPriorityEnum)[keyof typeof AndPriorityEnum];
 
   /**
    * 에티켓 적용 여부 (기본값: 'N')
    */
-  @Column({ type: "varchar", nullable: true })
-  ISETIQUETTE?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
+  @Column({ type: "varchar", nullable: true, name: "  IS_ETIQUETTE" })
+  isEtiquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
 
   /**
    * 발송 에티켓 적용시간 (오늘)
    */
-  @Column({ nullable: true })
-  ETIQUETTE_STIME?: number;
+  @Column({ nullable: true, name: "ETIQUETTE_STIME" })
+  etiquetteStime?: number;
 
   /**
    * 발송 에티켓 적용시간 (내일)
    */
-  @Column({ nullable: true })
-  ETIQUETTE_ETIME?: number;
+  @Column({ nullable: true, name: "ETIQUETTE_ETIME" })
+  etiquetteEtime?: number;
 
   /**
    * 오픈 처리 제한시간 (2h, 4h, 1d, 3d, 5d, 1w)
    */
-  @Column({ type: "varchar", nullable: true })
-  OFB_TIME?: (typeof OfbTimeEnum)[keyof typeof OfbTimeEnum];
+  @Column({ type: "varchar", nullable: true, name: "OFB_TIME" })
+  ofbTime?: (typeof OfbTimeEnum)[keyof typeof OfbTimeEnum];
 
   /**
    * 광고 동의 (1000 동의, 0000 부동의)
    * @default '1000'
    */
-  @Column({ type: "varchar", default: OptAgreeEnum.AGREE })
-  OPTAGREE!: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
+  @Column({
+    type: "varchar",
+    default: OptAgreeEnum.AGREE,
+    name: "OPT_AGREE",
+  })
+  optAgree!: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
 
   /**
    * 태그
    */
-  @Column({ nullable: true })
-  PTAG?: string;
+  @Column({ nullable: true, name: "PTAG" })
+  pTag?: string;
 
   /**
    * 태그 조건 (0001: or, 0002: and)
    */
-  @Column({ type: "varchar", nullable: true })
-  BESCHMODE?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
+  @Column({
+    type: "varchar",
+    nullable: true,
+    name: "BESCHMODE",
+  })
+  beschMode?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
 
   /**
    * 분할 롱텍스트1
    */
-  @Column({ nullable: true })
-  LNGT_MESSAGE1?: string;
+  @Column({ nullable: true, name: "LNGT_MESSAGE1" })
+  lngtMessage1?: string;
 
   /**
    * 분할 롱텍스트2
    */
-  @Column({ nullable: true })
-  LNGT_MESSAGE2?: string;
+  @Column({ nullable: true, name: "LNGT_MESSAGE2" })
+  lngtMessage2?: string;
 
   /**
    * 분할 롱텍스트3
    */
-  @Column({ nullable: true })
-  LNGT_MESSAGE3?: string;
+  @Column({ nullable: true, name: "LNGT_MESSAGE3" })
+  lngtMessage3?: string;
 
   /**
    * 분할 롱텍스트4
    */
-  @Column({ nullable: true })
-  LNGT_MESSAGE4?: string;
+  @Column({ nullable: true, name: "LNGT_MESSAGE4" })
+  lngtMessage4?: string;
 
   /**
    * 사용자 컬럼1, 숫자형
    */
-  @Column({ nullable: true })
-  EXTRA1?: number;
+  @Column({ nullable: true, name: "EXTRA1" })
+  extra1?: number;
 
   /**
    * 사용자 컬럼2, 문자형
    */
-  @Column({ nullable: true })
-  EXTRA2?: string;
+  @Column({ nullable: true, name: "EXTRA2" })
+  extra2?: string;
 
   /**
    * 사용자 컬럼3, 문자형
    */
-  @Column({ nullable: true })
-  EXTRA3?: string;
+  @Column({ nullable: true, name: "EXTRA3" })
+  extra3?: string;
 
   /**
    * 작성일자 (기본값: 현재 시간)
    */
-  @Column({ type: "timestamp", nullable: true })
-  WDATE!: () => string;
+  @Column({ type: "timestamp", nullable: true, name: "WDATE" })
+  wDate!: () => string;
 
   /**
    * 수정일자 (기본값: 현재 시간)
    */
-  @Column({ type: "timestamp", nullable: true })
-  UDATE!: () => string;
+  @Column({ type: "timestamp", nullable: true, name: "UDATE" })
+  uDate!: () => string;
 
   /**
    * 캠페인 코드
    */
-  @Column({ nullable: true })
-  CMPNCODE?: number;
+  @Column({ nullable: true, name: "CMPNCODE" })
+  cmpnCode?: number;
 }
