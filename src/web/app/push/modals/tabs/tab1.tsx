@@ -1,8 +1,10 @@
 import { FileUpload } from "app/common/components/fileUpload.component";
 import { TextareaComponent } from "app/common/components/textarea.component";
 import { useState, useEffect } from "react";
+
 import { Modal } from "app/common/components/modal.component";
-import { TestIdentifiers } from "app/push/identify/components/testIdentifiers.component";
+import { TestIdentifies } from "app/push/identify/components/testIdentifies.component";
+import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
 
 interface TargetUploadTabProps {
   targetFile: File | null;
@@ -107,7 +109,12 @@ export function TargetUploadTab({
 }: TargetUploadTabProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editableIds, setEditableIds] = useState(targetIds);
+  const [isTestIdentifiersModalOpen, setIsTestIdentifiersModalOpen] =
+    useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedIdentifiers, setSelectedIdentifiers] = useState<
+    ITestIdentify[]
+  >([]);
 
   useEffect(() => {
     if (targetIds) {
@@ -129,13 +136,22 @@ export function TargetUploadTab({
     setIsEditing(true);
   };
 
-  const handleIdentifiersSelect = (identifiers: string[]) => {
+  const handleTestIdentifiersSelect = (newIds: string[]) => {
     setEditableIds((prev) => {
       const existingIds = prev.split("\n").filter((id) => id.trim());
-      const mergedIds = [...new Set([...existingIds, ...identifiers])];
+      const mergedIds = [...new Set([...existingIds, ...newIds])];
       return mergedIds.join("\n");
     });
-    setIsModalOpen(false);
+  };
+
+  const handleIdentifiersLoad = (identifiers: ITestIdentify[]) => {
+    setSelectedIdentifiers(identifiers);
+  };
+
+  const handleAddIdentifiers = () => {
+    const identifies = selectedIdentifiers.map((id) => id.identify);
+    handleTestIdentifiersSelect(identifies);
+    setIsTestIdentifiersModalOpen(false);
   };
 
   return (
@@ -163,7 +179,7 @@ export function TargetUploadTab({
               직접 입력
             </button>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsTestIdentifiersModalOpen(true)}
               className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
             >
               식별자 불러오기
@@ -173,7 +189,7 @@ export function TargetUploadTab({
           {isEditing ? (
             <TextareaComponent
               rows={6}
-              placeholder="식별자를 입력하세요 (한 줄에 하나씩)"
+              placeholder="식별자를 입력하세요 (한 줄에 하���씩)"
               value={editableIds}
               onChange={(e) => setEditableIds(e.target.value)}
               className="bg-white"
@@ -215,12 +231,20 @@ export function TargetUploadTab({
       </div>
 
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isTestIdentifiersModalOpen}
+        onClose={() => setIsTestIdentifiersModalOpen(false)}
         title="테스트 식별자 목록"
         size="lg"
+        actions={
+          <button
+            onClick={handleAddIdentifiers}
+            className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
+          >
+            선택한 식별자 추가
+          </button>
+        }
       >
-        <TestIdentifiers onSelect={handleIdentifiersSelect} />
+        <TestIdentifies onIdentifiersLoad={handleIdentifiersLoad} />
       </Modal>
     </div>
   );
