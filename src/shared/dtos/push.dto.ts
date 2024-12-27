@@ -173,6 +173,7 @@ export class GetRecentPushesDto {
   @IsEnum(AppIdEnum, {
     message: "유효하지 않은 targetMode입니다. (FREED: 0, TEST: 1, PROD: 2)",
   })
+  @Type(() => Number)
   targetMode!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
 
   @Min(1, { message: "limit는 최소 1 이상이어야 합니다." })
