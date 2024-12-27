@@ -7,7 +7,7 @@
     "src/shared"
   ],
   "scripts": {
-    "build": "yarn workspaces run build",
+    "build": "dotenv -e src/shared/.env yarn workspaces run build",
     "web:dev": "dotenv -e src/shared/.env yarn workspace @push-manager/web dev",
     "server:dev": "dotenv -e src/shared/.env yarn workspace @push-manager/server dev",
     "web:prod": "dotenv -e src/shared/.env yarn workspace @push-manager/web start",
