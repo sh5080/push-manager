@@ -119,8 +119,7 @@ export class PushService implements IPushService {
   async getRecentPushes(dto: GetRecentPushesDto): Promise<PushStsMsg[]> {
     try {
       const { appId } = APP_CONFIG[dto.targetMode];
-
-      return await this.pushStsMsgRepository.getRecentTargetPushes(
+      return await this.pushStsMsgRepository.getRecentTargetPushesByAppId(
         dto.limit,
         appId
       );
