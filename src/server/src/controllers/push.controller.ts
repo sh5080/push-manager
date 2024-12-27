@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { IPushService } from "../interfaces/push.interface";
-import { GetRecentPushesDto } from "@push-manager/shared/dtos/push.dto";
+import {
+  CreatePushDto,
+  GetRecentPushesDto,
+} from "@push-manager/shared/dtos/push.dto";
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 
 export class PushController {
@@ -8,11 +11,8 @@ export class PushController {
 
   createPushes = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { identifyArray, ...pushDto } = req.body;
-      const campaignCode = await this.pushService.createPushes(
-        identifyArray,
-        pushDto
-      );
+      const dto = await validateDto(CreatePushDto, req.body);
+      const campaignCode = await this.pushService.createPushes(dto);
       res.success({ campaignCode });
     } catch (error) {
       console.error("Error in bulk push creation:", error);

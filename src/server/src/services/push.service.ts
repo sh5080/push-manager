@@ -28,12 +28,12 @@ export class PushService implements IPushService {
   ) {}
 
   async createPushes(
-    identifyArray: string[],
     dto: CreatePushDto,
     maxBatchSize: number = 1000
   ): Promise<number> {
     const now = () => "SYSDATE";
     const SENDDATE = convertToSysdate(dto.sendDateString!);
+    const identifyArray = dto.identifyArray;
 
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.startTransaction();
