@@ -3,6 +3,7 @@ import { IPushService } from "../interfaces/push.interface";
 import {
   CreatePushDto,
   GetRecentPushesDto,
+  UpdatePushStatusDto,
 } from "@push-manager/shared/dtos/push.dto";
 
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
@@ -19,6 +20,7 @@ import { convertToSysdate } from "../utils/transform.util";
 import { PushQueue } from "../entities/pushQueue.entity";
 import { createPushBaseData } from "../utils/push.util";
 import { CreateBasePushDto } from "../types/push.type";
+import { QueryRunner } from "typeorm";
 
 export class PushService implements IPushService {
   constructor(
@@ -82,12 +84,14 @@ export class PushService implements IPushService {
         await this.pushQueueRepository.insertPushBatch(queryRunner, pushBatch);
       }
 
-      // 마스터 레코드 업데이트
-      await this.pushMasterRepository.updateMasterRecord(queryRunner, {
-        campaignCode,
-        endDate: () => "SYSDATE",
-        step: StepEnum.TRANSACTION,
-      });
+      // isReady가 true일 때만 상태 업데이트
+      if (dto.isReady) {
+        await this.updateMasterStatus(
+          queryRunner,
+          campaignCode,
+          StepEnum.TRANSACTION
+        );
+      }
 
       await queryRunner.commitTransaction();
       return campaignCode;
@@ -124,5 +128,29 @@ export class PushService implements IPushService {
       console.error("최근 푸시 조회 실패:", error);
       throw error;
     }
+  }
+  async updatePushStatus(
+    dto: UpdatePushStatusDto
+  ): Promise<UpdatePushStatusDto> {
+    const queryRunner = AppDataSource.createQueryRunner();
+
+    try {
+      await this.updateMasterStatus(queryRunner, dto.campaignCode, dto.step);
+      return dto;
+    } catch (error) {
+      console.error("푸시 상태 업데이트 중 오류 발생:", error);
+      throw error;
+    }
+  }
+  private async updateMasterStatus(
+    queryRunner: QueryRunner,
+    campaignCode: number,
+    step: (typeof StepEnum)[keyof typeof StepEnum]
+  ): Promise<void> {
+    await this.pushMasterRepository.updateMasterRecord(queryRunner, {
+      campaignCode,
+      endDate: () => "SYSDATE",
+      step,
+    });
   }
 }

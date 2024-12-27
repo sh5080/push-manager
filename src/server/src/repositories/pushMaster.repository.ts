@@ -42,19 +42,16 @@ export class PushMasterRepository extends BaseRepository<PushMaster> {
 
   async updateMasterRecord(
     queryRunner: QueryRunner,
-    data: {
+    dto: {
       campaignCode: number;
-      endDate: () => string;
       step: (typeof StepEnum)[keyof typeof StepEnum];
+      endDate: () => string;
     }
   ) {
     const masterRepository = queryRunner.manager.getRepository(PushMaster);
     return masterRepository.update(
-      { cmpncode: data.campaignCode },
-      {
-        rend_date: data.endDate,
-        step: data.step,
-      }
+      { cmpncode: dto.campaignCode },
+      { rend_date: dto.endDate, step: dto.step }
     );
   }
 }
