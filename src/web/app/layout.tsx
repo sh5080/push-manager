@@ -4,6 +4,8 @@ import Sidebar from "./common/components/sidebar.component";
 import { Noto_Sans_KR } from "next/font/google";
 import { LoadingProvider } from "./contexts/loading.context";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
@@ -66,6 +68,7 @@ export default function RootLayout({
             </div>
           </div>
         </LoadingProvider>
+        <ToastContainer />
       </body>
     </html>
   );

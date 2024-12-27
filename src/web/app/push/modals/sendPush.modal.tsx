@@ -18,6 +18,7 @@ import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 import { TargetUploadTab } from "./tabs/tab1";
 import { PushConditionTab } from "./tabs/tab2";
 import { PushContentTab } from "./tabs/tab3";
+import { Toast } from "app/utils/toast.util";
 
 interface SendPushModalProps {
   isOpen: boolean;
@@ -118,6 +119,8 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
   };
 
   const handleSubmit = async () => {
+    const toastId = Toast.loading("푸시 발송 요청 처리중...");
+
     try {
       setIsLoading(true);
       setError(null);
@@ -146,20 +149,21 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         content: pushData.content,
         appId: pushData.appId,
       });
-
+      console.log("response", response);
       if (response.success) {
+        Toast.update(toastId, "푸시 발송이 예약되었습니다.", "success");
         onClose();
-        // TODO: 성공 토스트 메시지 표시
       } else {
         throw new Error(response.message || "푸시 발송 요청 실패");
       }
     } catch (error) {
       console.error("푸시 발송 에러:", error);
-      setError(
+      const errorMessage =
         error instanceof Error
           ? error.message
-          : "알 수 없는 에러가 발생했습니다."
-      );
+          : "알 수 없는 에러가 발생했습니다.";
+      Toast.update(toastId, errorMessage, "error");
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
