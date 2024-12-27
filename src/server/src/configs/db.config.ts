@@ -10,6 +10,7 @@ import { PushStsSendStatsDay } from "../entities/pushStsSendStatsDay.entity";
 import { AppPushUser } from "../entities/appPushUser.entity";
 import { DeviceTokenOption } from "../entities/deviceTokenOption.entity";
 import { PushMaster } from "../entities/pushMaster.entity";
+import { TestIdentify } from "../entities/testIdentify.entity";
 
 oracledb.initOracleClient({ libDir: envConfig.typeorm.clientDir });
 
@@ -30,6 +31,7 @@ export const AppDataSource = new DataSource({
     DeviceToken,
     DeviceTokenOption,
     AppPushUser,
+    TestIdentify,
   ],
   synchronize: false,
 });
