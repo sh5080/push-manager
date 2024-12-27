@@ -1,5 +1,5 @@
 import { PushMaster } from "../entities/pushMaster.entity";
-import { AppDataSource } from "../configs/database";
+import { AppDataSource } from "../configs/db.config";
 import { BaseRepository } from "./base.repository";
 import { QueryRunner } from "typeorm";
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";

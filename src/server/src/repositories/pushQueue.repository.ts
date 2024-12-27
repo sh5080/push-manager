@@ -1,4 +1,4 @@
-import { AppDataSource } from "../configs/database";
+import { AppDataSource } from "../configs/db.config";
 
 import { BaseRepository } from "./base.repository";
 import { PushQueue } from "../entities/pushQueue.entity";
