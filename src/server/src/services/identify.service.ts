@@ -1,4 +1,3 @@
-import { AppDataSource } from "../configs/db.config";
 import { IIdentifyService } from "../interfaces/identify.interface";
 import { IdentifyRepository } from "../repositories/identify.repository";
 import {
@@ -6,28 +5,34 @@ import {
   GetIdentifiesDto,
   UpdateIdentifyDto,
 } from "@push-manager/shared/dtos/identify.dto";
+import { queryRunnerCreation } from "../utils/transaction.util";
 
 export class IdentifyService implements IIdentifyService {
   constructor(private readonly identifyRepository: IdentifyRepository) {}
 
   async getIdentifies(dto: GetIdentifiesDto) {
-    const queryRunner = AppDataSource.createQueryRunner();
-    return await this.identifyRepository.findAll(queryRunner, dto);
+    return queryRunnerCreation(
+      (queryRunner) => this.identifyRepository.findAll(queryRunner, dto),
+      false
+    );
   }
 
   async createIdentify(dto: CreateIdentifyDto) {
-    const queryRunner = AppDataSource.createQueryRunner();
-    const data = await this.identifyRepository.create(queryRunner, dto);
-    return data.IDX;
+    return queryRunnerCreation(async (queryRunner) => {
+      const data = await this.identifyRepository.create(queryRunner, dto);
+      return data.IDX;
+    });
   }
 
   async updateIdentify(dto: UpdateIdentifyDto) {
-    const queryRunner = AppDataSource.createQueryRunner();
-    return await this.identifyRepository.update(queryRunner, dto);
+    return queryRunnerCreation((queryRunner) =>
+      this.identifyRepository.update(queryRunner, dto)
+    );
   }
 
   async deleteIdentify(idx: number) {
-    const queryRunner = AppDataSource.createQueryRunner();
-    await this.identifyRepository.delete(queryRunner, idx);
+    queryRunnerCreation((queryRunner) =>
+      this.identifyRepository.delete(queryRunner, idx)
+    );
   }
 }
