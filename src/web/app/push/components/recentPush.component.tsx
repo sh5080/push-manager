@@ -5,7 +5,11 @@ import { PushAPI } from "app/apis/push.api";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import ErrorFallback from "app/common/components/errorFallback.component";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
-import { getStatusStyle, getStatusText, formatDate } from "../utils/push.util";
+import {
+  getStatusStyle,
+  getStatusText,
+  formatDate,
+} from "../../utils/push.util";
 import { HiOutlineDownload } from "react-icons/hi";
 
 export function RecentPushes() {

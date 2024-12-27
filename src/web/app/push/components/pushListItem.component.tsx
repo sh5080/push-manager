@@ -4,7 +4,7 @@ import {
   getStatusStyle,
   getStatusDotStyle,
   getStatusText,
-} from "../utils/push.util";
+} from "../../utils/push.util";
 
 interface PushListItemProps {
   push: IPushStsMsg;
