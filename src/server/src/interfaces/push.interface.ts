@@ -5,7 +5,7 @@ import {
 import { PushStsMsg } from "../entities/pushStsMsg.entity";
 
 export interface IPushService {
-  createPushes(identifyArray: string[], dto: CreatePushDto): Promise<number>;
+  createPushes(dto: CreatePushDto): Promise<number>;
   getRecentPushes(dto: GetRecentPushesDto): Promise<PushStsMsg[]>;
   // getPushHistory(page: number, limit: number): Promise<any>;
   // getPushStats(): Promise<any>;
