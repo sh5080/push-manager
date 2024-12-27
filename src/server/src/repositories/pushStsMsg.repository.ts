@@ -7,7 +7,7 @@ export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
     super(AppDataSource, PushStsMsg);
   }
 
-  async getRecentTargetPushes(
+  async getRecentTargetPushesByAppId(
     limit: number = 10,
     appId: string
   ): Promise<PushStsMsg[]> {
@@ -20,5 +20,14 @@ export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
     `;
 
     return this.executeRaw(query, [appId, limit]);
+  }
+
+  async getRecentTargetPushes(limit: number = 10): Promise<PushStsMsg[]> {
+    const query = `
+      SELECT * FROM TBL_PUSHSTSMSG
+      ORDER BY IDX DESC
+      LIMIT :1
+    `;
+    return this.executeRaw(query, [limit]);
   }
 }
