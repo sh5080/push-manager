@@ -1,11 +1,14 @@
 import { IsOptional, IsNumber, IsString, IsNotEmpty } from "class-validator";
+import { Type } from "class-transformer";
 
 export class GetIdentifiesDto {
   @IsNumber()
+  @Type(() => Number)
   @IsOptional()
   teamId?: number;
 
   @IsNumber()
+  @Type(() => Number)
   @IsOptional()
   appId?: number;
 }
