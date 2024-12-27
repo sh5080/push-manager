@@ -1,32 +1,27 @@
 import { useState } from "react";
 import { IdentifyAPI } from "app/apis/identify.api";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
-import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 
-interface TestIdentifiersProps {
-  onSelect: (identifiers: string[]) => void;
+interface TestIdentifiesProps {
+  onIdentifiersLoad: (identifies: ITestIdentify[]) => void;
 }
 
-export function TestIdentifiers({ onSelect }: TestIdentifiersProps) {
+export function TestIdentifies({ onIdentifiersLoad }: TestIdentifiesProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [identifiers, setIdentifiers] = useState<ITestIdentify[]>([]);
+  const [identifies, setIdentifies] = useState<ITestIdentify[]>([]);
   const identifyApi = IdentifyAPI.getInstance();
 
-  const handleLoadTestIds = async (appId?: number) => {
+  const handleLoadTestIds = async (teamId?: number) => {
     setIsLoading(true);
     try {
-      const response = await identifyApi.getIdentifies({ appId });
-      setIdentifiers(response);
+      const response = await identifyApi.getIdentifies({ teamId });
+      setIdentifies(response);
+      onIdentifiersLoad(response);
     } catch (error) {
       console.error("식별자 로드 실패:", error);
-      // TODO: 에러 처리 (토스트 메시지 등)
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSelect = () => {
-    onSelect(identifiers.map((id) => id.identify));
   };
 
   return (
@@ -35,7 +30,7 @@ export function TestIdentifiers({ onSelect }: TestIdentifiersProps) {
         <h3 className="text-sm font-medium text-gray-700">테스트 식별자</h3>
         <div className="flex space-x-2">
           <button
-            onClick={() => handleLoadTestIds(AppIdEnum.TEST)}
+            onClick={() => handleLoadTestIds(3)}
             disabled={isLoading}
             className={`px-4 py-2 text-sm rounded-md text-white ${
               isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
@@ -44,7 +39,7 @@ export function TestIdentifiers({ onSelect }: TestIdentifiersProps) {
             전체
           </button>
           <button
-            onClick={() => handleLoadTestIds(AppIdEnum.TEST)}
+            onClick={() => handleLoadTestIds(1)}
             disabled={isLoading}
             className={`px-4 py-2 text-sm rounded-md text-white ${
               isLoading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
@@ -53,46 +48,44 @@ export function TestIdentifiers({ onSelect }: TestIdentifiersProps) {
             FREED
           </button>
           <button
-            onClick={() => handleLoadTestIds(AppIdEnum.PROD)}
+            onClick={() => handleLoadTestIds(2)}
             disabled={isLoading}
             className={`px-4 py-2 text-sm rounded-md text-white ${
               isLoading ? "bg-gray-400" : "bg-purple-600 hover:bg-purple-700"
             }`}
           >
-            운영
+            LG
           </button>
         </div>
       </div>
 
-      {identifiers.length > 0 && (
+      {identifies.length > 0 && (
         <div className="space-y-2">
           <div className="max-h-[300px] overflow-y-auto border rounded-lg bg-gray-50 p-2">
-            {identifiers.map((identifier) => (
+            {identifies.map((identify) => (
               <div
-                key={identifier.idx}
-                className="px-3 py-2 bg-white rounded border mb-1 flex justify-between items-center"
+                key={identify.idx}
+                className="px-3 py-2 bg-white rounded border mb-1"
               >
-                <div className="flex-1">
+                <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700">
-                    {identifier.name}
+                    {identify.name}
                   </span>
-                  <span className="ml-2 text-sm text-gray-500">
-                    {identifier.identify}
-                  </span>
+                  <div className="flex items-center">
+                    <span className="text-xs text-gray-700 mr-4">
+                      {identify.teamId === 1
+                        ? "FREED"
+                        : identify.teamId === 2
+                        ? "LG"
+                        : "-"}
+                    </span>
+                    <span className="text-sm text-gray-500 w-28 text-right">
+                      {identify.identify}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-xs text-gray-500">
-                  {identifier.teamId}팀
-                </span>
               </div>
             ))}
-          </div>
-          <div className="flex justify-end">
-            <button
-              onClick={handleSelect}
-              className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
-            >
-              선택한 식별자 추가
-            </button>
           </div>
         </div>
       )}
