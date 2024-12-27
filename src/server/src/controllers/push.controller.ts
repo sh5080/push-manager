@@ -3,6 +3,7 @@ import { IPushService } from "../interfaces/push.interface";
 import {
   CreatePushDto,
   GetRecentPushesDto,
+  UpdatePushStatusDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 
@@ -13,7 +14,7 @@ export class PushController {
     try {
       const dto = await validateDto(CreatePushDto, req.body);
       const campaignCode = await this.pushService.createPushes(dto);
-      res.success({ campaignCode });
+      res.success(campaignCode);
     } catch (error) {
       console.error("Error in bulk push creation:", error);
       next(error);
@@ -33,7 +34,21 @@ export class PushController {
       next(error);
     }
   };
+  updatePushStatus = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = await validateDto(UpdatePushStatusDto, req.body);
 
+      const result = await this.pushService.updatePushStatus(dto);
+
+      res.success(result);
+    } catch (error) {
+      next(error);
+    }
+  };
   // getPushHistory = async (req: Request, res: Response, next: NextFunction) => {
   //   try {
   //     const page = Number(req.query.page) || 1;

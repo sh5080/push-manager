@@ -20,6 +20,7 @@ import {
   IsEtiquetteEnum,
   OfbTimeEnum,
   OptAgreeEnum,
+  StepEnum,
 } from "../types/constants/pushQueue.const";
 
 export interface TestPushDto
@@ -73,17 +74,6 @@ export interface PushResponse {
     limit: number;
     totalPages: number;
   };
-}
-export class GetRecentPushesDto {
-  @IsEnum(AppIdEnum, {
-    message: "유효하지 않은 targetMode입니다. (FREED: 0, TEST: 1, PROD: 2)",
-  })
-  targetMode!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
-
-  @Min(1, { message: "limit는 최소 1 이상이어야 합니다." })
-  @Max(100, { message: "limit는 최대 100까지만 가능합니다." })
-  @Type(() => Number)
-  limit?: number;
 }
 
 export class CreatePushDto {
@@ -174,4 +164,29 @@ export class CreatePushDto {
   @IsOptional()
   @IsString()
   beschMode?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
+
+  @IsOptional()
+  isReady?: boolean;
+}
+
+export class GetRecentPushesDto {
+  @IsEnum(AppIdEnum, {
+    message: "유효하지 않은 targetMode입니다. (FREED: 0, TEST: 1, PROD: 2)",
+  })
+  targetMode!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+
+  @Min(1, { message: "limit는 최소 1 이상이어야 합니다." })
+  @Max(100, { message: "limit는 최대 100까지만 가능합니다." })
+  @Type(() => Number)
+  limit?: number;
+}
+
+export class UpdatePushStatusDto {
+  @IsNotEmpty({ message: "캠페인 코드는 필수입니다." })
+  campaignCode!: number;
+
+  @IsEnum(StepEnum, {
+    message: "유효하지 않은 상태값입니다.",
+  })
+  step!: (typeof StepEnum)[keyof typeof StepEnum];
 }
