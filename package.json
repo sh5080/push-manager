@@ -8,10 +8,10 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "dev:web": "dotenv -e src/shared/.env yarn workspace @push-manager/web dev",
-    "dev:server": "dotenv -e src/shared/.env yarn workspace @push-manager/server dev",
-    "prod:web": "dotenv -e src/shared/.env yarn workspace @push-manager/web start",
-    "prod:server": "dotenv -e src/shared/.env yarn workspace @push-manager/server start",
+    "web:dev": "dotenv -e src/shared/.env yarn workspace @push-manager/web dev",
+    "server:dev": "dotenv -e src/shared/.env yarn workspace @push-manager/server dev",
+    "web:prod": "dotenv -e src/shared/.env yarn workspace @push-manager/web start",
+    "server:prod": "dotenv -e src/shared/.env yarn workspace @push-manager/server start",
     "lint": "yarn workspaces run lint"
   },
   "devDependencies": {
