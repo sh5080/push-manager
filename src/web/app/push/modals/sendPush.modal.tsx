@@ -13,7 +13,7 @@ import {
 } from "@headlessui/react";
 import { HiX } from "react-icons/hi";
 import { PushAPI } from "app/apis/push.api";
-import { IdentifyReader } from "../utils/excelCsv.util";
+import { IdentifyReader } from "../../utils/excelCsv.util";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 import { TargetUploadTab } from "./tabs/tab1";
 import { PushConditionTab } from "./tabs/tab2";
@@ -39,7 +39,7 @@ interface PushFormData {
 }
 
 export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
-  const [formData, setFormData] = useState<PushFormData>({
+  const [pushData, setFormData] = useState<PushFormData>({
     targetFile: null,
     identifyArray: [],
     fname: "",
@@ -66,7 +66,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
   };
 
   const handleLoadIdentifiers = async () => {
-    if (!formData.targetFile) {
+    if (!pushData.targetFile) {
       setError("업로드된 파일이 없습니다.");
       return;
     }
@@ -75,14 +75,14 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       setIsParsingFile(true);
       setError(null);
 
-      const fileExt = formData.targetFile.name.split(".").pop()?.toLowerCase();
+      const fileExt = pushData.targetFile.name.split(".").pop()?.toLowerCase();
       let identifyArray: string[] = [];
 
       if (fileExt === "csv") {
-        identifyArray = await IdentifyReader.csvToIdentify(formData.targetFile);
+        identifyArray = await IdentifyReader.csvToIdentify(pushData.targetFile);
       } else if (fileExt === "xlsx" || fileExt === "xls") {
         identifyArray = await IdentifyReader.excelToIdentify(
-          formData.targetFile
+          pushData.targetFile
         );
       } else {
         throw new Error("지원하지 않는 파일 형식입니다.");
@@ -123,29 +123,28 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       setError(null);
 
       // 필수 입력값 검증
-      if (!formData.title.trim()) {
+      if (!pushData.title.trim()) {
         throw new Error("푸시 제목을 입력해주세요.");
       }
-      if (!formData.content.trim()) {
+      if (!pushData.content.trim()) {
         throw new Error("푸시 내용을 입력해주세요.");
       }
-      if (formData.identifyArray.length === 0) {
+      if (pushData.identifyArray.length === 0) {
         throw new Error("타겟 대상을 입력하거나 파일을 업로드해주세요.");
       }
-      if (!formData.sendDateString) {
+      if (!pushData.sendDateString) {
         throw new Error("발송 시간을 설정해주세요.");
       }
 
       const pushApi = PushAPI.getInstance();
-      console.log("formData: ", formData);
       const response = await pushApi.sendPush({
-        identifyArray: formData.identifyArray,
-        ...(formData.imageEnabled && { fname: formData.fname }),
-        ...(formData.linkEnabled && { plink: formData.plink }),
-        sendDateString: formData.sendDateString,
-        title: formData.title,
-        content: formData.content,
-        appId: formData.appId,
+        identifyArray: pushData.identifyArray,
+        ...(pushData.imageEnabled && { fname: pushData.fname }),
+        ...(pushData.linkEnabled && { plink: pushData.plink }),
+        sendDateString: pushData.sendDateString,
+        title: pushData.title,
+        content: pushData.content,
+        appId: pushData.appId,
       });
 
       if (response.success) {
@@ -248,9 +247,9 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
             <TabPanels className="p-6">
               <TabPanel>
                 <TargetUploadTab
-                  targetFile={formData.targetFile}
-                  targetIds={formData.identifyArray.join("\n")}
-                  identifiersCount={formData.identifyArray.length}
+                  targetFile={pushData.targetFile}
+                  targetIds={pushData.identifyArray.join("\n")}
+                  identifiersCount={pushData.identifyArray.length}
                   isParsingFile={isParsingFile}
                   onFileUpload={handleFileUpload}
                   onLoadIdentifiers={handleLoadIdentifiers}
@@ -260,21 +259,21 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
 
               <TabPanel>
                 <PushConditionTab
-                  appId={formData.appId}
-                  sendDateString={formData.sendDateString}
-                  fname={formData.fname}
-                  plink={formData.plink}
+                  appId={pushData.appId}
+                  sendDateString={pushData.sendDateString}
+                  fname={pushData.fname}
+                  plink={pushData.plink}
                   onChange={handleChange}
-                  imageEnabled={formData.imageEnabled}
-                  linkEnabled={formData.linkEnabled}
+                  imageEnabled={pushData.imageEnabled}
+                  linkEnabled={pushData.linkEnabled}
                 />
               </TabPanel>
 
               <TabPanel>
                 <PushContentTab
-                  title={formData.title}
-                  content={formData.content}
-                  isTestMode={formData.isTestMode}
+                  title={pushData.title}
+                  content={pushData.content}
+                  isTestMode={pushData.isTestMode}
                   onChange={handleChange}
                 />
               </TabPanel>

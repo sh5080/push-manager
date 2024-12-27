@@ -6,7 +6,7 @@ import {
   getStatusDotStyle,
   getStatusStyle,
   getStatusText,
-} from "../utils/push.util";
+} from "../../utils/push.util";
 import {
   HiOutlineUser,
   HiOutlineClock,
