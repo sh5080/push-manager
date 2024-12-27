@@ -1,17 +1,20 @@
 import { envConfig } from "@push-manager/shared/configs/env.config";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 
+const { keyFreed, keyFreed2, keyPrd, secretFreed, secretFreed2, secretPrd } =
+  envConfig.push;
+
 export const APP_CONFIG = {
   [AppIdEnum.FREED]: {
-    appId: envConfig.push.keyFreed,
-    appSecret: envConfig.push.secretFreed,
+    appId: keyFreed,
+    appSecret: secretFreed,
   },
   [AppIdEnum.TEST]: {
-    appId: envConfig.push.keyFreed2,
-    appSecret: envConfig.push.secretFreed2,
+    appId: keyFreed2,
+    appSecret: secretFreed2,
   },
   [AppIdEnum.PROD]: {
-    appId: envConfig.push.keyPrd,
-    appSecret: envConfig.push.secretPrd,
+    appId: keyPrd,
+    appSecret: secretPrd,
   },
 } as const;
