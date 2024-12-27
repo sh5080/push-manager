@@ -16,10 +16,6 @@ interface SendPushResponse {
 export class PushAPI extends BaseAPI {
   private static instance: PushAPI;
 
-  private constructor() {
-    super();
-  }
-
   public static getInstance(): PushAPI {
     if (!PushAPI.instance) {
       PushAPI.instance = new PushAPI();

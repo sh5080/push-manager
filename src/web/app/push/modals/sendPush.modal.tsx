@@ -149,7 +149,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         content: pushData.content,
         appId: pushData.appId,
       });
-      console.log("response", response);
+
       if (response.success) {
         Toast.update(toastId, "푸시 발송이 예약되었습니다.", "success");
         onClose();
