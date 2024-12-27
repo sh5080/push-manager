@@ -9,7 +9,7 @@ import {
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
 import { PushStsMsg } from "../entities/pushStsMsg.entity";
 import { APP_CONFIG } from "../configs/app.config";
-import { AppDataSource } from "../configs/database";
+import { AppDataSource } from "../configs/db.config";
 import { PushMasterRepository } from "../repositories/pushMaster.repository";
 import {
   PModeEnum,

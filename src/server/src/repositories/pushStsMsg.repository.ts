@@ -1,6 +1,6 @@
 import { BaseRepository } from "./base.repository";
 import { PushStsMsg } from "../entities/pushStsMsg.entity";
-import { AppDataSource } from "../configs/database";
+import { AppDataSource } from "../configs/db.config";
 
 export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
   constructor() {
