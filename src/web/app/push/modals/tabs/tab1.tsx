@@ -1,7 +1,8 @@
 import { FileUpload } from "app/common/components/fileUpload.component";
 import { TextareaComponent } from "app/common/components/textarea.component";
 import { useState, useEffect } from "react";
-import { HiX } from "react-icons/hi";
+import { Modal } from "app/common/components/modal.component";
+import { TestIdentifiers } from "app/push/identify/components/testIdentifiers.component";
 
 interface TargetUploadTabProps {
   targetFile: File | null;
@@ -106,6 +107,7 @@ export function TargetUploadTab({
 }: TargetUploadTabProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editableIds, setEditableIds] = useState(targetIds);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (targetIds) {
@@ -127,6 +129,15 @@ export function TargetUploadTab({
     setIsEditing(true);
   };
 
+  const handleIdentifiersSelect = (identifiers: string[]) => {
+    setEditableIds((prev) => {
+      const existingIds = prev.split("\n").filter((id) => id.trim());
+      const mergedIds = [...new Set([...existingIds, ...identifiers])];
+      return mergedIds.join("\n");
+    });
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -143,49 +154,22 @@ export function TargetUploadTab({
               "text/csv": [".csv"],
             }}
           />
+
           <div className="flex justify-end space-x-2">
             <button
-              onClick={handleDirectInput}
-              className={`px-4 py-2 text-sm rounded-md text-white ${
-                isEditing ? "bg-gray-400" : "bg-gray-600 hover:bg-gray-700"
-              }`}
-              disabled={isEditing}
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 text-sm rounded-md text-white bg-gray-600 hover:bg-gray-700"
             >
               직접 입력
             </button>
-            {targetFile && (
-              <>
-                <button
-                  onClick={onLoadIdentifiers}
-                  disabled={isParsingFile}
-                  className={`
-                    px-4 py-2 text-sm rounded-md
-                    ${
-                      isParsingFile
-                        ? "bg-gray-300 cursor-not-allowed"
-                        : "text-white bg-blue-600 hover:bg-blue-700"
-                    }
-                  `}
-                >
-                  {isParsingFile
-                    ? "불러오는 중..."
-                    : `식별자 불러오기 ${
-                        identifiersCount > 0
-                          ? `(${identifiersCount.toLocaleString()}개)`
-                          : ""
-                      }`}
-                </button>
-              </>
-            )}
-            {isEditing && (
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 text-sm rounded-md text-white bg-green-600 hover:bg-green-700"
-              >
-                저장
-              </button>
-            )}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            >
+              식별자 불러오기
+            </button>
           </div>
+
           {isEditing ? (
             <TextareaComponent
               rows={6}
@@ -229,6 +213,15 @@ export function TargetUploadTab({
           )}
         </div>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="테스트 식별자 목록"
+        size="lg"
+      >
+        <TestIdentifiers onSelect={handleIdentifiersSelect} />
+      </Modal>
     </div>
   );
 }
