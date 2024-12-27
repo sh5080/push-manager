@@ -10,16 +10,14 @@ export class PushMasterRepository extends BaseRepository<PushMaster> {
   }
 
   async getLastCampaignCode(queryRunner: QueryRunner): Promise<PushMaster[]> {
-    const queryBuilder = queryRunner.manager
+    const result = await queryRunner.manager
       .getRepository(PushMaster)
       .createQueryBuilder("MASTER")
       .select("MASTER.CMPNCODE", "CMPNCODE")
-      .orderBy("MASTER.CMPNCODE", "DESC");
+      .orderBy("MASTER.CMPNCODE", "DESC")
+      .getRawOne();
 
-    return this.execute(queryBuilder, async (qb) => {
-      const result = await qb.getRawOne();
-      return result ? [result] : [];
-    });
+    return result ? [result] : [];
   }
 
   async createMasterRecord(
