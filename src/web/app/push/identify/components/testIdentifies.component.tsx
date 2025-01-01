@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IdentifyAPI } from "app/apis/identify.api";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
 
@@ -9,6 +9,10 @@ interface TestIdentifiesProps {
 export function TestIdentifies({ onIdentifiersLoad }: TestIdentifiesProps) {
   const [identifies, setIdentifies] = useState<ITestIdentify[]>([]);
   const identifyApi = IdentifyAPI.getInstance();
+
+  useEffect(() => {
+    handleLoadTestIds(3);
+  }, []);
 
   const handleLoadTestIds = async (teamId?: number) => {
     try {
