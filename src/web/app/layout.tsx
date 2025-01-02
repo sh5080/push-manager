@@ -5,8 +5,7 @@ import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useLoadingStore } from "./store";
-import LoadingSpinner from "./common/components/spinner.component";
+import LoadingOverlay from "./common/components/loading.component";
 
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
@@ -24,8 +23,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isLoading = useLoadingStore((state) => state.isLoading);
-
   return (
     <html lang="ko" className={notoSansKr.className}>
       <body className="min-h-screen">
@@ -70,11 +67,7 @@ export default function RootLayout({
           </div>
         </div>
         <ToastContainer />
-        {isLoading && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-            <LoadingSpinner size="lg" color="white" />
-          </div>
-        )}
+        <LoadingOverlay />
       </body>
     </html>
   );
