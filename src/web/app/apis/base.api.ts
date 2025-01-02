@@ -1,10 +1,9 @@
 import { clientConfig } from "@push-manager/shared/configs/client.config";
 import { SuccessResponse } from "@push-manager/shared/types/response.type";
+import { useLoadingStore } from "../store";
 
 export class BaseAPI {
   protected baseURL: string;
-  private static loadingCallback?: () => void;
-  private static hideLoadingCallback?: () => void;
   protected defaultHeaders: HeadersInit = {
     "Content-Type": "application/json",
   };
@@ -13,20 +12,12 @@ export class BaseAPI {
     this.baseURL = `${clientConfig.web.url}:${clientConfig.server.port}`;
   }
 
-  public static setLoadingCallbacks(
-    showLoading: () => void,
-    hideLoading: () => void
-  ) {
-    BaseAPI.loadingCallback = showLoading;
-    BaseAPI.hideLoadingCallback = hideLoading;
-  }
-
   protected async customFetch<T>(
     path: string,
     options?: RequestInit
   ): Promise<T> {
     try {
-      BaseAPI.loadingCallback?.();
+      useLoadingStore.getState().setIsLoading(true);
 
       const headers = {
         ...this.defaultHeaders,
@@ -49,7 +40,7 @@ export class BaseAPI {
 
       return serverResponse.data!;
     } finally {
-      BaseAPI.hideLoadingCallback?.();
+      useLoadingStore.getState().setIsLoading(false);
     }
   }
 

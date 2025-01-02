@@ -9,12 +9,10 @@ import {
   CreateButton,
 } from "../../common/components/pageHeader.component";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
-import LoadingSpinner from "app/common/components/spinner.component";
 
 export default function PushHistoryPage() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
   const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchPushes();
@@ -27,8 +25,6 @@ export default function PushHistoryPage() {
       setPushes(data);
     } catch (error) {
       console.error("Failed to fetch pushes:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -119,11 +115,7 @@ export default function PushHistoryPage() {
           />
         </div>
 
-        {loading ? (
-          <LoadingSpinner />
-        ) : (
-          <PushList pushes={pushes} onPushSelect={setSelectedPush} />
-        )}
+        <PushList pushes={pushes} onPushSelect={setSelectedPush} />
       </div>
 
       {selectedPush && (
