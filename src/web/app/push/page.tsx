@@ -6,14 +6,12 @@ import {
   CreateButton,
 } from "../common/components/pageHeader.component";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
-import LoadingSpinner from "app/common/components/spinner.component";
 import { RecentPushes } from "./components/recentPush.component";
 import { SendPushModal } from "./modals/sendPush.modal";
 
 export default function PushPage() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
   const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -27,8 +25,6 @@ export default function PushPage() {
       setPushes(data);
     } catch (error) {
       console.error("Failed to fetch pushes:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -53,13 +49,9 @@ export default function PushPage() {
           }
         />
 
-        {loading ? (
-          <LoadingSpinner />
-        ) : (
-          <div className="mb-6 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-            <RecentPushes />
-          </div>
-        )}
+        <div className="mb-6 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+          <RecentPushes />
+        </div>
 
         <SendPushModal
           isOpen={isModalOpen}

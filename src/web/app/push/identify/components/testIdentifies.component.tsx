@@ -7,20 +7,16 @@ interface TestIdentifiesProps {
 }
 
 export function TestIdentifies({ onIdentifiersLoad }: TestIdentifiesProps) {
-  const [isLoading, setIsLoading] = useState(false);
   const [identifies, setIdentifies] = useState<ITestIdentify[]>([]);
   const identifyApi = IdentifyAPI.getInstance();
 
   const handleLoadTestIds = async (teamId?: number) => {
-    setIsLoading(true);
     try {
       const response = await identifyApi.getIdentifies({ teamId });
       setIdentifies(response);
       onIdentifiersLoad(response);
     } catch (error) {
       console.error("식별자 로드 실패:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -31,28 +27,19 @@ export function TestIdentifies({ onIdentifiersLoad }: TestIdentifiesProps) {
         <div className="flex space-x-2">
           <button
             onClick={() => handleLoadTestIds(3)}
-            disabled={isLoading}
-            className={`px-4 py-2 text-sm rounded-md text-white ${
-              isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-            }`}
+            className={`px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700`}
           >
             전체
           </button>
           <button
             onClick={() => handleLoadTestIds(1)}
-            disabled={isLoading}
-            className={`px-4 py-2 text-sm rounded-md text-white ${
-              isLoading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
-            }`}
+            className={`px-4 py-2 text-sm rounded-md text-white bg-green-600 hover:bg-green-700`}
           >
             FREED
           </button>
           <button
             onClick={() => handleLoadTestIds(2)}
-            disabled={isLoading}
-            className={`px-4 py-2 text-sm rounded-md text-white ${
-              isLoading ? "bg-gray-400" : "bg-purple-600 hover:bg-purple-700"
-            }`}
+            className={`px-4 py-2 text-sm rounded-md text-white bg-purple-600 hover:bg-purple-700`}
           >
             LG
           </button>
@@ -87,12 +74,6 @@ export function TestIdentifies({ onIdentifiersLoad }: TestIdentifiesProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {isLoading && (
-        <div className="text-center py-4">
-          <span className="text-gray-500">불러오는 중...</span>
         </div>
       )}
     </div>
