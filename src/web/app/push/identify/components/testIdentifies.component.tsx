@@ -4,24 +4,62 @@ import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.
 
 interface TestIdentifiesProps {
   onIdentifiersLoad: (identifies: ITestIdentify[]) => void;
+  initialSelectedIds?: Set<number>;
 }
 
-export function TestIdentifies({ onIdentifiersLoad }: TestIdentifiesProps) {
+export function TestIdentifies({
+  onIdentifiersLoad,
+  initialSelectedIds,
+}: TestIdentifiesProps) {
   const [identifies, setIdentifies] = useState<ITestIdentify[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Set<number>>(
+    initialSelectedIds || new Set()
+  );
   const identifyApi = IdentifyAPI.getInstance();
 
   useEffect(() => {
-    handleLoadTestIds(3);
+    const loadData = async () => {
+      await handleLoadTestIds(3);
+      if (initialSelectedIds && initialSelectedIds.size > 0) {
+        setSelectedItems(initialSelectedIds);
+      }
+    };
+    loadData();
   }, []);
 
   const handleLoadTestIds = async (teamId?: number) => {
     try {
       const response = await identifyApi.getIdentifies({ teamId });
       setIdentifies(response);
-      onIdentifiersLoad(response);
+
+      const filteredSelection = new Set(
+        [...selectedItems].filter((idx) =>
+          response.some((item) => item.idx === idx)
+        )
+      );
+      setSelectedItems(filteredSelection);
+      const selectedIdentifiers = response.filter((item) =>
+        filteredSelection.has(item.idx)
+      );
+      onIdentifiersLoad(selectedIdentifiers);
     } catch (error) {
       console.error("식별자 로드 실패:", error);
     }
+  };
+
+  const toggleSelection = (idx: number) => {
+    const newSelection = new Set(selectedItems);
+    if (newSelection.has(idx)) {
+      newSelection.delete(idx);
+    } else {
+      newSelection.add(idx);
+    }
+    setSelectedItems(newSelection);
+
+    const selectedIdentifiers = identifies.filter((item) =>
+      newSelection.has(item.idx)
+    );
+    onIdentifiersLoad(selectedIdentifiers);
   };
 
   return (
@@ -56,7 +94,13 @@ export function TestIdentifies({ onIdentifiersLoad }: TestIdentifiesProps) {
             {identifies.map((identify) => (
               <div
                 key={identify.idx}
-                className="px-3 py-2 bg-white rounded border mb-1"
+                className={`px-3 py-2 bg-white rounded border mb-1 cursor-pointer hover:bg-gray-50 
+                  ${
+                    selectedItems.has(identify.idx)
+                      ? "ring-2 ring-blue-500"
+                      : ""
+                  }`}
+                onClick={() => toggleSelection(identify.idx)}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700">
@@ -77,6 +121,9 @@ export function TestIdentifies({ onIdentifiersLoad }: TestIdentifiesProps) {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="text-sm text-gray-500 text-right">
+            선택된 항목: {selectedItems.size}개
           </div>
         </div>
       )}
