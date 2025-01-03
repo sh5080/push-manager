@@ -108,50 +108,208 @@ export function TargetUploadTab({
   onUpdateIdentifiers,
 }: TargetUploadTabProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editableIds, setEditableIds] = useState(targetIds);
+  const [tempEditableIds, setTempEditableIds] = useState("");
+  const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
+  const [manualIds, setManualIds] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<"file" | "manual">("file");
   const [isTestIdentifiersModalOpen, setIsTestIdentifiersModalOpen] =
     useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedIdentifiers, setSelectedIdentifiers] = useState<
+  const [selectedIdentifierIds, setSelectedIdentifierIds] = useState<
+    Set<number>
+  >(new Set());
+  const [tempSelectedIdentifiers, setTempSelectedIdentifiers] = useState<
     ITestIdentify[]
   >([]);
+  const [isFileUpdate, setIsFileUpdate] = useState(false);
+  const [isManualUpdate, setIsManualUpdate] = useState(false);
 
   useEffect(() => {
-    if (targetIds) {
-      setEditableIds((prev) => {
-        const existingIds = prev.split("\n").filter((id) => id.trim());
-        const newIds = targetIds.split("\n").filter((id) => id.trim());
-        const mergedIds = [...new Set([...existingIds, ...newIds])];
-        return mergedIds.join("\n");
-      });
+    if (targetFile) {
+      setIsFileUpdate(true);
+      setIsManualUpdate(false);
+      onLoadIdentifiers();
     }
-  }, [targetIds]);
+  }, [targetFile]);
 
-  const handleSave = () => {
-    onUpdateIdentifiers(editableIds);
-    setIsEditing(false);
-  };
+  useEffect(() => {
+    if (!targetIds) return;
+
+    const newIds = targetIds.split("\n").filter((id) => id.trim());
+
+    if (isFileUpdate) {
+      setUploadedFileIds(newIds);
+      setActiveTab("file");
+      onUpdateIdentifiers([...newIds, ...manualIds].join("\n"));
+      setIsFileUpdate(false);
+    } else if (isManualUpdate) {
+      setManualIds(newIds);
+      setActiveTab("manual");
+      onUpdateIdentifiers([...uploadedFileIds, ...newIds].join("\n"));
+      setIsManualUpdate(false);
+    }
+  }, [targetIds, isFileUpdate, isManualUpdate]);
 
   const handleDirectInput = () => {
+    setTempEditableIds(manualIds.join("\n"));
     setIsEditing(true);
   };
 
-  const handleTestIdentifiersSelect = (newIds: string[]) => {
-    setEditableIds((prev) => {
-      const existingIds = prev.split("\n").filter((id) => id.trim());
-      const mergedIds = [...new Set([...existingIds, ...newIds])];
-      return mergedIds.join("\n");
-    });
+  const handleSave = () => {
+    setIsFileUpdate(false);
+    setIsManualUpdate(true);
+
+    const newManualIds = tempEditableIds.split("\n").filter((id) => id.trim());
+
+    setManualIds(newManualIds);
+    setIsEditing(false);
+    setTempEditableIds("");
+
+    const allIds = [...new Set([...uploadedFileIds, ...newManualIds])];
+    onUpdateIdentifiers(allIds.join("\n"));
+  };
+
+  const handleCancel = () => {
+    setTempEditableIds("");
+    setIsEditing(false);
   };
 
   const handleIdentifiersLoad = (identifiers: ITestIdentify[]) => {
-    setSelectedIdentifiers(identifiers);
+    const newSelectedIds = new Set(identifiers.map((id) => id.idx));
+    setSelectedIdentifierIds(newSelectedIds);
+
+    const selectedIdentifies = identifiers.map((id) => id.identify);
+    setManualIds(selectedIdentifies);
+    onUpdateIdentifiers(selectedIdentifies.join("\n"));
   };
 
   const handleAddIdentifiers = () => {
-    const identifies = selectedIdentifiers.map((id) => id.identify);
-    handleTestIdentifiersSelect(identifies);
+    setIsFileUpdate(false);
+    setIsManualUpdate(true);
+
+    const newTestIdentifiers = tempSelectedIdentifiers.map((id) => id.identify);
+    const updatedManualIds = [
+      ...new Set([...manualIds, ...newTestIdentifiers]),
+    ];
+
+    setManualIds(updatedManualIds);
+    const allIds = [...new Set([...uploadedFileIds, ...updatedManualIds])];
+    onUpdateIdentifiers(allIds.join("\n"));
+
+    setActiveTab("manual");
     setIsTestIdentifiersModalOpen(false);
+  };
+
+  const handleManualIdsUpdate = (newManualIds: string[]) => {
+    setIsManualUpdate(true);
+    setIsFileUpdate(false);
+
+    setManualIds(newManualIds);
+    onUpdateIdentifiers(newManualIds.join("\n"));
+  };
+
+  const handleFileIdsUpdate = (updatedIds: string[]) => {
+    setIsFileUpdate(true);
+    setIsManualUpdate(false);
+
+    setUploadedFileIds(updatedIds);
+    onUpdateIdentifiers(updatedIds.join("\n"));
+  };
+
+  const renderTabs = () => {
+    const hasFileIds = uploadedFileIds.length > 0;
+    const hasManualIds = manualIds.filter((id) => id.trim()).length > 0;
+
+    if (!hasFileIds && !hasManualIds) return null;
+
+    return (
+      <div className="border-b border-gray-200 mb-4">
+        <nav className="-mb-px flex space-x-4" aria-label="Tabs">
+          {hasFileIds && (
+            <button
+              onClick={() => setActiveTab("file")}
+              className={`${
+                activeTab === "file"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              파일 ({uploadedFileIds.length})
+            </button>
+          )}
+          {hasManualIds && (
+            <button
+              onClick={() => setActiveTab("manual")}
+              className={`${
+                activeTab === "manual"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              수동 ({manualIds.filter((id) => id.trim()).length})
+            </button>
+          )}
+        </nav>
+      </div>
+    );
+  };
+
+  const renderIdentifierList = () => {
+    if (activeTab === "file" && uploadedFileIds.length > 0) {
+      return (
+        <div className="mt-4">
+          <IdentifierList
+            identifiers={uploadedFileIds}
+            isEditing={true}
+            onDelete={(index) => {
+              const newIds = [...uploadedFileIds];
+              newIds.splice(index, 1);
+              handleFileIdsUpdate(newIds);
+            }}
+            onEdit={(index, newValue) => {
+              const newIds = [...uploadedFileIds];
+              newIds[index] = newValue;
+              handleFileIdsUpdate(newIds);
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (activeTab === "manual") {
+      if (isEditing) {
+        return (
+          <TextareaComponent
+            rows={6}
+            placeholder="식별자를 입력하세요 (한 줄에 하나씩)"
+            value={tempEditableIds}
+            onChange={(e) => setTempEditableIds(e.target.value)}
+            className="bg-white"
+            autoFocus
+          />
+        );
+      }
+
+      return (
+        manualIds.length > 0 && (
+          <div className="mt-4">
+            <IdentifierList
+              identifiers={manualIds}
+              isEditing={true}
+              onDelete={(index) => {
+                const newIds = [...manualIds];
+                newIds.splice(index, 1);
+                handleManualIdsUpdate(newIds);
+              }}
+              onEdit={(index, newValue) => {
+                const newIds = [...manualIds];
+                newIds[index] = newValue;
+                handleManualIdsUpdate(newIds);
+              }}
+            />
+          </div>
+        )
+      );
+    }
   };
 
   return (
@@ -170,10 +328,32 @@ export function TargetUploadTab({
               "text/csv": [".csv"],
             }}
           />
+          {isParsingFile && (
+            <div className="text-sm text-gray-500">파일 처리 중...</div>
+          )}
+        </div>
+      </div>
 
-          <div className="flex justify-end space-x-2">
+      <div className="flex justify-end space-x-2">
+        {isEditing ? (
+          <>
             <button
-              onClick={() => setIsEditing(true)}
+              onClick={handleCancel}
+              className="px-4 py-2 text-sm rounded-md text-gray-600 bg-gray-100 hover:bg-gray-200"
+            >
+              취소
+            </button>
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            >
+              저장
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={handleDirectInput}
               className="px-4 py-2 text-sm rounded-md text-white bg-gray-600 hover:bg-gray-700"
             >
               직접 입력
@@ -184,51 +364,12 @@ export function TargetUploadTab({
             >
               식별자 불러오기
             </button>
-          </div>
-
-          {isEditing ? (
-            <TextareaComponent
-              rows={6}
-              placeholder="식별자를 입력하세요 (한 줄에 하���씩)"
-              value={editableIds}
-              onChange={(e) => setEditableIds(e.target.value)}
-              className="bg-white"
-              autoFocus
-            />
-          ) : (
-            editableIds && (
-              <IdentifierList
-                identifiers={editableIds.split("\n").filter((id) => id.trim())}
-                isEditing={true}
-                onDelete={(index) => {
-                  const newIds = editableIds.split("\n");
-                  newIds.splice(index, 1);
-                  setEditableIds(newIds.join("\n"));
-                  onUpdateIdentifiers(newIds.join("\n"));
-                }}
-                onEdit={(index, newValue) => {
-                  const newIds = editableIds.split("\n");
-                  newIds[index] = newValue;
-                  setEditableIds(newIds.join("\n"));
-                  onUpdateIdentifiers(newIds.join("\n"));
-                }}
-              />
-            )
-          )}
-          {editableIds && (
-            <p className="text-sm text-gray-500 text-right">
-              총{" "}
-              {editableIds
-                .split("\n")
-                .filter((id) => id.trim())
-                .length.toLocaleString()}
-              개
-              {editableIds.split("\n").filter((id) => id.trim()).length > 100 &&
-                " (처음 100개만 표시)"}
-            </p>
-          )}
-        </div>
+          </>
+        )}
       </div>
+
+      {renderTabs()}
+      {renderIdentifierList()}
 
       <Modal
         isOpen={isTestIdentifiersModalOpen}
@@ -240,11 +381,15 @@ export function TargetUploadTab({
             onClick={handleAddIdentifiers}
             className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
           >
-            선택한 식별자 추가
+            선택한 식별자 추가 ({selectedIdentifierIds.size}개)
           </button>
         }
       >
-        <TestIdentifies onIdentifiersLoad={handleIdentifiersLoad} />
+        <TestIdentifies
+          onIdentifiersLoad={handleIdentifiersLoad}
+          initialSelectedIds={selectedIdentifierIds}
+          key={isTestIdentifiersModalOpen ? "modal-open" : "modal-closed"}
+        />
       </Modal>
     </div>
   );
