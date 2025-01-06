@@ -38,7 +38,13 @@ export function getStatusText(step?: string) {
       return "완료";
     case "F":
       return "실패";
+    case "T":
+      return "발송 준비중";
+    case "R":
+      return "발송 중";
+    case "S":
+      return "발송 완료";
     default:
-      return "대기";
+      return "오류";
   }
 }
