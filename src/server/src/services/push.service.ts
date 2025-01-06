@@ -134,9 +134,9 @@ export class PushService implements IPushService {
   ): Promise<Partial<PushQueue>[]> {
     return identifies.map((identify, index) => ({
       ...baseData,
-      QUEUEIDX: startQueueIdx + index,
-      IDENTIFY: identify,
-      SENDDATE: () => `SYSDATE + 1/1440`,
+      queueIdx: startQueueIdx + index,
+      identify,
+      sendDate: () => `SYSDATE + 1/1440`,
     }));
   }
 }
