@@ -150,11 +150,9 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         appId: pushData.appId,
       });
 
-      if (response.success) {
+      if (response) {
         Toast.update(toastId, "푸시 발송이 예약되었습니다.", "success");
         onClose();
-      } else {
-        throw new Error(response.message || "푸시 발송 요청 실패");
       }
     } catch (error) {
       console.error("푸시 발송 에러:", error);
@@ -198,7 +196,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         <DialogPanel className="w-full max-w-3xl bg-white rounded-lg shadow-xl">
           <div className="flex justify-between items-center p-6 border-b">
             <DialogTitle className="text-lg font-semibold">
-              타겟 푸시 생성
+              타겟 푸시 예약
             </DialogTitle>
             <button
               onClick={onClose}
