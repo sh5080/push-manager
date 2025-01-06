@@ -1,5 +1,8 @@
 import { clientConfig } from "@push-manager/shared/configs/client.config";
-import { SuccessResponse } from "@push-manager/shared/types/response.type";
+import {
+  ErrorResponse,
+  SuccessResponse,
+} from "@push-manager/shared/types/response.type";
 import { useLoadingStore } from "../store";
 
 export class BaseAPI {
@@ -29,13 +32,13 @@ export class BaseAPI {
         headers,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      const serverResponse = (await response.json()) as
+        | SuccessResponse<T>
+        | ErrorResponse;
 
-      const serverResponse = (await response.json()) as SuccessResponse<T>;
       if (!serverResponse.success) {
-        throw new Error(serverResponse.message || "API request failed");
+        const error = serverResponse as ErrorResponse;
+        throw new Error(error.error.message || "API request failed");
       }
 
       return serverResponse.data!;
