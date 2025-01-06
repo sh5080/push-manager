@@ -33,25 +33,32 @@ export function PushConditionTab({
         <div className="space-y-2">
           <div className="flex items-center space-x-4">
             {[
-              { id: "freed", label: "프리디", value: AppIdEnum.FREED },
-              { id: "test", label: "통테용", value: AppIdEnum.TEST },
-              { id: "prod", label: "운영", value: AppIdEnum.PROD },
-            ].map(({ id, label, value }) => (
-              <div key={id} className="flex items-center">
-                <input
-                  type="radio"
-                  id={id}
-                  name="appId"
-                  value={value}
-                  checked={appId === value}
-                  onChange={(e) => onChange("appId", e.target.value)}
-                  className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                />
-                <label htmlFor={id} className="ml-2 text-sm text-gray-700">
-                  {label}
-                </label>
-              </div>
-            ))}
+              { id: "FREED", label: "프리디", value: AppIdEnum.FREED },
+              { id: "TEST", label: "통테용", value: AppIdEnum.TEST },
+              { id: "PROD", label: "운영", value: AppIdEnum.PROD },
+            ].map(({ id, label, value }) => {
+              return (
+                <div key={id} className="flex items-center">
+                  <input
+                    type="radio"
+                    id={id}
+                    name="appId"
+                    value={id}
+                    checked={appId === value}
+                    onChange={(e) => {
+                      onChange(
+                        "appId",
+                        AppIdEnum[e.target.value as keyof typeof AppIdEnum]
+                      );
+                    }}
+                    className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <label htmlFor={id} className="ml-2 text-sm text-gray-700">
+                    {label}
+                  </label>
+                </div>
+              );
+            })}
           </div>
           {appId === AppIdEnum.PROD && (
             <p className="text-sm text-yellow-600">
@@ -65,15 +72,20 @@ export function PushConditionTab({
         <label className="block text-sm font-medium text-gray-700 mb-1">
           발송 날짜 및 시각
         </label>
-        <input
-          type="datetime-local"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-            focus:border-blue-500 focus:ring-blue-500"
-          min={new Date().toISOString().slice(0, 16)}
-          value={sendDateString}
-          onChange={(e) => onChange("sendDateString", e.target.value)}
-        />
-        {/* TODO 발송 시간 설정 유효성검증 기능 추가 필요 */}
+        <div className="relative">
+          <input
+            type="datetime-local"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+              focus:border-blue-500 focus:ring-blue-500 cursor-pointer"
+            min={new Date().toISOString().slice(0, 16)}
+            value={sendDateString}
+            onChange={(e) => onChange("sendDateString", e.target.value)}
+            onClick={(e) => {
+              const input = e.target as HTMLInputElement;
+              input.showPicker();
+            }}
+          />
+        </div>
         <p className="mt-1 text-sm text-gray-500">
           안정적인 발송을 위해 현재 시간보다 최소한 100건 당 1분 뒤로
           설정해주세요.
