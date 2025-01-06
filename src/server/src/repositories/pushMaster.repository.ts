@@ -13,8 +13,8 @@ export class PushMasterRepository extends BaseRepository<PushMaster> {
     const result = await queryRunner.manager
       .getRepository(PushMaster)
       .createQueryBuilder("MASTER")
-      .select("MASTER.CMPNCODE", "CMPNCODE")
-      .orderBy("MASTER.CMPNCODE", "DESC")
+      .select("MASTER.cmpncode", "cmpncode")
+      .orderBy("MASTER.cmpncode", "DESC")
       .getRawOne();
 
     return result ? [result] : [];

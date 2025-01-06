@@ -211,7 +211,7 @@ export class PushQueue implements IPushQueue {
   /**
    * 에티켓 적용 여부 (기본값: 'N')
    */
-  @Column({ type: "varchar", nullable: true, name: "  IS_ETIQUETTE" })
+  @Column({ type: "varchar", nullable: true, name: "ISETIQUETTE" })
   isEtiquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
 
   /**
@@ -239,7 +239,7 @@ export class PushQueue implements IPushQueue {
   @Column({
     type: "varchar",
     default: OptAgreeEnum.AGREE,
-    name: "OPT_AGREE",
+    name: "OPTAGREE",
   })
   optAgree!: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
 
