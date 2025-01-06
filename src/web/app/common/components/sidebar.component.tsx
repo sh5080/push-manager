@@ -10,8 +10,13 @@ export default function Sidebar() {
     if (path === "/" && pathname === "/") {
       return true;
     }
-    if (path !== "/" && pathname.startsWith(path)) {
-      return true;
+    if (path !== "/") {
+      if (path === pathname) {
+        return true;
+      }
+      if (pathname.startsWith(path + "/")) {
+        return false;
+      }
     }
     return false;
   };
