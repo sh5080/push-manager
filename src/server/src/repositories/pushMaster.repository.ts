@@ -32,9 +32,9 @@ export class PushMasterRepository extends BaseRepository<PushMaster> {
     const masterRepository = queryRunner.manager.getRepository(PushMaster);
     return masterRepository.insert({
       cmpncode: dto.campaignCode,
-      pmode: dto.pmode,
+      pMode: dto.pmode,
       step: dto.step,
-      rstart_date: dto.startDate,
+      rStartDate: dto.startDate,
     });
   }
 
@@ -49,7 +49,16 @@ export class PushMasterRepository extends BaseRepository<PushMaster> {
     const masterRepository = queryRunner.manager.getRepository(PushMaster);
     return masterRepository.update(
       { cmpncode: dto.campaignCode },
-      { rend_date: dto.endDate, step: dto.step }
+      { rEndDate: dto.endDate, step: dto.step }
     );
+  }
+
+  async getMasterRecords(queryRunner: QueryRunner): Promise<PushMaster[]> {
+    return queryRunner.manager
+      .getRepository(PushMaster)
+      .createQueryBuilder("master")
+      .leftJoinAndSelect("master.pushStsMsg", "msg")
+      .orderBy("master.CMPNCODE", "DESC")
+      .getMany();
   }
 }
