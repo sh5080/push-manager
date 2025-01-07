@@ -7,6 +7,7 @@ pipeline {
         GRAM_PORT = credentials('GRAM_PORT')
         GRAM_PATH = 'C:\\Users\\1\\push-manager'
         GITHUB_APP = credentials('GITHUB_APP_CREDS')
+        GRAM_PASS = credentials('GRAM_SSH_PASSWORD')
     }
     
     stages {
@@ -21,7 +22,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh """
-                    ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn install"
+                    sshpass -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn install"
                 """
             }
         }
@@ -29,7 +30,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh """
-                    ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn build"
+                    sshpass -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn build"
                 """
             }
         }
@@ -39,7 +40,7 @@ pipeline {
                 stage('Deploy API Server') {
                     steps {
                         sh """
-                            ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn server:prod"
+                            sshpass -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn server:prod"
                         """
                     }
                 }
@@ -47,7 +48,7 @@ pipeline {
                 stage('Deploy Web') {
                     steps {
                         sh """
-                            ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn web:prod"
+                            sshpass -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn web:prod"
                         """
                     }
                 }
