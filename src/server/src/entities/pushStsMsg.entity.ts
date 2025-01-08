@@ -14,7 +14,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { PushMaster } from "./pushMaster.entity";
 
 @Entity("TBL_PUSHSTSMSG")
 export class PushStsMsg implements IPushStsMsg {
@@ -236,4 +238,7 @@ export class PushStsMsg implements IPushStsMsg {
 
   @Column({ name: "CRONIDX", type: "number", precision: 11, nullable: true })
   cronidx?: number;
+
+  @OneToMany(() => PushMaster, (master) => master.pushStsMsg)
+  pushMasters?: PushMaster[];
 }
