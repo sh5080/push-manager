@@ -1,4 +1,4 @@
-import { BadRequestException } from "../types/error.type";
+import { BadRequestException } from "@push-manager/shared";
 
 export function transformDbToEntity<T extends Record<string, any>>(
   data: { [key: string]: any },

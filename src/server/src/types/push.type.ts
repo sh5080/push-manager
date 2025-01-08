@@ -1,4 +1,4 @@
-import { CreatePushDto } from "@push-manager/shared/dtos/push.dto";
+import { CreatePushDto } from "@push-manager/shared";
 
 export interface CreateBasePushDto {
   dto: CreatePushDto;

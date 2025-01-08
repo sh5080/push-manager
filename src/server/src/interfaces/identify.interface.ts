@@ -1,14 +1,8 @@
 import {
-  CreatePushDto,
-  GetRecentPushesDto,
-  UpdatePushStatusDto,
-} from "@push-manager/shared/dtos/push.dto";
-import { PushStsMsg } from "../entities/pushStsMsg.entity";
-import {
   CreateIdentifyDto,
   GetIdentifiesDto,
   UpdateIdentifyDto,
-} from "@push-manager/shared/dtos/identify.dto";
+} from "@push-manager/shared";
 import { TestIdentify } from "../entities/testIdentify.entity";
 
 export interface IIdentifyService {

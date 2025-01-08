@@ -2,7 +2,7 @@ import {
   CreatePushDto,
   GetRecentPushesDto,
   UpdatePushStatusDto,
-} from "@push-manager/shared/dtos/push.dto";
+} from "@push-manager/shared";
 import { PushStsMsg } from "../entities/pushStsMsg.entity";
 import { PushMaster } from "../entities/pushMaster.entity";
 
