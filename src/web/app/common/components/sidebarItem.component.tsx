@@ -4,6 +4,8 @@ import {
   HiOutlineBell,
   HiOutlineClipboardList,
   HiOutlineCog,
+  HiOutlineCalendar,
+  HiOutlineIdentification,
 } from "react-icons/hi";
 
 export interface MenuItem {
@@ -53,9 +55,19 @@ export const menuItems: MenuItem[] = [
     icon: <HiOutlineBell />,
   },
   {
-    name: "푸시 조회",
+    name: "푸시 예약",
+    path: "/push/scheduled",
+    icon: <HiOutlineCalendar />,
+  },
+  {
+    name: "푸시 내역",
     path: "/push/history",
     icon: <HiOutlineClipboardList />,
+  },
+  {
+    name: "식별자 관리",
+    path: "/push/identifies",
+    icon: <HiOutlineIdentification />,
   },
   {
     name: "설정",

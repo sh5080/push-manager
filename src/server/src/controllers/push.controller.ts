@@ -34,6 +34,20 @@ export class PushController {
       next(error);
     }
   };
+
+  getScheduledPushes = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const pushes = await this.pushService.getScheduledPushes();
+      res.success(pushes);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   updatePushStatus = async (
     req: Request,
     res: Response,

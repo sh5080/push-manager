@@ -22,6 +22,7 @@ import { createPushBaseData } from "../utils/push.util";
 import { CreateBasePushDto } from "../types/push.type";
 import { QueryRunner } from "typeorm";
 import { queryRunnerCreation } from "../utils/transaction.util";
+import { PushMaster } from "../entities/pushMaster.entity";
 
 export class PushService implements IPushService {
   constructor(
@@ -99,13 +100,19 @@ export class PushService implements IPushService {
   async getRecentPushes(dto: GetRecentPushesDto): Promise<PushStsMsg[]> {
     return queryRunnerCreation(async () => {
       const { appId } = APP_CONFIG[dto.targetMode];
-      return this.pushStsMsgRepository.getRecentTargetPushesByAppId(
-        dto.limit,
-        appId
-      );
+      // return this.pushStsMsgRepository.getRecentTargetPushesByAppId(
+      //   dto.limit,
+      //   appId
+      // );
+      return this.pushStsMsgRepository.getRecentTargetPushes(dto.limit);
     }, false);
   }
 
+  async getScheduledPushes(): Promise<PushMaster[]> {
+    return queryRunnerCreation(async (queryRunner) => {
+      return this.pushMasterRepository.getMasterRecords(queryRunner);
+    }, false);
+  }
   async updatePushStatus(
     dto: UpdatePushStatusDto
   ): Promise<UpdatePushStatusDto> {

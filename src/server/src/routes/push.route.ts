@@ -15,6 +15,7 @@ const pushController = new PushController(pushService);
 
 router.post("/", pushController.createPushes);
 router.get("/recent", pushController.getRecentPushes);
+router.get("/scheduled", pushController.getScheduledPushes);
 router.patch("/:campaignCode/status", pushController.updatePushStatus);
 // router.get("/history", pushController.getPushHistory);
 // router.get("/stats", pushController.getPushStats);
