@@ -1,7 +1,7 @@
 def sendDiscordMessage(message) {
     sh """
         /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-        curl --interface wlan0 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"${message}\\"}' \${DISCORD_WEBHOOK}"
+        curl --interface 192.168.0.62 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"${message}\\"}' \${DISCORD_WEBHOOK}"
     """
 }
 
@@ -10,10 +10,10 @@ def startOrReloadServer(serverName, displayName) {
         /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
         if pm2 list | grep -q '${serverName}'; then \
             pm2 reload ${serverName} && \
-            curl --interface wlan0 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ ${displayName} 업데이트 성공\\"}' \${DISCORD_WEBHOOK}; \
+            curl --interface 192.168.0.62 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ ${displayName} 업데이트 성공\\"}' \${DISCORD_WEBHOOK}; \
         else \
             pm2 start ecosystem.config.js --only ${serverName} && \
-            curl --interface wlan0 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ ${displayName} 시작 성공\\"}' \${DISCORD_WEBHOOK}; \
+            curl --interface 192.168.0.62 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ ${displayName} 시작 성공\\"}' \${DISCORD_WEBHOOK}; \
         fi"
     """
 }
