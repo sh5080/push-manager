@@ -153,7 +153,7 @@ export class CreatePushDto {
 
   @IsOptional()
   @IsEnum(OptAgreeEnum, {
-    message: "유효하지 않은 optAgree입니다. (AGREE: A, DISAGREE: D)",
+    message: "유효하지 않은 optAgree입니다. (AGREE: 1000, DISAGREE: 0000)",
   })
   optAgree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
 
