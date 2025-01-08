@@ -2,9 +2,9 @@
   "name": "push-manager",
   "private": true,
   "workspaces": [
+    "src/shared",
     "src/web",
-    "src/server",
-    "src/shared"
+    "src/server"
   ],
   "scripts": {
     "build": "dotenv -e src/shared/.env yarn workspaces run build",
