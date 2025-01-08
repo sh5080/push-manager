@@ -22,7 +22,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh """
-                    sshpass -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn install"
+                    '/opt/homebrew/bin/sshpass' -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn install"
                 """
             }
         }
@@ -30,7 +30,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh """
-                    sshpass -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn build"
+                    ${SSHPASS} -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn build"
                 """
             }
         }
@@ -40,7 +40,7 @@ pipeline {
                 stage('Deploy API Server') {
                     steps {
                         sh """
-                            sshpass -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn server:prod"
+                            ${SSHPASS} -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn server:prod"
                         """
                     }
                 }
@@ -48,7 +48,7 @@ pipeline {
                 stage('Deploy Web') {
                     steps {
                         sh """
-                            sshpass -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn web:prod"
+                            ${SSHPASS} -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn web:prod"
                         """
                     }
                 }
