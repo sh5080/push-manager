@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
+                git branch: 'master',
                     credentialsId: 'GITHUB_APP_CREDS',
                     url: 'https://github.com/sh5080/push-manager.git'
             }
