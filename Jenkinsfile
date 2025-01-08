@@ -37,7 +37,7 @@ pipeline {
                     usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
                 ]) {
                     sh '''
-                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && rm -rf */dist && yarn build"
+                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && rd /s /q src\\shared\\dist src\\server\\dist src\\web\\dist 2>nul || echo 'No dist folders to delete' && yarn build"
                     '''
                 }
             }
