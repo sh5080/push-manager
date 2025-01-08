@@ -17,12 +17,16 @@ pipeline {
                     credentialsId: 'GITHUB_APP_CREDS',
                     url: 'https://github.com/sh5080/push-manager.git'
                 
-                sh '''
-                    /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                    git fetch origin && \
-                    git checkout master && \
-                    git pull origin master"
-                '''
+                withCredentials([
+                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
+                ]) {
+                    sh '''
+                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
+                        git fetch origin && \
+                        git checkout master && \
+                        git pull origin master"
+                    '''
+                }
             }
         }
         
