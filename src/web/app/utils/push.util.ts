@@ -41,7 +41,7 @@ export function getStatusText(step?: string) {
     case "T":
       return "발송 준비중";
     case "R":
-      return "발송 중";
+      return "발송 대기중";
     case "S":
       return "발송 완료";
     default:
