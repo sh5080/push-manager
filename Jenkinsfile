@@ -24,9 +24,7 @@ pipeline {
                     
                     sh """
                         /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-                        echo === Checkout Stage Commit Status === && \
-                        git log -1 && \
-                        git checkout ${gitCommit.GIT_COMMIT}"
+                        git checkout"
                     """
                 }
             }
@@ -36,8 +34,6 @@ pipeline {
             steps {
                 sh """
                     /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-                    echo === Install Dependencies Stage Commit Status === && \
-                    git log -1 && \
                     yarn install"
                 """
             }
@@ -47,9 +43,18 @@ pipeline {
             steps {
                 sh """
                     /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-                    echo === Build Stage Commit Status === && \
-                    git log -1 && \
                     yarn build:all"
+                """
+            }
+        }
+
+        stage('Start Servers') {
+            steps {
+                sh """
+                    /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
+                    pm2 delete all || true && \
+                    yarn web:prod & \
+                    yarn server:prod"
                 """
             }
         }
