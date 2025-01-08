@@ -13,93 +13,47 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master',
-                    credentialsId: 'GITHUB_APP_CREDS',
-                    url: 'https://github.com/sh5080/push-manager.git'
-                
-                withCredentials([
-                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
-                ]) {
-                    sh '''
-                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
+                script {
+                    checkout([$class: 'GitSCM', 
+                        branches: [[name: 'master']], 
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/sh5080/push-manager.git',
+                            credentialsId: 'GITHUB_APP_CREDS'
+                        ]]
+                    ])
+                    
+                    sh """
+                        /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
                         echo === Checkout Stage Commit Status === && \
-                        git rev-parse HEAD && \
-                        git log -1 && \
                         git fetch origin && \
                         git checkout master && \
-                        git pull origin master"
-                    '''
+                        git pull origin master && \
+                        git log -1"
+                    """
                 }
             }
         }
         
         stage('Install Dependencies') {
             steps {
-                withCredentials([
-                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
-                ]) {
-                    sh '''
-                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        echo === Install Dependencies Stage Commit Status === && \
-                        git rev-parse HEAD && \
-                        git log -1 && \
-                        yarn install"
-                    '''
-                }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                withCredentials([
-                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
-                ]) {
-                    sh '''
-                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        echo === Build Stage Commit Status === && \
-                        git rev-parse HEAD && \
-                        git log -1 && \
-                        yarn build:all"
-                    '''
-                }
+                sh """
+                    /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
+                    echo === Install Dependencies Stage Commit Status === && \
+                    git log -1 && \
+                    yarn install"
+                """
             }
         }
         
-        stage('Deploy') {
-            parallel {
-                stage('Deploy API Server') {
-                    steps {
-                        withCredentials([
-                            usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
-                        ]) {
-                            sh '''
-                                /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn server:prod"
-                            '''
-                        }
-                    }
-                }
-                
-                stage('Deploy Web') {
-                    steps {
-                        withCredentials([
-                            usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
-                        ]) {
-                            sh '''
-                                /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn web:prod"
-                            '''
-                        }
-                    }
-                }
+        stage('Build') {
+            steps {
+                sh """
+                    /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
+                    echo === Build Stage Commit Status === && \
+                    git log -1 && \
+                    yarn build:all"
+                """
             }
-        }
-    }
-    
-    post {
-        success {
-            echo 'Deployment successful!'
-        }
-        failure {
-            echo 'Deployment failed!'
         }
     }
 }
