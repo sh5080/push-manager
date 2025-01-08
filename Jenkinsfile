@@ -16,6 +16,13 @@ pipeline {
                 git branch: 'master',
                     credentialsId: 'GITHUB_APP_CREDS',
                     url: 'https://github.com/sh5080/push-manager.git'
+                
+                sh '''
+                    /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
+                    git fetch origin && \
+                    git checkout master && \
+                    git pull origin master"
+                '''
             }
         }
         
@@ -38,11 +45,6 @@ pipeline {
                 ]) {
                     sh '''
                         /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        git clean -fdx && \
-                        git reset --hard HEAD && \
-                        rd /s /q src\\shared\\dist src\\server\\dist src\\web\\dist 2>nul || echo 'No dist folders to delete' && \
-                        yarn cache clean && \
-                        yarn install && \
                         yarn build"
                     '''
                 }
