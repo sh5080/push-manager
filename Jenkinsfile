@@ -1,3 +1,23 @@
+def sendDiscordMessage(message) {
+    sh """
+        /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
+        curl --interface wlan0 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"${message}\\"}' \${DISCORD_WEBHOOK}"
+    """
+}
+
+def startOrReloadServer(serverName, displayName) {
+    sh """
+        /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
+        if pm2 list | grep -q '${serverName}'; then \
+            pm2 reload ${serverName} && \
+            curl --interface wlan0 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ ${displayName} 업데이트 성공\\"}' \${DISCORD_WEBHOOK}; \
+        else \
+            pm2 start ecosystem.config.js --only ${serverName} && \
+            curl --interface wlan0 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ ${displayName} 시작 성공\\"}' \${DISCORD_WEBHOOK}; \
+        fi"
+    """
+}
+
 pipeline {
     agent any
     
@@ -55,36 +75,15 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh """
-                            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-                            if pm2 list | grep -q 'push-web'; then \
-                                pm2 reload push-web && \
-                                curl -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ Web Server 업데이트 성공\\"}' \${DISCORD_WEBHOOK}; \
-                            else \
-                                pm2 start ecosystem.config.js --only push-web && \
-                                curl -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ Web Server 시작 성공\\"}' \${DISCORD_WEBHOOK}; \
-                            fi"
-                        """
-                        
-                        sh """
-                            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-                            if pm2 list | grep -q 'push-server'; then \
-                                pm2 reload push-server && \
-                                curl -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ API Server 업데이트 성공\\"}' \${DISCORD_WEBHOOK}; \
-                            else \
-                                pm2 start ecosystem.config.js --only push-server && \
-                                curl -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ API Server 시작 성공\\"}' \${DISCORD_WEBHOOK}; \
-                            fi"
-                        """
+                        startOrReloadServer('push-web', 'Web Server')
+                        startOrReloadServer('push-server', 'API Server')
                         
                         sh """
                             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
                             pm2 save"
                         """
                     } catch (Exception e) {
-                        sh """
-                            curl -H 'Content-Type: application/json' -d '{\\"content\\":\\"❌ 서버 시작 실패: ${e.getMessage()}\\"}' \${DISCORD_WEBHOOK}
-                        """
+                        sendDiscordMessage("❌ 서버 시작 실패: ${e.getMessage()}")
                         throw e
                     }
                 }
@@ -94,14 +93,10 @@ pipeline {
     
     post {
         success {
-            sh """
-                curl -H 'Content-Type: application/json' -d '{\\"content\\":\\"🎉 전체 배포 프로세스 성공\\"}' \${DISCORD_WEBHOOK}
-            """
+            sendDiscordMessage("🎉 전체 배포 프로세스 성공")
         }
         failure {
-            sh """
-                curl -H 'Content-Type: application/json' -d '{\\"content\\":\\"💥 배포 프로세스 실패\\"}' \${DISCORD_WEBHOOK}
-            """
+            sendDiscordMessage("💥 배포 프로세스 실패")
         }
     }
 }
