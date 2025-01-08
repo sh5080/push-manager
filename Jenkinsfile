@@ -18,13 +18,16 @@ pipeline {
                     url: 'https://github.com/sh5080/push-manager.git'
                 
                 withCredentials([
-                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
+                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS'),
+                    usernamePassword(credentialsId: 'GITHUB_APP_CREDS', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')
                 ]) {
                     sh '''
                         /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        git fetch origin && \
+                        git config --global credential.helper store && \
+                        git config --global --unset credential.helper && \
+                        git fetch https://$GIT_USER:$GIT_PASS@github.com/sh5080/push-manager.git && \
                         git checkout master && \
-                        git pull origin master"
+                        git pull https://$GIT_USER:$GIT_PASS@github.com/sh5080/push-manager.git master"
                     '''
                 }
             }
