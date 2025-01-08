@@ -25,10 +25,8 @@ pipeline {
                     sh """
                         /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
                         echo === Checkout Stage Commit Status === && \
-                        git fetch origin && \
-                        git checkout master && \
-                        git pull origin master && \
-                        git log -1"
+                        git log -1 && \
+                        git checkout ${gitCommit.GIT_COMMIT}"
                     """
                 }
             }
