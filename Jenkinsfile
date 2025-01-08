@@ -22,8 +22,9 @@ pipeline {
                 ]) {
                     sh '''
                         /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        echo '=== Checkout 단계 커밋 상태 ===' && \
-                        git log -1 --pretty=format:'%h - %s (%cr)' && \
+                        echo === Checkout Stage Commit Status === && \
+                        git rev-parse HEAD && \
+                        git log -1 && \
                         git fetch origin && \
                         git checkout master && \
                         git pull origin master"
@@ -39,8 +40,9 @@ pipeline {
                 ]) {
                     sh '''
                         /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        echo '=== Install Dependencies 단계 커밋 상태 ===' && \
-                        git log -1 --pretty=format:'%h - %s (%cr)' && \
+                        echo === Install Dependencies Stage Commit Status === && \
+                        git rev-parse HEAD && \
+                        git log -1 && \
                         yarn install"
                     '''
                 }
@@ -54,8 +56,9 @@ pipeline {
                 ]) {
                     sh '''
                         /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        echo '=== Build 단계 커밋 상태 ===' && \
-                        git log -1 --pretty=format:'%h - %s (%cr)' && \
+                        echo === Build Stage Commit Status === && \
+                        git rev-parse HEAD && \
+                        git log -1 && \
                         yarn build:all"
                     '''
                 }
