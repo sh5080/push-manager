@@ -3,6 +3,7 @@ import {
   GetRecentPushesDto,
   PushResponse,
 } from "@push-manager/shared/dtos/push.dto";
+import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "./base.api";
@@ -30,6 +31,10 @@ export class PushAPI extends BaseAPI {
     return this.customFetch<IPushStsMsg[]>(
       `/api/push/recent?limit=${limit}&targetMode=${targetMode}`
     );
+  }
+
+  async getScheduledPushes(): Promise<IPushMasterWithMsg[]> {
+    return this.customFetch<IPushMasterWithMsg[]>("/api/push/scheduled");
   }
 
   async getPushHistory(
