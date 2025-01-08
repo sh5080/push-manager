@@ -10,7 +10,7 @@
     "build:shared": "dotenv -e src/shared/.env yarn workspace @push-manager/shared build",
     "build:web": "dotenv -e src/shared/.env yarn workspace @push-manager/web build",
     "build:server": "dotenv -e src/shared/.env yarn workspace @push-manager/server build",
-    "build": "yarn build:shared && yarn build:web && yarn build:server",
+    "build:all": "yarn build:shared && yarn build:web && yarn build:server",
     "web:dev": "dotenv -e src/shared/.env yarn workspace @push-manager/web dev",
     "server:dev": "dotenv -e src/shared/.env yarn workspace @push-manager/server dev",
     "web:prod": "dotenv -e src/shared/.env yarn workspace @push-manager/web start",
