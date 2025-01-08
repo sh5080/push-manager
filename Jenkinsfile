@@ -16,6 +16,19 @@ pipeline {
                 git branch: 'master',
                     credentialsId: 'GITHUB_APP_CREDS',
                     url: 'https://github.com/sh5080/push-manager.git'
+                
+                withCredentials([
+                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
+                ]) {
+                    sh '''
+                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
+                        echo '=== Checkout 단계 커밋 상태 ===' && \
+                        git log -1 --pretty=format:'%h - %s (%cr)' && \
+                        git fetch origin && \
+                        git checkout master && \
+                        git pull origin master"
+                    '''
+                }
             }
         }
         
@@ -25,7 +38,10 @@ pipeline {
                     usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
                 ]) {
                     sh '''
-                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn install"
+                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
+                        echo '=== Install Dependencies 단계 커밋 상태 ===' && \
+                        git log -1 --pretty=format:'%h - %s (%cr)' && \
+                        yarn install"
                     '''
                 }
             }
@@ -37,7 +53,10 @@ pipeline {
                     usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
                 ]) {
                     sh '''
-                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn build:all"
+                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
+                        echo '=== Build 단계 커밋 상태 ===' && \
+                        git log -1 --pretty=format:'%h - %s (%cr)' && \
+                        yarn build:all"
                     '''
                 }
             }
