@@ -21,17 +21,25 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                sh """
-                    '/opt/homebrew/bin/sshpass' -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn install"
-                """
+                withCredentials([
+                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
+                ]) {
+                    sh '''
+                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn install"
+                    '''
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh """
-                    ${SSHPASS} -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn build"
-                """
+                withCredentials([
+                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
+                ]) {
+                    sh '''
+                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn build"
+                    '''
+                }
             }
         }
         
@@ -39,17 +47,25 @@ pipeline {
             parallel {
                 stage('Deploy API Server') {
                     steps {
-                        sh """
-                            ${SSHPASS} -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn server:prod"
-                        """
+                        withCredentials([
+                            usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
+                        ]) {
+                            sh '''
+                                /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn server:prod"
+                            '''
+                        }
                     }
                 }
                 
                 stage('Deploy Web') {
                     steps {
-                        sh """
-                            ${SSHPASS} -p '${GRAM_PASS}' ssh -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd ${GRAM_PATH} && yarn web:prod"
-                        """
+                        withCredentials([
+                            usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
+                        ]) {
+                            sh '''
+                                /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn web:prod"
+                            '''
+                        }
                     }
                 }
             }
