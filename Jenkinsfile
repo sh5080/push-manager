@@ -16,19 +16,6 @@ pipeline {
                 git branch: 'master',
                     credentialsId: 'GITHUB_APP_CREDS',
                     url: 'https://github.com/sh5080/push-manager.git'
-                
-                withCredentials([
-                    usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS'),
-                    usernamePassword(credentialsId: 'GITHUB_APP_CREDS', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')
-                ]) {
-                    sh '''
-                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        git config --global credential.credentialStore dpapi && \
-                        git fetch origin && \
-                        git checkout master && \
-                        git pull origin master"
-                    '''
-                }
             }
         }
         
@@ -50,8 +37,7 @@ pipeline {
                     usernamePassword(credentialsId: 'GRAM_SSH_PASSWORD', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS')
                 ]) {
                     sh '''
-                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && \
-                        yarn build"
+                        /opt/homebrew/bin/sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p ${GRAM_PORT} ${GRAM_USER}@${GRAM_HOST} "cd ${GRAM_PATH} && yarn build"
                     '''
                 }
             }
