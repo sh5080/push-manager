@@ -1,10 +1,6 @@
 import { QueryRunner } from "typeorm";
 import { TestIdentify } from "../entities/testIdentify.entity";
-import {
-  CreateIdentifyDto,
-  GetIdentifiesDto,
-  UpdateIdentifyDto,
-} from "@push-manager/shared/dtos/identify.dto";
+import { CreateIdentifyDto, UpdateIdentifyDto } from "@push-manager/shared";
 import { BaseRepository } from "./base.repository";
 import { AppDataSource } from "../configs/db.config";
 

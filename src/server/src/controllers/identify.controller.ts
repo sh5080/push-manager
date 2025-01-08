@@ -1,10 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {
-  GetIdentifiesDto,
-  CreateIdentifyDto,
-  UpdateIdentifyDto,
-} from "@push-manager/shared/dtos/identify.dto";
-import { validateDto } from "@push-manager/shared/utils/validate.util";
+import { GetIdentifiesDto, validateDto } from "@push-manager/shared";
 import { IIdentifyService } from "../interfaces/identify.interface";
 
 export class IdentifyController {

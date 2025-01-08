@@ -2,7 +2,7 @@ import "reflect-metadata";
 import express from "express";
 import cors from "cors";
 import { apiRoutes } from "./routes";
-import { envConfig } from "@push-manager/shared/configs/env.config";
+import { envConfig } from "@push-manager/shared";
 import { responseMiddleware } from "./middlewares/response.middleware";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { AppDataSource } from "./configs/db.config";

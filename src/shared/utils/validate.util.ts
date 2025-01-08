@@ -1,6 +1,6 @@
 import { plainToInstance, ClassConstructor } from "class-transformer";
 import { validateOrReject, ValidationError } from "class-validator";
-import { BadRequestException } from "@push-manager/server/src/types/error.type";
+import { BadRequestException } from "../types/error.type";
 
 export async function validateDto<T extends object>(
   dto: ClassConstructor<T>,

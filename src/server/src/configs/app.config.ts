@@ -1,5 +1,4 @@
-import { envConfig } from "@push-manager/shared/configs/env.config";
-import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
+import { envConfig, AppIdEnum } from "@push-manager/shared";
 
 const { keyFreed, keyFreed2, keyPrd, secretFreed, secretFreed2, secretPrd } =
   envConfig.push;

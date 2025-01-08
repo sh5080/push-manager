@@ -1,6 +1,6 @@
 import oracledb from "oracledb";
 import { DataSource } from "typeorm";
-import { envConfig } from "@push-manager/shared/configs/env.config";
+import { envConfig } from "@push-manager/shared";
 import { PushQueue } from "../entities/pushQueue.entity";
 import { PushSend } from "../entities/pushSend.entity";
 import { DeviceToken } from "../entities/deviceToken.entity";

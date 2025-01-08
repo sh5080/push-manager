@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { HttpException } from "../types/error.type";
+import { HttpException } from "@push-manager/shared";
 
 interface ErrorResponse {
   success: false;

@@ -4,8 +4,8 @@ import {
   CreatePushDto,
   GetRecentPushesDto,
   UpdatePushStatusDto,
-} from "@push-manager/shared/dtos/push.dto";
-import { validateDto } from "@push-manager/shared/utils/validate.util";
+  validateDto,
+} from "@push-manager/shared";
 
 export class PushController {
   constructor(private readonly pushService: IPushService) {}

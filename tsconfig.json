@@ -13,7 +13,9 @@
     "paths": {
       "@shared/*": ["src/shared/src/*"],
       "@server/*": ["src/server/src/*"],
-      "@web/*": ["src/web/src/*"]
+      "@web/*": ["src/web/src/*"],
+      "@push-manager/shared": ["../shared/src"],
+      "@push-manager/shared/*": ["../shared/src/*"]
     }
   },
   "exclude": ["node_modules"]
