@@ -1,18 +1,38 @@
-def sendDiscordMessage(message) {
-    def response = sh(script: """
-        curl --interface \${WIFI_INTERFACE} -k -s -w '\\n%{http_code}' \
-        -H 'Content-Type: application/json' \
-        -H 'User-Agent: Jenkins-Discord-Webhook' \
-        -d '{"content": "${message}"}' \${DISCORD_WEBHOOK}
-    """, returnStdout: true).trim()
+def sendDiscordMessage(message, isSuccess = true) {
+    def buildUrl = env.BUILD_URL ?: 'N/A'
+    def jobName = env.JOB_NAME ?: 'N/A'
+    def buildNumber = env.BUILD_NUMBER ?: 'N/A'
     
-    def statusCode = response.tokenize('\n')[-1]
+    def payload = """
+        {
+            "embeds": [{
+                "title": "Jenkins Build #${buildNumber}",
+                "description": "${message}",
+                "color": ${isSuccess ? 3066993 : 15158332},  // 성공: 초록색, 실패: 빨간색
+                "fields": [
+                    {
+                        "name": "Job",
+                        "value": "${jobName}",
+                        "inline": true
+                    },
+                    {
+                        "name": "Build",
+                        "value": "#${buildNumber}",
+                        "inline": true
+                    }
+                ],
+                "footer": {
+                    "text": "Jenkins Build"
+                },
+                "timestamp": "${new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone('UTC'))}"
+            }]
+        }
+    """
     
-    if (statusCode != "204" && statusCode != "200") {
-        echo "Discord webhook failed with status ${statusCode}"
-        echo "Response: ${response}"
-        error("Discord webhook failed")
-    }
+    sh """
+        curl --interface \${WIFI_INTERFACE} -k -H 'Content-Type: application/json' \
+        -d '${payload.replaceAll("'", "'\\''")}' \${DISCORD_WEBHOOK}
+    """
 }
 
 def startOrReloadServer(serverName, displayName) {
@@ -24,9 +44,9 @@ def startOrReloadServer(serverName, displayName) {
             pm2 list"
         """, returnStdout: true).trim()
         
-        sendDiscordMessage("✅ ${displayName} ${result.contains('reload') ? '업데이트' : '시작'} 성공")
+        sendDiscordMessage("✅ ${displayName} ${result.contains('reload') ? '업데이트' : '시작'} 성공", true)
     } catch (Exception e) {
-        sendDiscordMessage("❌ ${displayName} 실패: ${e.getMessage()}")
+        sendDiscordMessage("❌ ${displayName} 실패: ${e.getMessage()}", false)
         throw e
     }
 }
@@ -97,7 +117,7 @@ pipeline {
                             pm2 save"
                         """
                     } catch (Exception e) {
-                        sendDiscordMessage("❌ 서버 시작 실패: ${e.getMessage()}")
+                        sendDiscordMessage("❌ 서버 시작 실패: ${e.getMessage()}", false)
                         throw e
                     }
                 }
@@ -107,10 +127,10 @@ pipeline {
     
     post {
         success {
-            sendDiscordMessage("🎉 전체 배포 프로세스 성공")
+            sendDiscordMessage("🎉 전체 배포 프로세스 성공", true)
         }
         failure {
-            sendDiscordMessage("💥 배포 프로세스 실패")
+            sendDiscordMessage("💥 배포 프로세스 실패", false)
         }
     }
 }
