@@ -8,12 +8,8 @@ def startOrReloadServer(serverName, displayName) {
     try {
         def result = sh(script: """
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-            if pm2 reload ${serverName}; then \
-                echo 'reload'; \
-            else \
-                pm2 start ecosystem.config.js --only ${serverName} && \
-                echo 'start'; \
-            fi && \
+            (pm2 reload ${serverName} && echo 'reload') || \
+            (pm2 start ecosystem.config.js --only ${serverName} && echo 'start') && \
             pm2 list"
         """, returnStdout: true).trim()
         
