@@ -1,6 +1,6 @@
 def sendDiscordMessage(message) {
     sh """
-        curl --interface \${WIFI_INTERFACE} -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"${message}\\"}' \${DISCORD_WEBHOOK}
+        curl --interface \${WIFI_INTERFACE} -k -H 'Content-Type: application/json' -d '{"content": "${message}"}' \${DISCORD_WEBHOOK}
     """
 }
 
