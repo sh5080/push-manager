@@ -6,8 +6,8 @@ import {
   PModeEnum,
   SendStatEnum,
   StepEnum,
-} from "@push-manager/shared/types/constants/pushQueue.const";
-import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
+} from "@push-manager/shared";
+import { IPushStsMsg } from "@push-manager/shared";
 import {
   Entity,
   PrimaryGeneratedColumn,

@@ -8,7 +8,7 @@ import {
   PModeEnum,
   SendStatEnum,
   StepEnum,
-} from "@push-manager/shared/types/constants/pushQueue.const";
+} from "@push-manager/shared";
 import { CreateBasePushDto } from "../types/push.type";
 
 export function createPushBaseData(

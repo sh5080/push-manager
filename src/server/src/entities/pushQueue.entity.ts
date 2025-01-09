@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 import { IPushQueue } from "@push-manager/shared/types/entities/pushQueue.entity";
 import {
   StepEnum,
@@ -15,7 +9,7 @@ import {
   OfbTimeEnum,
   OptAgreeEnum,
   BeschModeEnum,
-} from "@push-manager/shared/types/constants/pushQueue.const";
+} from "@push-manager/shared";
 
 @Entity("TBL_FP_QUEUE")
 export class PushQueue implements IPushQueue {

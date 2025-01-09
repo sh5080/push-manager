@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm";
-import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
+import { StepEnum } from "@push-manager/shared";
 import { PushStsMsg } from "./pushStsMsg.entity";
 
 @Entity("TBL_FP_MASTER")
