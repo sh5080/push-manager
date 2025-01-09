@@ -56,7 +56,8 @@ def startOrReloadServer(serverName, displayName) {
         def result = sh(script: """
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             (pm2 reload ${serverName} && STATUS='업데이트' || (pm2 start ecosystem.config.js --only ${serverName} && STATUS='시작')) && \
-            FRONTEND_URL=\$(pm2 logs ${serverName} --raw --nostream --lines 3 | grep 'url:' | tail -n 1 | cut -d':' -f2- | xargs) && \
+            sleep 2 && \
+            FRONTEND_URL=\$(pm2 env ${serverName} | grep 'FRONTEND_URL' | cut -d'=' -f2 || echo 'localhost') && \
             curl -H 'Content-Type: application/json' \
             -d '{\\"embeds\\":[{\\"title\\":\\"Jenkins Build #\${BUILD_NUMBER}\\",\\"description\\":\\"✅ ${displayName} '\$STATUS' 성공\\\\n${deployInfo.icon} ${deployInfo.type} 주소: http://'\$FRONTEND_URL':${deployInfo.port}\\",\\"color\\":3066993}]}' \
             \${DISCORD_WEBHOOK}"
