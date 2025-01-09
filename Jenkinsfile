@@ -51,23 +51,18 @@ def getDeployInfo(serverName) {
 
 def startOrReloadServer(serverName, displayName) {
     try {
+        def deployInfo = getDeployInfo(serverName)
+        
         def result = sh(script: """
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-            (pm2 reload ${serverName} || pm2 start ecosystem.config.js --only ${serverName}) > /dev/null 2>&1 && \
-            cat src/shared/.env | grep NEXT_PUBLIC_FRONTEND_URL"
+            FRONTEND_URL=\$(cat src/shared/.env | grep NEXT_PUBLIC_FRONTEND_URL | cut -d'=' -f2) && \
+            (pm2 reload ${serverName} && STATUS='업데이트' || (pm2 start ecosystem.config.js --only ${serverName} && STATUS='시작')) > /dev/null 2>&1 && \
+            curl -H 'Content-Type: application/json' \
+            -d '{\\"embeds\\":[{\\"title\\":\\"Jenkins Build #\${BUILD_NUMBER}\\",\\"description\\":\\"✅ ${displayName} '\$STATUS' 성공\\\\n${deployInfo.icon} ${deployInfo.type} 주소: '\$FRONTEND_URL':${deployInfo.port}\\",\\"color\\":3066993}]}' \
+            \${DISCORD_WEBHOOK}"
         """, returnStdout: true).trim()
         
         println "DEBUG - Raw result: [${result}]"
-        
-        def deployInfo = getDeployInfo(serverName)
-        def status = result.contains('reload') ? '업데이트' : '시작'
-        
-        def deployUrl = ""
-        if (deployInfo && result) {
-            deployUrl = "\n${deployInfo.icon} ${deployInfo.type} 주소: ${result}:${deployInfo.port}"
-        }
-        
-        sendDiscordMessage("✅ ${displayName} ${status} 성공${deployUrl}", true)
     } catch (Exception e) {
         sendDiscordMessage("❌ ${displayName} 실패: ${e.getMessage()}", false)
         throw e
