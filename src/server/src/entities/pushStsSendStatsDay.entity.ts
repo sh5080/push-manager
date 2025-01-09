@@ -1,11 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  JoinColumn,
+  ManyToOne,
+} from "typeorm";
+import { PushStsMsg } from "./pushStsMsg.entity";
 
 @Entity("TBL_PUSHSTSSEND_STATS_DAY")
 export class PushStsSendStatsDay {
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @Column({ name: "MSG_IDX" })
+  @PrimaryGeneratedColumn({ name: "MSG_IDX" })
   msgIdx!: number;
 
   @Column({ name: "DEVICE_TYPE", length: 50 })
@@ -16,4 +20,8 @@ export class PushStsSendStatsDay {
 
   @Column({ name: "FAILED", default: 0 })
   failed!: number;
+
+  @ManyToOne(() => PushStsMsg, (pushStsMsg) => pushStsMsg.sendStat)
+  @JoinColumn({ name: "MSG_IDX" })
+  pushStsMsg!: PushStsMsg;
 }

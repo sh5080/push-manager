@@ -11,7 +11,7 @@ export interface IPushService {
   createPushes(dto: CreatePushDto): Promise<number>;
   getRecentPushes(dto: GetRecentPushesDto): Promise<PushStsMsg[]>;
   getScheduledPushes(): Promise<PushMaster[]>;
-  getPushStsMsgDetail(idx: number): Promise<PushStsSendStatsDay[]>;
+  getPushStsMsgDetail(idx: number): Promise<PushStsMsg | null>;
   updatePushStatus(dto: UpdatePushStatusDto): Promise<UpdatePushStatusDto>;
   // getPushHistory(page: number, limit: number): Promise<any>;
   // getPushStats(): Promise<any>;
