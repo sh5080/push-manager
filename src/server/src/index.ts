@@ -9,10 +9,11 @@ import { AppDataSource } from "./configs/db.config";
 
 const app = express();
 const port = envConfig.server.port;
+const { url, port: webPort } = envConfig.web;
 
 app.use(
   cors({
-    origin: envConfig.web.url + ":" + envConfig.web.port,
+    origin: url + ":" + webPort,
     credentials: true,
   })
 );
@@ -34,5 +35,7 @@ app.use("/api", apiRoutes);
 app.use(errorMiddleware);
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on ${url}:${port}`);
+  console.log("port: ", port);
+  console.log("url: ", url);
 });
