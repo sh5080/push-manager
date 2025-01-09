@@ -55,21 +55,21 @@ def startOrReloadServer(serverName, displayName) {
         sh(script: """
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             (pm2 reload ${serverName} && echo 'reload') || \
-            (pm2 start ecosystem.config.js --only ${serverName} && echo 'start') && \
-            pm2 env 1 --update-env"
+            (pm2 start ecosystem.config.js --only ${serverName} && echo 'start')"
         """)
 
-        // 환경변수만 따로 가져오기
-        def envResult = sh(script: """
-            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "pm2 env 1 2>/dev/null | grep NEXT_PUBLIC_FRONTEND_URL"
+        // Windows IPv4 주소 가져오기
+        def ipResult = sh(script: """
+            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "ipconfig | findstr IPv4"
         """, returnStdout: true).trim()
 
-        println "DEBUG - Env result: [${envResult}]"
+        println "DEBUG - IP result: [${ipResult}]"
+        
+        // IPv4 주소 추출 (마지막 IPv4 주소 사용)
+        def frontendUrl = ipResult.findAll(/IPv4.*?(\d+\.\d+\.\d+\.\d+)/)[-1].find(/\d+\.\d+\.\d+\.\d+/) ?: 'localhost'
         
         def deployInfo = getDeployInfo(serverName)
-        def status = envResult.contains('reload') ? '업데이트' : '시작'
-        
-        def frontendUrl = envResult.replaceFirst(/NEXT_PUBLIC_FRONTEND_URL=/, '') ?: 'localhost'
+        def status = result.contains('reload') ? '업데이트' : '시작'
         def deployUrl = deployInfo ? "\n${deployInfo.icon} ${deployInfo.type} 주소: http://${frontendUrl}:${deployInfo.port}" : ""
         
         sendDiscordMessage("✅ ${displayName} ${status} 성공${deployUrl}", true)
