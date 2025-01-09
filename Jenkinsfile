@@ -41,7 +41,7 @@ def getDeployInfo(serverName) {
             type: 'Web'
         ],
         'push-server': [
-            port: '3000',
+            port: '9000',
             icon: '🔌',
             type: 'API'
         ]
