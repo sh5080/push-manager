@@ -5,10 +5,10 @@ const { getNetworkIP } = require("./set-env");
 const ip = getNetworkIP();
 console.log(`[Debug] Starting Next.js server on ${ip}:8888`);
 
-const command = `cd "${path.join(
-  __dirname,
-  "../src/web"
-)}" && next start -H ${ip} -p 8888`;
+const webDir = path.join(__dirname, "../src/web");
+const nextBin = path.join(webDir, "node_modules/.bin/next");
+const command = `cd "${webDir}" && "${nextBin}" start -H ${ip} -p 8888`;
+
 console.log(`[Debug] Executing command: ${command}`);
 
 const client = exec(command, {
