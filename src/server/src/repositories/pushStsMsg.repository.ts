@@ -2,6 +2,7 @@ import { BaseRepository } from "./base.repository";
 import { PushStsMsg } from "../entities/pushStsMsg.entity";
 import { AppDataSource } from "../configs/db.config";
 import { APP_CONFIG } from "../configs/app.config";
+import { PushStsSendStatsDay } from "../entities/pushStsSendStatsDay.entity";
 
 export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
   constructor() {
@@ -39,5 +40,19 @@ export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
     ];
 
     return this.executeRaw(query, [...appIds, limit]);
+  }
+  async getPushStsMsgDetail(idx: number): Promise<PushStsSendStatsDay[]> {
+    const query = `
+      SELECT * FROM TBL_PUSHSTSSEND_STATS_DAY
+      WHERE MSG_IDX = :1
+    `;
+
+    // BaseRepository의 executeRaw를 오버라이드하여 PushStsSendStatsDay 타입으로 변환
+    const results = await this.executeRaw(query, [idx]);
+    return results.map((result) => {
+      const stats = new PushStsSendStatsDay();
+      Object.assign(stats, result);
+      return stats;
+    });
   }
 }

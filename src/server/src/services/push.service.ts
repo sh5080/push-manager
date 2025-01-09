@@ -19,6 +19,7 @@ import { CreateBasePushDto } from "../types/push.type";
 import { QueryRunner } from "typeorm";
 import { queryRunnerCreation } from "../utils/transaction.util";
 import { PushMaster } from "../entities/pushMaster.entity";
+import { PushStsSendStatsDay } from "../entities/pushStsSendStatsDay.entity";
 
 export class PushService implements IPushService {
   constructor(
@@ -109,6 +110,11 @@ export class PushService implements IPushService {
       return this.pushMasterRepository.getMasterRecords(queryRunner);
     }, false);
   }
+
+  async getPushStsMsgDetail(idx: number): Promise<PushStsSendStatsDay[]> {
+    return this.pushStsMsgRepository.getPushStsMsgDetail(idx);
+  }
+
   async updatePushStatus(
     dto: UpdatePushStatusDto
   ): Promise<UpdatePushStatusDto> {
