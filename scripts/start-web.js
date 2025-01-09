@@ -3,20 +3,39 @@ const path = require("path");
 const { getNetworkIP } = require("./set-env");
 
 const ip = getNetworkIP();
-console.log(`Starting Next.js server on ${ip}:8888`);
+console.log(`[Debug] Starting Next.js server on ${ip}:8888`);
 
-const client = exec(
-  `cd "${path.join(__dirname, "../src/web")}" && next start -H ${ip} -p 8888`,
-  {
-    windowsHide: true,
-    cwd: path.join(__dirname, "../"),
-  }
-);
+const command = `cd "${path.join(
+  __dirname,
+  "../src/web"
+)}" && next start -H ${ip} -p 8888`;
+console.log(`[Debug] Executing command: ${command}`);
+
+const client = exec(command, {
+  windowsHide: true,
+  cwd: path.join(__dirname, "../"),
+  encoding: "utf8",
+});
+
+client.stdout.setEncoding("utf8");
+client.stderr.setEncoding("utf8");
 
 client.stdout.pipe(process.stdout);
 client.stderr.pipe(process.stderr);
 
+client.stdout.on("data", (data) => {
+  console.log(`[stdout] ${data}`);
+});
+
+client.stderr.on("data", (data) => {
+  console.error(`[stderr] ${data}`);
+});
+
 client.on("error", (error) => {
-  console.error("Failed to start web server:", error);
+  console.error("[Error] Failed to start web server:", error);
   process.exit(1);
+});
+
+client.on("exit", (code) => {
+  console.log(`[Exit] Process exited with code ${code}`);
 });
