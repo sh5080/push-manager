@@ -33,6 +33,22 @@ def sendDiscordMessage(message, isSuccess = true) {
     """
 }
 
+def getDeployInfo(serverName) {
+    def deployInfo = [
+        'push-web': [
+            port: '8888',
+            icon: '🌐',
+            type: 'Web'
+        ],
+        'push-server': [
+            port: '3000',
+            icon: '🔌',
+            type: 'API'
+        ]
+    ]
+    return deployInfo[serverName]
+}
+
 def startOrReloadServer(serverName, displayName) {
     try {
         def result = sh(script: """
@@ -42,7 +58,11 @@ def startOrReloadServer(serverName, displayName) {
             pm2 list"
         """, returnStdout: true).trim()
         
-        sendDiscordMessage("✅ ${displayName} ${result.contains('reload') ? '업데이트' : '시작'} 성공", true)
+        def deployInfo = getDeployInfo(serverName)
+        def status = result.contains('reload') ? '업데이트' : '시작'
+        def deployUrl = deployInfo ? "\n${deployInfo.icon} ${deployInfo.type} 주소: http://\${WIFI_INTERFACE}:${deployInfo.port}" : ""
+        
+        sendDiscordMessage("✅ ${displayName} ${status} 성공${deployUrl}", true)
     } catch (Exception e) {
         sendDiscordMessage("❌ ${displayName} 실패: ${e.getMessage()}", false)
         throw e
