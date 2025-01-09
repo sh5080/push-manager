@@ -55,11 +55,8 @@ def startOrReloadServer(serverName, displayName) {
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             (pm2 reload ${serverName} && echo 'reload') || \
             (pm2 start ecosystem.config.js --only ${serverName} && echo 'start') && \
-            echo '현재 경로:' && pwd && \
-            echo '디렉토리 내용:' && ls -la && \
-            echo 'shared 디렉토리:' && cd src/shared && pwd && ls -la && \
-            FRONTEND_URL=\$(cat .env | grep NEXT_PUBLIC_FRONTEND_URL | cut -d'=' -f2) && \
-            echo \$FRONTEND_URL"
+            cd src/shared && \
+            cat .env | grep NEXT_PUBLIC_FRONTEND_URL"
         """, returnStdout: true).trim()
         
         println "DEBUG - Raw result: [${result}]"
@@ -67,9 +64,15 @@ def startOrReloadServer(serverName, displayName) {
         def deployInfo = getDeployInfo(serverName)
         def status = result.contains('reload') ? '업데이트' : '시작'
         
-        // 마지막 줄이 URL
+        // URL 추출 (NEXT_PUBLIC_FRONTEND_URL=http://... 형식에서)
+        def serverUrl = ""
         def lines = result.split('\n')
-        def serverUrl = lines.length > 0 ? lines[-1].trim() : ""
+        for (line in lines) {
+            if (line.contains('NEXT_PUBLIC_FRONTEND_URL=')) {
+                serverUrl = line.split('=')[1]?.trim() ?: ""
+                break
+            }
+        }
         
         def deployUrl = ""
         if (deployInfo && serverUrl) {
