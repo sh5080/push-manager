@@ -8,13 +8,15 @@ def startOrReloadServer(serverName, displayName) {
     try {
         def result = sh(script: """
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-            if pm2 list | grep -q '${serverName}'; then \
+            pm2 jlist > pm2_status.json && \
+            if type pm2_status.json | findstr ${serverName}; then \
                 pm2 reload ${serverName} && \
                 echo 'reload'; \
             else \
                 pm2 start ecosystem.config.js --only ${serverName} && \
                 echo 'start'; \
-            fi"
+            fi && \
+            rm pm2_status.json"
         """, returnStdout: true).trim()
         
         sendDiscordMessage("✅ ${displayName} ${result == 'reload' ? '업데이트' : '시작'} 성공")
