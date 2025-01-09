@@ -56,7 +56,7 @@ def startOrReloadServer(serverName, displayName) {
             (pm2 reload ${serverName} && echo 'reload') || \
             (pm2 start ecosystem.config.js --only ${serverName} && echo 'start') && \
             pm2 list && \
-            echo 'SERVER_URL=' && grep NEXT_PUBLIC_FRONTEND_URL src/shared/.env | cut -d'=' -f2"
+            cat src/shared/.env | grep NEXT_PUBLIC_FRONTEND_URL"
         """, returnStdout: true).trim()
         
         def deployInfo = getDeployInfo(serverName)
@@ -66,7 +66,7 @@ def startOrReloadServer(serverName, displayName) {
         def lines = result.readLines()
         def serverUrl = ""
         for (line in lines) {
-            if (line.startsWith('SERVER_URL=')) {
+            if (line.contains('NEXT_PUBLIC_FRONTEND_URL=')) {
                 serverUrl = line.split('=')[1]?.trim() ?: ""
                 break
             }
