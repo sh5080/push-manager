@@ -50,12 +50,12 @@ export const menuItems: MenuItem[] = [
     icon: <HiOutlineHome />,
   },
   {
-    name: "푸시 발송",
+    name: "타겟 푸시 발송",
     path: "/push",
     icon: <HiOutlineBell />,
   },
   {
-    name: "푸시 예약",
+    name: "타겟 푸시 예약",
     path: "/push/scheduled",
     icon: <HiOutlineCalendar />,
   },
