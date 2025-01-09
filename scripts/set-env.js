@@ -3,7 +3,6 @@ const fs = require("fs");
 const path = require("path");
 
 function getNetworkIP() {
-  const platform = os.platform();
   const interfaces = os.networkInterfaces();
 
   // 내부망 IP (10.x.x.x) 찾기
