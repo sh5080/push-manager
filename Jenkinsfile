@@ -1,21 +1,27 @@
 def sendDiscordMessage(message) {
     sh """
-        /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-        curl --interface 192.168.0.62 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"${message}\\"}' \${DISCORD_WEBHOOK}"
+        curl --interface \${WIFI_INTERFACE} -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"${message}\\"}' \${DISCORD_WEBHOOK}
     """
 }
 
 def startOrReloadServer(serverName, displayName) {
-    sh """
-        /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-        if pm2 list | grep -q '${serverName}'; then \
-            pm2 reload ${serverName} && \
-            curl --interface 192.168.0.62 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ ${displayName} 업데이트 성공\\"}' \${DISCORD_WEBHOOK}; \
-        else \
-            pm2 start ecosystem.config.js --only ${serverName} && \
-            curl --interface 192.168.0.62 -k -H 'Content-Type: application/json' -d '{\\"content\\":\\"✅ ${displayName} 시작 성공\\"}' \${DISCORD_WEBHOOK}; \
-        fi"
-    """
+    try {
+        def result = sh(script: """
+            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
+            if pm2 list | grep -q '${serverName}'; then \
+                pm2 reload ${serverName} && \
+                echo 'reload'; \
+            else \
+                pm2 start ecosystem.config.js --only ${serverName} && \
+                echo 'start'; \
+            fi"
+        """, returnStdout: true).trim()
+        
+        sendDiscordMessage("✅ ${displayName} ${result == 'reload' ? '업데이트' : '시작'} 성공")
+    } catch (Exception e) {
+        sendDiscordMessage("❌ ${displayName} 실패: ${e.getMessage()}")
+        throw e
+    }
 }
 
 pipeline {
@@ -29,6 +35,7 @@ pipeline {
         GITHUB_APP = credentials('GITHUB_APP_CREDS')
         GRAM_PASS = credentials('GRAM_SSH_PASSWORD')
         DISCORD_WEBHOOK = credentials('DISCORD_WEBHOOK')
+        WIFI_INTERFACE = credentials('WIFI_INTERFACE')
     }
     
     stages {
