@@ -6,32 +6,25 @@ function getNetworkIP() {
   const platform = os.platform();
   const interfaces = os.networkInterfaces();
 
-  if (platform === "darwin") {
-    // macOS
-    const en0 = interfaces["en0"];
-    if (en0) {
-      const ipv4 = en0.find((ip) => ip.family === "IPv4");
-      if (ipv4) {
-        return ipv4.address;
-      }
-    }
-  } else if (platform === "win32") {
-    // Windows
-    // 이더넷 또는 와이파이 인터페이스 찾기
-    for (const [name, iface] of Object.entries(interfaces)) {
-      // 'Wi-Fi' 또는 'Ethernet'이라는 이름을 가진 인터페이스 찾기
-      if (name.includes("Wi-Fi") || name.includes("Ethernet")) {
-        const ipv4 = iface.find((ip) => ip.family === "IPv4" && !ip.internal);
-        if (ipv4) {
-          return ipv4.address;
-        }
-      }
+  for (const [name, iface] of Object.entries(interfaces)) {
+    if (!iface) continue;
+
+    const internalIP = iface.find(
+      (ip) =>
+        ip.family === "IPv4" && !ip.internal && ip.address.startsWith("10.") // 내부망 IP 체크
+    );
+
+    if (internalIP) {
+      console.log(
+        `Found internal network on interface ${name}: ${internalIP.address}`
+      );
+      return internalIP.address;
     }
   }
 
-  // 적절한 인터페이스를 찾지 못한 경우
+  // 내부망 IP를 찾지 못한 경우 localhost 반환
   console.warn(
-    `Warning: Could not find network interface for ${platform}. Using fallback IP.`
+    `Warning: Could not find internal network interface (10.x.x.x). Using fallback IP.`
   );
   return "127.0.0.1";
 }

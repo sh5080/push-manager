@@ -60,13 +60,13 @@ def startOrReloadServer(serverName, displayName) {
 
         // Windows IPv4 주소 가져오기
         def ipResult = sh(script: """
-            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "ipconfig | findstr IPv4 | findstr 172"
+            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "ipconfig | findstr IPv4 | findstr 10"
         """, returnStdout: true).trim()
 
         println "DEBUG - IP result: [${ipResult}]"
         
-        // IPv4 주소에서 IP만 추출 (172로 시작하는 IP)
-        def frontendUrl = (ipResult =~ /172\.\d+\.\d+\.\d+/)[0]
+        // IPv4 주소에서 IP만 추출 (10로 시작하는 IP)
+        def frontendUrl = (ipResult =~ /10\.\d+\.\d+\.\d+/)[0]
         
         def deployInfo = getDeployInfo(serverName)
         def status = result.contains('reload') ? '업데이트' : '시작'
