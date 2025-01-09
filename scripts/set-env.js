@@ -2,7 +2,7 @@ const os = require("os");
 const fs = require("fs");
 const path = require("path");
 
-export function getNetworkIP() {
+function getNetworkIP() {
   const platform = os.platform();
   const interfaces = os.networkInterfaces();
 
@@ -71,3 +71,5 @@ console.log(`OS: ${os.platform()}`);
 console.log(
   `환경변수가 업데이트되었습니다: NEXT_PUBLIC_FRONTEND_URL=http://${ip}`
 );
+
+module.exports = { getNetworkIP };
