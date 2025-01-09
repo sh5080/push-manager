@@ -4,17 +4,13 @@ import {
   CreatePushDto,
   GetRecentPushesDto,
   UpdatePushStatusDto,
-} from "@push-manager/shared/dtos/push.dto";
+} from "@push-manager/shared";
 
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
 import { PushStsMsg } from "../entities/pushStsMsg.entity";
 import { APP_CONFIG } from "../configs/app.config";
-import { AppDataSource } from "../configs/db.config";
 import { PushMasterRepository } from "../repositories/pushMaster.repository";
-import {
-  PModeEnum,
-  StepEnum,
-} from "@push-manager/shared/types/constants/pushQueue.const";
+import { PModeEnum, StepEnum } from "@push-manager/shared";
 import { PushQueueRepository } from "../repositories/pushQueue.repository";
 import { convertToSysdate } from "../utils/transform.util";
 import { PushQueue } from "../entities/pushQueue.entity";
