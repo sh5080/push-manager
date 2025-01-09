@@ -3,35 +3,33 @@ def sendDiscordMessage(message, isSuccess = true) {
     def jobName = env.JOB_NAME ?: 'N/A'
     def buildNumber = env.BUILD_NUMBER ?: 'N/A'
     
-    def payload = """
-        {
-            "embeds": [{
-                "title": "Jenkins Build #${buildNumber}",
-                "description": "${message}",
-                "color": ${isSuccess ? 3066993 : 15158332},  // 성공: 초록색, 실패: 빨간색
-                "fields": [
-                    {
-                        "name": "Job",
-                        "value": "${jobName}",
-                        "inline": true
-                    },
-                    {
-                        "name": "Build",
-                        "value": "#${buildNumber}",
-                        "inline": true
-                    }
+    def jsonString = groovy.json.JsonOutput.toJson([
+        embeds: [[
+            title: "Jenkins Build #${buildNumber}",
+            description: message,
+            color: isSuccess ? 3066993 : 15158332,
+            fields: [
+                [
+                    name: "Job",
+                    value: jobName,
+                    inline: true
                 ],
-                "footer": {
-                    "text": "Jenkins Build"
-                },
-                "timestamp": "${new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone('UTC'))}"
-            }]
-        }
-    """
+                [
+                    name: "Build",
+                    value: "#${buildNumber}",
+                    inline: true
+                ]
+            ],
+            footer: [
+                text: "Jenkins Build"
+            ],
+            timestamp: new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone('UTC'))
+        ]]
+    ])
     
     sh """
         curl --interface \${WIFI_INTERFACE} -k -H 'Content-Type: application/json' \
-        -d '${payload.replaceAll("'", "'\\''")}' \${DISCORD_WEBHOOK}
+        -d '${jsonString}' \${DISCORD_WEBHOOK}
     """
 }
 
