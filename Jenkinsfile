@@ -55,13 +55,16 @@ def startOrReloadServer(serverName, displayName) {
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             (pm2 reload ${serverName} && echo 'reload') || \
             (pm2 start ecosystem.config.js --only ${serverName} && echo 'start') && \
-            pm2 list"
+            pm2 list && \
+            echo 'SERVER_URL=' && grep NEXT_PUBLIC_FRONTEND_URL src/shared/.env | cut -d'=' -f2"
         """, returnStdout: true).trim()
         
         def deployInfo = getDeployInfo(serverName)
         def status = result.contains('reload') ? '업데이트' : '시작'
-        def ip = sh(script: "echo \${WIFI_INTERFACE}", returnStdout: true).trim()
-        def deployUrl = deployInfo ? "\n${deployInfo.icon} ${deployInfo.type} 주소: http://${ip}:${deployInfo.port}" : ""
+        
+        // .env 파일에서 URL 추출
+        def serverUrl = result.readLines().find { it.startsWith('SERVER_URL=') }?.split('=')[1]?.trim()
+        def deployUrl = deployInfo ? "\n${deployInfo.icon} ${deployInfo.type} 주소: ${serverUrl}:${deployInfo.port}" : ""
         
         sendDiscordMessage("✅ ${displayName} ${status} 성공${deployUrl}", true)
     } catch (Exception e) {
