@@ -55,7 +55,9 @@ def startOrReloadServer(serverName, displayName) {
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             (pm2 reload ${serverName} && echo 'reload') || \
             (pm2 start ecosystem.config.js --only ${serverName} && echo 'start') && \
-            cd src/shared && \
+            echo '현재 경로:' && pwd && \
+            echo '디렉토리 내용:' && ls -la && \
+            echo 'shared 디렉토리:' && cd src/shared && pwd && ls -la && \
             FRONTEND_URL=\$(cat .env | grep NEXT_PUBLIC_FRONTEND_URL | cut -d'=' -f2) && \
             echo \$FRONTEND_URL"
         """, returnStdout: true).trim()
