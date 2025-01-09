@@ -19,10 +19,10 @@
     "build:server": "yarn set-env && yarn ws:server build",
     "build:all": "yarn set-env && yarn build:shared && yarn build:web && yarn build:server",
     "-------------------------------------------------------------------  ": "",
-    "web:dev": "yarn ws:web dev",
-    "server:dev": "yarn ws:server dev",
-    "web:prod": "yarn ws:web start",
-    "server:prod": "yarn ws:server start",
+    "web:dev": "yarn set-env && yarn ws:web dev",
+    "server:dev": "yarn set-env && yarn ws:server dev",
+    "web:prod": "yarn set-env && yarn ws:web start",
+    "server:prod": "yarn set-env && yarn ws:server start",
     "lint": "yarn workspaces run lint"
   },
   "devDependencies": {
