@@ -48,6 +48,20 @@ export class PushController {
     }
   };
 
+  getPushStsMsgDetail = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const idx = Number(req.params.idx);
+      const detail = await this.pushService.getPushStsMsgDetail(idx);
+      res.success(detail);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   updatePushStatus = async (
     req: Request,
     res: Response,
