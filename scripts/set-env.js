@@ -6,6 +6,7 @@ function getNetworkIP() {
   const platform = os.platform();
   const interfaces = os.networkInterfaces();
 
+  // 내부망 IP (10.x.x.x) 찾기
   for (const [name, iface] of Object.entries(interfaces)) {
     if (!iface) continue;
 
@@ -15,16 +16,30 @@ function getNetworkIP() {
     );
 
     if (internalIP) {
+      console.log(`[Network Info] Interface: ${name}`);
+      console.log(`[Network Info] IP Family: ${internalIP.family}`);
+      console.log(`[Network Info] Internal: ${internalIP.internal}`);
       console.log(
-        `Found internal network on interface ${name}: ${internalIP.address}`
+        `[Network Info] Found internal network: ${internalIP.address}`
       );
       return internalIP.address;
     }
   }
 
-  // 내부망 IP를 찾지 못한 경우 localhost 반환
+  // 모든 네트워크 인터페이스 정보 출력
+  console.log("[Debug] Available network interfaces:");
+  for (const [name, iface] of Object.entries(interfaces)) {
+    if (!iface) continue;
+    console.log(`[Debug] Interface ${name}:`);
+    iface.forEach((ip) => {
+      console.log(
+        `[Debug]   - ${ip.family}: ${ip.address} (internal: ${ip.internal})`
+      );
+    });
+  }
+
   console.warn(
-    `Warning: Could not find internal network interface (10.x.x.x). Using fallback IP.`
+    `[Warning] Could not find internal network interface (10.x.x.x). Using fallback IP.`
   );
   return "127.0.0.1";
 }
