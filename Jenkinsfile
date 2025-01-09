@@ -1,7 +1,18 @@
 def sendDiscordMessage(message) {
-    sh """
-        curl --interface \${WIFI_INTERFACE} -k -H 'Content-Type: application/json' -d '{"content": "${message}"}' \${DISCORD_WEBHOOK}
-    """
+    def response = sh(script: """
+        curl --interface \${WIFI_INTERFACE} -k -s -w '\\n%{http_code}' \
+        -H 'Content-Type: application/json' \
+        -H 'User-Agent: Jenkins-Discord-Webhook' \
+        -d '{"content": "${message}"}' \${DISCORD_WEBHOOK}
+    """, returnStdout: true).trim()
+    
+    def statusCode = response.tokenize('\n')[-1]
+    
+    if (statusCode != "204" && statusCode != "200") {
+        echo "Discord webhook failed with status ${statusCode}"
+        echo "Response: ${response}"
+        error("Discord webhook failed")
+    }
 }
 
 def startOrReloadServer(serverName, displayName) {
