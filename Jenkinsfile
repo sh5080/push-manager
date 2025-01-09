@@ -52,21 +52,21 @@ def getDeployInfo(serverName) {
 def startOrReloadServer(serverName, displayName) {
     try {
         // 서버 시작/재시작
-        sh(script: """
+        def result = sh(script: """
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             (pm2 reload ${serverName} && echo 'reload') || \
             (pm2 start ecosystem.config.js --only ${serverName} && echo 'start')"
-        """)
+        """, returnStdout: true).trim()
 
         // Windows IPv4 주소 가져오기
         def ipResult = sh(script: """
-            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "ipconfig | findstr IPv4"
+            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "ipconfig | findstr IPv4 | findstr 172"
         """, returnStdout: true).trim()
 
         println "DEBUG - IP result: [${ipResult}]"
         
-        // IPv4 주소 추출 (마지막 IPv4 주소 사용)
-        def frontendUrl = ipResult.findAll(/IPv4.*?(\d+\.\d+\.\d+\.\d+)/)[-1].find(/\d+\.\d+\.\d+\.\d+/) ?: 'localhost'
+        // IPv4 주소에서 IP만 추출 (172로 시작하는 IP)
+        def frontendUrl = (ipResult =~ /172\.\d+\.\d+\.\d+/)[0]
         
         def deployInfo = getDeployInfo(serverName)
         def status = result.contains('reload') ? '업데이트' : '시작'
