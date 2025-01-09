@@ -55,14 +55,16 @@ def startOrReloadServer(serverName, displayName) {
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             (pm2 reload ${serverName} && echo 'reload') || \
             (pm2 start ecosystem.config.js --only ${serverName} && echo 'start') && \
-            pm2 env ${serverName}"
+            pm2 env 1 2>/dev/null"
         """, returnStdout: true).trim()
 
         println "DEBUG - Raw result: [${result}]"
         
         def deployInfo = getDeployInfo(serverName)
         def status = result.contains('reload') ? '업데이트' : '시작'
-        def deployUrl = deployInfo ? "\n${deployInfo.icon} ${deployInfo.type} 주소: http://\${WIFI_INTERFACE}:${deployInfo.port}" : ""
+        
+        def frontendUrl = result.find(/NEXT_PUBLIC_FRONTEND_URL=([^\n]*)/)?.replaceFirst(/NEXT_PUBLIC_FRONTEND_URL=/, '') ?: 'localhost'
+        def deployUrl = deployInfo ? "\n${deployInfo.icon} ${deployInfo.type} 주소: http://${frontendUrl}:${deployInfo.port}" : ""
         
         sendDiscordMessage("✅ ${displayName} ${status} 성공${deployUrl}", true)
     } catch (Exception e) {
