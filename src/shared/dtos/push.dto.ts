@@ -22,6 +22,8 @@ import {
   OptAgreeEnum,
   StepEnum,
 } from "../types/constants/pushQueue.const";
+import { IPushStsMsgDetail } from "../types/entities/pushStsMsgDetail.entity";
+import { IPushStsMsg } from "../types/entities/pushStsMsg.entity";
 
 export interface TestPushDto
   extends Omit<
@@ -74,6 +76,10 @@ export interface PushResponse {
     limit: number;
     totalPages: number;
   };
+}
+
+export interface PushDetailResponse extends IPushStsMsg {
+  detail: IPushStsMsgDetail[];
 }
 
 export class CreatePushDto {

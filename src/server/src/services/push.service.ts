@@ -111,8 +111,10 @@ export class PushService implements IPushService {
     }, false);
   }
 
-  async getPushStsMsgDetail(idx: number): Promise<PushStsSendStatsDay[]> {
-    return this.pushStsMsgRepository.getPushStsMsgDetail(idx);
+  async getPushStsMsgDetail(idx: number): Promise<PushStsMsg | null> {
+    return queryRunnerCreation(async (queryRunner) => {
+      return this.pushStsMsgRepository.getPushStsMsgDetail(queryRunner, idx);
+    }, false);
   }
 
   async updatePushStatus(

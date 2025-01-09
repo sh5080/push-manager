@@ -10,12 +10,13 @@ import {
   getStatusText,
   formatDate,
 } from "../../utils/push.util";
-import { HiOutlineDownload } from "react-icons/hi";
+import { DetailModal } from "../modals/detail.modal";
 
 export function RecentPushes() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchPushes = async () => {
     try {
@@ -28,6 +29,17 @@ export function RecentPushes() {
       setPushes(data);
     } catch (e) {
       setError(e instanceof Error ? e : new Error("Failed to fetch pushes"));
+    }
+  };
+
+  const handlePushClick = async (push: IPushStsMsg) => {
+    try {
+      const pushAPI = PushAPI.getInstance();
+      const detailData = await pushAPI.getPushDetail(push.idx);
+      setSelectedPush(detailData);
+      setIsModalOpen(true);
+    } catch (e) {
+      console.error("Failed to fetch push detail:", e);
     }
   };
 
@@ -77,6 +89,7 @@ export function RecentPushes() {
               <tr
                 key={push.idx}
                 className="hover:bg-gray-50 cursor-pointer transition-colors"
+                onClick={() => handlePushClick(push)}
               >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
@@ -118,6 +131,12 @@ export function RecentPushes() {
           </p>
         </div>
       )}
+
+      <DetailModal
+        push={selectedPush}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
