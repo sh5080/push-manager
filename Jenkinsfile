@@ -55,22 +55,18 @@ def startOrReloadServer(serverName, displayName) {
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             (pm2 reload ${serverName} && echo 'reload') || \
             (pm2 start ecosystem.config.js --only ${serverName} && echo 'start') && \
-            pm2 list && \
-            cat src/shared/.env | grep NEXT_PUBLIC_FRONTEND_URL"
+            FRONTEND_URL=\$(cat src/shared/.env | grep NEXT_PUBLIC_FRONTEND_URL | cut -d'=' -f2) && \
+            echo \$FRONTEND_URL"
         """, returnStdout: true).trim()
+        
+        println "DEBUG - Raw result: [${result}]"
         
         def deployInfo = getDeployInfo(serverName)
         def status = result.contains('reload') ? '업데이트' : '시작'
         
-        // 안전한 URL 추출
-        def lines = result.readLines()
-        def serverUrl = ""
-        for (line in lines) {
-            if (line.contains('NEXT_PUBLIC_FRONTEND_URL=')) {
-                serverUrl = line.split('=')[1]?.trim() ?: ""
-                break
-            }
-        }
+        // 마지막 줄이 URL
+        def lines = result.split('\n')
+        def serverUrl = lines.length > 0 ? lines[-1].trim() : ""
         
         def deployUrl = ""
         if (deployInfo && serverUrl) {
