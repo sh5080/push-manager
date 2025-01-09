@@ -6,8 +6,7 @@ module.exports = {
     {
       name: "push-web",
       cwd: "C:\\Users\\1\\push-manager",
-      script: "npm",
-      args: "run web:prod",
+      script: "./scripts/start-web.js",
       env: {
         NODE_ENV: "production",
         ...process.env,
@@ -21,8 +20,7 @@ module.exports = {
     {
       name: "push-server",
       cwd: "C:\\Users\\1\\push-manager",
-      script: "npm",
-      args: "run server:prod",
+      script: "./scripts/start-server.js",
       env: {
         NODE_ENV: "production",
         ...process.env,
