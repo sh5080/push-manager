@@ -61,9 +61,9 @@ def startOrReloadServer(serverName, displayName) {
                 pm2 start ecosystem.config.js --only ${serverName} && STATUS='시작'; \
             fi && \
             sleep 2 && \
-            FRONTEND_URL=\$(pm2 env ${serverName} | grep 'FRONTEND_URL' | cut -d'=' -f2) && \
+            FRONTEND_URL=\\$(pm2 env ${serverName} | grep 'FRONTEND_URL' | cut -d'=' -f2) && \
             curl -H 'Content-Type: application/json' \
-            -d '{\\"embeds\\":[{\\"title\\":\\"Jenkins Build #\${BUILD_NUMBER}\\",\\"description\\":\\"✅ ${displayName} '\$STATUS' 성공\\\\n${deployInfo.icon} ${deployInfo.type} 주소: http://'\$FRONTEND_URL':${deployInfo.port}\\",\\"color\\":3066993}]}' \
+            -d '{\\"embeds\\":[{\\"title\\":\\"Jenkins Build #\${BUILD_NUMBER}\\",\\"description\\":\\"✅ ${displayName} '\\\$STATUS' 성공\\\\n${deployInfo.icon} ${deployInfo.type} 주소: http://'\\\$FRONTEND_URL':${deployInfo.port}\\",\\"color\\":3066993}]}' \
             \${DISCORD_WEBHOOK}"
         """, returnStdout: true).trim()
         
