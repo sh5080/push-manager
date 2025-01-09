@@ -51,30 +51,20 @@ def getDeployInfo(serverName) {
 
 def startOrReloadServer(serverName, displayName) {
     try {
-        // PM2 작업 먼저 실행
-        def pmResult = sh(script: """
+        def result = sh(script: """
             /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
-            (pm2 reload ${serverName} && echo 'reload') || \
-            (pm2 start ecosystem.config.js --only ${serverName} && echo 'start')"
+            (pm2 reload ${serverName} || pm2 start ecosystem.config.js --only ${serverName}) > /dev/null 2>&1 && \
+            cat src/shared/.env | grep NEXT_PUBLIC_FRONTEND_URL"
         """, returnStdout: true).trim()
         
-        println "DEBUG - PM2 result: [${pmResult}]"
-        
-        // 그 다음 URL 가져오기 (별도 명령어로 실행)
-        def urlResult = sh(script: """
-            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH}/src/shared && \
-            cat .env | grep NEXT_PUBLIC_FRONTEND_URL"
-        """, returnStdout: true).trim()
-        
-        println "DEBUG - URL result: [${urlResult}]"
+        println "DEBUG - Raw result: [${result}]"
         
         def deployInfo = getDeployInfo(serverName)
-        def status = pmResult.contains('reload') ? '업데이트' : '시작'
+        def status = result.contains('reload') ? '업데이트' : '시작'
         
-        def serverUrl = urlResult.split('=')[1]?.trim() ?: ""
         def deployUrl = ""
-        if (deployInfo && serverUrl) {
-            deployUrl = "\n${deployInfo.icon} ${deployInfo.type} 주소: ${serverUrl}:${deployInfo.port}"
+        if (deployInfo && result) {
+            deployUrl = "\n${deployInfo.icon} ${deployInfo.type} 주소: ${result}:${deployInfo.port}"
         }
         
         sendDiscordMessage("✅ ${displayName} ${status} 성공${deployUrl}", true)
