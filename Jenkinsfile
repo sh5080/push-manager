@@ -54,17 +54,17 @@ def startOrReloadServer(serverName, displayName) {
         def deployInfo = getDeployInfo(serverName)
         
         def result = sh(script: """
-            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} 'cd \${GRAM_PATH} && \
+            /opt/homebrew/bin/sshpass -p "\${GRAM_PASS_PSW}" ssh -o StrictHostKeyChecking=no -p \${GRAM_PORT} \${GRAM_USER}@\${GRAM_HOST} "cd \${GRAM_PATH} && \
             if pm2 reload ${serverName}; then \
-                STATUS="업데이트"; \
+                STATUS='업데이트'; \
             else \
-                pm2 start ecosystem.config.js --only ${serverName} && STATUS="시작"; \
+                pm2 start ecosystem.config.js --only ${serverName} && STATUS='시작'; \
             fi && \
             sleep 2 && \
-            FRONTEND_URL=\$(pm2 env ${serverName} | grep "FRONTEND_URL" | cut -d"=" -f2) && \
-            curl -H "Content-Type: application/json" \
-            -d "{\\"embeds\\":[{\\"title\\":\\"Jenkins Build #\${BUILD_NUMBER}\\",\\"description\\":\\"✅ ${displayName} \$STATUS 성공\\\\n${deployInfo.icon} ${deployInfo.type} 주소: http://\$FRONTEND_URL:${deployInfo.port}\\",\\"color\\":3066993}]}" \
-            \${DISCORD_WEBHOOK}'
+            FRONTEND_URL=\$(pm2 env ${serverName} | grep 'FRONTEND_URL' | cut -d'=' -f2) && \
+            curl -H 'Content-Type: application/json' \
+            -d '{\\"embeds\\":[{\\"title\\":\\"Jenkins Build #\${BUILD_NUMBER}\\",\\"description\\":\\"✅ ${displayName} '\$STATUS' 성공\\\\n${deployInfo.icon} ${deployInfo.type} 주소: http://'\$FRONTEND_URL':${deployInfo.port}\\",\\"color\\":3066993}]}' \
+            \${DISCORD_WEBHOOK}"
         """, returnStdout: true).trim()
         
         println "DEBUG - Raw result: [${result}]"
