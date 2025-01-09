@@ -60,7 +60,8 @@ def startOrReloadServer(serverName, displayName) {
         
         def deployInfo = getDeployInfo(serverName)
         def status = result.contains('reload') ? '업데이트' : '시작'
-        def deployUrl = deployInfo ? "\n${deployInfo.icon} ${deployInfo.type} 주소: http://\${WIFI_INTERFACE}:${deployInfo.port}" : ""
+        def ip = sh(script: "echo \${WIFI_INTERFACE}", returnStdout: true).trim()
+        def deployUrl = deployInfo ? "\n${deployInfo.icon} ${deployInfo.type} 주소: http://${ip}:${deployInfo.port}" : ""
         
         sendDiscordMessage("✅ ${displayName} ${status} 성공${deployUrl}", true)
     } catch (Exception e) {
