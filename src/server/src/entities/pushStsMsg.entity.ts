@@ -30,25 +30,25 @@ export class PushStsMsg implements IPushStsMsg {
   @Column({ name: "APPID", length: 50, nullable: true })
   appid?: string;
 
-  @Column({ name: "SENDDATE", type: "date", nullable: true })
+  @Column({ name: "SENDDATE", nullable: true })
   senddate?: Date;
 
-  @Column({ name: "CRONDATE", type: "date", nullable: true })
+  @Column({ name: "CRONDATE", nullable: true })
   crondate?: Date;
 
-  @Column({ name: "CRON_COMPLATEDATE", type: "date", nullable: true })
+  @Column({ name: "CRON_COMPLATEDATE", nullable: true })
   cronComplatedate?: Date;
 
-  @CreateDateColumn({ name: "WDATE", type: "date" })
+  @CreateDateColumn({ name: "WDATE" })
   wdate!: Date;
 
-  @UpdateDateColumn({ name: "UDATE", type: "date" })
+  @UpdateDateColumn({ name: "UDATE" })
   udate!: Date;
 
   @Column({ type: "varchar", name: "STEP", length: 4, nullable: true })
   step?: (typeof StepEnum)[keyof typeof StepEnum];
 
-  @Column({ name: "RESULTDATE", type: "date", nullable: true })
+  @Column({ name: "RESULTDATE", nullable: true })
   resultdate?: Date;
 
   @Column({ name: "ANDROID_SOUND", length: 50, nullable: true })
