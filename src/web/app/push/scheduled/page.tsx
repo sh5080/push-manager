@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { PushAPI } from "../../apis/push.api";
 import { formatDate } from "@push-manager/shared/utils/date";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
-import { getStatusStyle, getStatusText } from "app/utils/push.util";
+import { getStatusStyle, getStatusText } from "../../utils/chip.util";
 
 export default function ScheduledPushPage() {
   const [scheduledPushes, setScheduledPushes] = useState<IPushMasterWithMsg[]>(

@@ -1,12 +1,10 @@
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
-import { PushListItem } from "./pushListItem.component";
-import { Pagination } from "../../common/components/pagination.component";
+import { formatDate } from "../../utils/push.util";
 import {
-  formatDate,
-  getStatusDotStyle,
   getStatusStyle,
   getStatusText,
-} from "../../utils/push.util";
+  getStatusDotStyle,
+} from "../../utils/chip.util";
 import {
   HiOutlineUser,
   HiOutlineClock,
