@@ -5,11 +5,8 @@ import { PushAPI } from "app/apis/push.api";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import ErrorFallback from "app/common/components/errorFallback.component";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
-import {
-  getStatusStyle,
-  getStatusText,
-  formatDate,
-} from "../../utils/push.util";
+import { formatDate } from "../../utils/push.util";
+import { getStatusStyle, getStatusText } from "../../utils/chip.util";
 import { DetailModal } from "../modals/detail.modal";
 
 export function RecentPushes() {
@@ -26,6 +23,7 @@ export function RecentPushes() {
         limit: 5,
         targetMode: AppIdEnum.PROD,
       });
+      console.log("data: ", data);
       setPushes(data);
     } catch (e) {
       setError(e instanceof Error ? e : new Error("Failed to fetch pushes"));
@@ -36,6 +34,7 @@ export function RecentPushes() {
     try {
       const pushAPI = PushAPI.getInstance();
       const detailData = await pushAPI.getPushDetail(push.idx);
+      console.log("detailData: ", detailData);
       setSelectedPush(detailData);
       setIsModalOpen(true);
     } catch (e) {
