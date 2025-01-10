@@ -1,10 +1,10 @@
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
+import { formatDate } from "../../utils/push.util";
 import {
-  formatDate,
   getStatusStyle,
-  getStatusDotStyle,
   getStatusText,
-} from "../../utils/push.util";
+  getStatusDotStyle,
+} from "../../utils/chip.util";
 
 interface PushListItemProps {
   push: IPushStsMsg;
