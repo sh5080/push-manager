@@ -9,12 +9,8 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { IPushStsMsgDetail } from "@push-manager/shared/types/entities/pushStsMsgDetail.entity";
-import {
-  formatDate,
-  getStatusStyle,
-  getStatusText,
-} from "../../utils/push.util";
-
+import { formatDate } from "../../utils/push.util";
+import { getStatusStyle, getStatusText } from "../../utils/chip.util";
 interface DetailModalProps {
   push: IPushStsMsgDetail | null;
   isOpen: boolean;
@@ -23,7 +19,7 @@ interface DetailModalProps {
 
 export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
   if (!push) return null;
-
+  console.log("push in detail modal: ", push);
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -51,12 +47,19 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
               leaveTo="opacity-0 scale-95"
             >
               <DialogPanel className="w-full max-w-2xl transform overflow-hidden rounded-lg bg-white p-6 shadow-xl transition-all">
-                <DialogTitle
-                  as="h3"
-                  className="text-lg font-semibold text-gray-900 mb-4"
-                >
-                  푸시 알림 상세 정보
-                </DialogTitle>
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <DialogTitle
+                      as="h3"
+                      className="text-lg font-semibold text-gray-900"
+                    >
+                      푸시 알림 상세 정보
+                    </DialogTitle>
+                    <p className="text-sm text-gray-500 mt-1">
+                      메시지 IDX: {push.idx}
+                    </p>
+                  </div>
+                </div>
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-4">

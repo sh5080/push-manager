@@ -1,0 +1,38 @@
+export function getStatusStyle(step?: string) {
+  switch (step) {
+    case "C":
+      return "bg-green-50 text-green-700";
+    case "F":
+      return "bg-red-50 text-red-700";
+    default:
+      return "bg-gray-50 text-gray-700";
+  }
+}
+
+export function getStatusDotStyle(step?: string) {
+  switch (step) {
+    case "C":
+      return "bg-green-400";
+    case "F":
+      return "bg-red-400";
+    default:
+      return "bg-gray-400";
+  }
+}
+
+export function getStatusText(step?: string) {
+  switch (step) {
+    case "C":
+      return "완료";
+    case "F":
+      return "실패";
+    case "T":
+      return "발송 준비중";
+    case "R":
+      return "발송 대기중";
+    case "S":
+      return "발송 완료";
+    default:
+      return "오류";
+  }
+}
