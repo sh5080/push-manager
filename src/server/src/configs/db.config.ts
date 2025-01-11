@@ -1,5 +1,6 @@
 import oracledb from "oracledb";
 import { DataSource } from "typeorm";
+import { Sequelize } from "sequelize";
 import { envConfig } from "@push-manager/shared";
 import { PushQueue } from "../entities/pushQueue.entity";
 import { PushSend } from "../entities/pushSend.entity";
@@ -13,6 +14,7 @@ import { PushMaster } from "../entities/pushMaster.entity";
 import { TestIdentify } from "../entities/testIdentify.entity";
 
 oracledb.initOracleClient({ libDir: envConfig.typeorm.clientDir });
+oracledb.fetchAsString = [oracledb.NUMBER];
 
 export const AppDataSource = new DataSource({
   type: "oracle",
@@ -34,4 +36,25 @@ export const AppDataSource = new DataSource({
     TestIdentify,
   ],
   synchronize: false,
+  extra: {
+    fetchAsString: [oracledb.NUMBER],
+  },
+});
+
+export const sequelize = new Sequelize({
+  dialect: "oracle",
+  username: envConfig.typeorm.username,
+  password: envConfig.typeorm.password,
+  host: envConfig.typeorm.host,
+  port: envConfig.typeorm.port,
+  dialectOptions: {
+    connectString: `${envConfig.typeorm.host}:${envConfig.typeorm.port}/${envConfig.typeorm.database}`,
+    oracleClient: {
+      _oracledb: oracledb,
+    },
+  },
+  define: {
+    timestamps: false,
+    freezeTableName: true,
+  },
 });
