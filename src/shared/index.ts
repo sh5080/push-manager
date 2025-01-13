@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 export * from "./configs/client.config";
 export * from "./configs/env.config";
 
