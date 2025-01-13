@@ -7,6 +7,7 @@ import { responseMiddleware } from "./middlewares/response.middleware";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { AppDataSource, sequelize } from "./configs/db.config";
 import { initModels } from "./models/init-models";
+import { initializeRelations } from "./models/relations";
 
 const app = express();
 const port = envConfig.server.port;
@@ -30,7 +31,8 @@ sequelize
   .then(() => {
     console.log("Sequelize Database connected");
     initModels(sequelize);
-    console.log("Sequelize Models initialized");
+    initializeRelations();
+    console.log("Sequelize Models and Relations initialized");
   })
   .catch(console.error);
 
