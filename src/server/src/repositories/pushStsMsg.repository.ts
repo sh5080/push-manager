@@ -3,8 +3,8 @@ import { PushStsMsg } from "../entities/pushStsMsg.entity";
 import { AppDataSource } from "../configs/db.config";
 import { APP_CONFIG } from "../configs/app.config";
 import { TblPushstsmsg, TblPushstssendStatsDay } from "../models/init-models";
-import { Op } from "sequelize";
 import { TblPushstsmsgAlias } from "@push-manager/shared";
+import { Sequelize } from "sequelize";
 
 export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
   private appIds: string[];
@@ -47,14 +47,21 @@ export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
 
   async getRecentTargetPushes(limit: number = 10): Promise<TblPushstsmsg[]> {
     return await TblPushstsmsg.findAll({
-      limit,
-      order: [["idx", "DESC"]],
-      raw: true,
-      where: {
-        appid: {
-          [Op.in]: this.appIds,
-        },
+      where: Sequelize.literal(`
+        IDX IN (
+          SELECT IDX FROM (
+            SELECT IDX FROM TBL_PUSHSTSMSG 
+            WHERE APPID IN (:appIds)
+            ORDER BY SENDDATE DESC
+          ) WHERE ROWNUM <= :limit
+        )
+      `),
+      replacements: {
+        limit,
+        appIds: this.appIds,
       },
+      order: [["senddate", "DESC"]],
+      raw: true,
     });
   }
 }
