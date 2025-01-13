@@ -19,6 +19,7 @@ import { TargetUploadTab } from "./tabs/tab1";
 import { PushConditionTab } from "./tabs/tab2";
 import { PushContentTab } from "./tabs/tab3";
 import { Toast } from "app/utils/toast.util";
+import { useRouter } from "next/navigation";
 
 interface SendPushModalProps {
   isOpen: boolean;
@@ -40,6 +41,7 @@ interface PushFormData {
 }
 
 export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
+  const router = useRouter();
   const [pushData, setFormData] = useState<PushFormData>({
     targetFile: null,
     identifyArray: [],
@@ -189,6 +191,11 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     });
   };
 
+  const handleNavigateToScheduled = () => {
+    onClose();
+    router.push("/push/scheduled");
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -291,27 +298,42 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
           )}
 
           <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 rounded-b-lg">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-              disabled={isLoading}
-            >
-              취소
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className={`
-                px-4 py-2 text-sm text-white rounded-md
-                ${
-                  isLoading
-                    ? "bg-blue-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                }
-              `}
-            >
-              {isLoading ? "처리중..." : "생성하기"}
-            </button>
+            <div className="flex-1">
+              <p className="text-sm ml-2 text-gray-600">
+                생성을 완료한 뒤{" "}
+                <button
+                  onClick={handleNavigateToScheduled}
+                  className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
+                >
+                  타겟 푸시 예약
+                </button>
+                에서 정상적으로 식별자가 삽입되었는지 확인 후<br /> 예약을
+                확정해야 전송이 시작됩니다.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                disabled={isLoading}
+              >
+                취소
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={isLoading}
+                className={`
+                  px-4 py-2 text-sm text-white rounded-md
+                  ${
+                    isLoading
+                      ? "bg-blue-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }
+                `}
+              >
+                {isLoading ? "처리중..." : "생성하기"}
+              </button>
+            </div>
           </div>
         </DialogPanel>
       </div>

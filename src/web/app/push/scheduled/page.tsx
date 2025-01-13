@@ -5,10 +5,14 @@ import { PushAPI } from "../../apis/push.api";
 import { formatDate } from "@push-manager/shared/utils/date";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { getStatusStyle, getStatusText } from "../../utils/chip.util";
+import { ScheduledPushDetailModal } from "./modals/scheduledPushDetail.modal";
 
 export default function ScheduledPushPage() {
   const [scheduledPushes, setScheduledPushes] = useState<IPushMasterWithMsg[]>(
     []
+  );
+  const [selectedPush, setSelectedPush] = useState<IPushMasterWithMsg | null>(
+    null
   );
 
   useEffect(() => {
@@ -49,7 +53,11 @@ export default function ScheduledPushPage() {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {scheduledPushes.map((push) => (
-              <tr key={push.cmpncode}>
+              <tr
+                key={push.cmpncode}
+                onClick={() => setSelectedPush(push)}
+                className="cursor-pointer hover:bg-gray-50"
+              >
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {push.cmpncode}
                 </td>
@@ -75,6 +83,14 @@ export default function ScheduledPushPage() {
           </tbody>
         </table>
       </div>
+
+      {selectedPush && (
+        <ScheduledPushDetailModal
+          isOpen={!!selectedPush}
+          onClose={() => setSelectedPush(null)}
+          push={selectedPush}
+        />
+      )}
     </div>
   );
 }
