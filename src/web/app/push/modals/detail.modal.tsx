@@ -8,11 +8,13 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { IPushStsMsgDetail } from "@push-manager/shared/types/entities/pushStsMsgDetail.entity";
 import { formatDate } from "../../utils/push.util";
 import { getStatusStyle, getStatusText } from "../../utils/chip.util";
+import { PushStats } from "../components/PushStats.component";
+import { IPushStsMsg } from "@push-manager/shared";
+
 interface DetailModalProps {
-  push: IPushStsMsgDetail | null;
+  push: IPushStsMsg | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -99,34 +101,7 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                       {push.tmpMessage}
                     </p>
                   </div>
-
-                  {push.detail && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        발송 대상
-                      </p>
-                      <p className="mt-1">
-                        {push.detail
-                          .map((d) => d.sent)
-                          .reduce((a, b) => a || 0 + (b || 0), 0)}
-                        명
-                      </p>
-                    </div>
-                  )}
-
-                  {push.detail && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        발송 성공
-                      </p>
-                      <p className="mt-1">
-                        {push.detail
-                          .map((d) => d.sent)
-                          .reduce((a, b) => a || 0 + (b || 0), 0)}
-                        명
-                      </p>
-                    </div>
-                  )}
+                  {push.detail && <PushStats detail={push.detail} />}
                 </div>
 
                 <div className="mt-6 flex justify-end">
