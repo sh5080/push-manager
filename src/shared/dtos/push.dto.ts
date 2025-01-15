@@ -78,10 +78,6 @@ export interface PushResponse {
   };
 }
 
-export interface PushDetailResponse extends IPushStsMsg {
-  detail: IPushStsMsgDetail[];
-}
-
 export class CreatePushDto {
   @IsString()
   @IsNotEmpty({ message: "푸시 제목은 필수입니다." })
