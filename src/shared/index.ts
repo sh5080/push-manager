@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 export * from "./configs/client.config";
 export * from "./configs/env.config";
 
@@ -6,6 +8,7 @@ export * from "./dtos/push.dto";
 export * from "./dtos/select.dto";
 
 export * from "./types/constants/common.const";
+export * from "./types/constants/joinAlias.const";
 export * from "./types/constants/pushQueue.const";
 
 export * from "./types/entities/deviceToken.entity";

@@ -17,12 +17,11 @@ import {
   OneToMany,
 } from "typeorm";
 import { PushMaster } from "./pushMaster.entity";
-import { PushStsSendStatsDay } from "./pushStsSendStatsDay.entity";
 
 @Entity("TBL_PUSHSTSMSG")
 export class PushStsMsg implements IPushStsMsg {
   @PrimaryGeneratedColumn({ name: "IDX" })
-  idx!: number;
+  idx!: string;
 
   @Column({ name: "USER_ID", length: 50, nullable: true })
   userId?: string;
@@ -243,6 +242,6 @@ export class PushStsMsg implements IPushStsMsg {
   @OneToMany(() => PushMaster, (master) => master.pushStsMsg)
   pushMasters?: PushMaster[];
 
-  @OneToMany(() => PushStsSendStatsDay, (stats) => stats.pushStsMsg)
-  detail?: PushStsSendStatsDay[];
+  // @OneToMany(() => PushStsSendStatsDay, (stats) => stats.pushStsMsg)
+  // detail?: PushStsSendStatsDay[];
 }

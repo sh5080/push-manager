@@ -7,9 +7,10 @@ import {
   OptAgreeEnum,
   PModeEnum,
 } from "../constants/pushQueue.const";
+import { IPushStsMsgDetail } from "./pushStsMsgDetail.entity";
 
 export interface IPushStsMsg {
-  idx: number;
+  idx: string;
   userId?: string;
   appid?: string;
   senddate?: Date;
@@ -57,4 +58,5 @@ export interface IPushStsMsg {
   sendStat?: (typeof SendStatEnum)[keyof typeof SendStatEnum];
   targetFilter?: string;
   cronidx?: number;
+  detail?: IPushStsMsgDetail[];
 }

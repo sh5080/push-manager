@@ -14,6 +14,7 @@
     "ws:web": "yarn env yarn workspace @push-manager/web",
     "ws:server": "yarn env yarn workspace @push-manager/server",
     "------------------------------------------------------------------- ": "",
+    "gen:models": "yarn set-env && yarn ws:server generate:models",
     "build:shared": "yarn set-env && yarn ws:shared build",
     "build:web": "yarn set-env && yarn ws:web build",
     "build:server": "yarn set-env && yarn ws:server build",
