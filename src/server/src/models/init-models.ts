@@ -222,7 +222,7 @@ import type {
 // import type {
 //   TblFpResult202412Attributes,
 //   TblFpResult202412CreationAttributes,
-// } from "./TblFpResult202412";
+// } from "./TblFpResult202412"
 import { TblFpResultBackup as _TblFpResultBackup } from "./TblFpResultBackup";
 import type {
   TblFpResultBackupAttributes,
