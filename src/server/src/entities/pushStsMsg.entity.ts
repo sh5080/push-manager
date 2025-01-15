@@ -22,7 +22,7 @@ import { PushStsSendStatsDay } from "./pushStsSendStatsDay.entity";
 @Entity("TBL_PUSHSTSMSG")
 export class PushStsMsg implements IPushStsMsg {
   @PrimaryGeneratedColumn({ name: "IDX" })
-  idx!: number;
+  idx!: string;
 
   @Column({ name: "USER_ID", length: 50, nullable: true })
   userId?: string;
