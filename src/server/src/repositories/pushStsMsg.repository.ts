@@ -3,8 +3,8 @@ import { PushStsMsg } from "../entities/pushStsMsg.entity";
 import { AppDataSource } from "../configs/db.config";
 import { APP_CONFIG } from "../configs/app.config";
 import { TblPushstsmsg, TblPushstssendStatsDay } from "../models/init-models";
-import { TblPushstsmsgAlias } from "@push-manager/shared";
 import { Sequelize } from "sequelize";
+import { IPushStsMsg } from "@push-manager/shared";
 
 export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
   private appIds: string[];
@@ -18,31 +18,20 @@ export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
     ];
   }
 
-  async getPushStsMsgDetail(idx: string): Promise<TblPushstsmsg | null> {
-    return await TblPushstsmsg.findOne({
-      where: { idx },
-      include: [
-        {
-          model: TblPushstssendStatsDay,
-          as: TblPushstsmsgAlias.TblPushstssendStatsDay,
-          required: false,
-          where: {
-            msgIdx: idx,
-          },
-          attributes: [
-            "sent",
-            "failed",
-            "opened",
-            "appdel",
-            "sms",
-            "deviceType",
-            "startd",
-          ],
-        },
-      ],
-      raw: true,
-      nest: true,
-    });
+  async getPushStsMsgDetail(idx: string): Promise<IPushStsMsg> {
+    const [pushMsg, statsDetails] = await Promise.all([
+      TblPushstsmsg.findOne({
+        where: { idx },
+        raw: true,
+      }),
+      TblPushstssendStatsDay.findAll({
+        where: { msgIdx: idx },
+        attributes: ["deviceType", "sent", "failed", "opened", "appdel", "sms"],
+        raw: true,
+      }),
+    ]);
+
+    return { ...pushMsg, detail: statsDetails } as unknown as IPushStsMsg;
   }
 
   async getRecentTargetPushes(limit: number = 10): Promise<TblPushstsmsg[]> {
