@@ -1,7 +1,6 @@
 import {
   CreatePushDto,
   GetRecentPushesDto,
-  PushDetailResponse,
   PushResponse,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
@@ -47,8 +46,8 @@ export class PushAPI extends BaseAPI {
     );
   }
 
-  async getPushDetail(idx: number): Promise<PushDetailResponse> {
-    return this.customFetch<PushDetailResponse>(`/api/push/detail/${idx}`);
+  async getPushDetail(idx: string): Promise<IPushStsMsg> {
+    return this.customFetch<IPushStsMsg>(`/api/push/detail/${idx}`);
   }
 
   async sendPush(dto: CreatePushDto): Promise<SendPushResponse> {

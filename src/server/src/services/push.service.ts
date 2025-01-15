@@ -3,12 +3,11 @@ import { IPushService } from "../interfaces/push.interface";
 import {
   CreatePushDto,
   GetRecentPushesDto,
+  IPushStsMsg,
   UpdatePushStatusDto,
 } from "@push-manager/shared";
 
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
-import { PushStsMsg } from "../entities/pushStsMsg.entity";
-import { APP_CONFIG } from "../configs/app.config";
 import { PushMasterRepository } from "../repositories/pushMaster.repository";
 import { PModeEnum, StepEnum } from "@push-manager/shared";
 import { PushQueueRepository } from "../repositories/pushQueue.repository";
@@ -19,7 +18,7 @@ import { CreateBasePushDto } from "../types/push.type";
 import { QueryRunner } from "typeorm";
 import { queryRunnerCreation } from "../utils/transaction.util";
 import { PushMaster } from "../entities/pushMaster.entity";
-import { PushStsSendStatsDay } from "../entities/pushStsSendStatsDay.entity";
+import { TblPushstsmsg } from "../models/TblPushstsmsg";
 
 export class PushService implements IPushService {
   constructor(
@@ -94,15 +93,8 @@ export class PushService implements IPushService {
     });
   }
 
-  async getRecentPushes(dto: GetRecentPushesDto): Promise<PushStsMsg[]> {
-    return queryRunnerCreation(async () => {
-      const { appId } = APP_CONFIG[dto.targetMode];
-      // return this.pushStsMsgRepository.getRecentTargetPushesByAppId(
-      //   dto.limit,
-      //   appId
-      // );
-      return this.pushStsMsgRepository.getRecentTargetPushes(dto.limit);
-    }, false);
+  async getRecentPushes(dto: GetRecentPushesDto): Promise<TblPushstsmsg[]> {
+    return this.pushStsMsgRepository.getRecentTargetPushes(dto.limit);
   }
 
   async getScheduledPushes(): Promise<PushMaster[]> {
@@ -111,10 +103,8 @@ export class PushService implements IPushService {
     }, false);
   }
 
-  async getPushStsMsgDetail(idx: number): Promise<PushStsMsg | null> {
-    return queryRunnerCreation(async (queryRunner) => {
-      return this.pushStsMsgRepository.getPushStsMsgDetail(queryRunner, idx);
-    }, false);
+  async getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null> {
+    return this.pushStsMsgRepository.getPushStsMsgDetail(idx);
   }
 
   async updatePushStatus(

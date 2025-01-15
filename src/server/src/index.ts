@@ -5,7 +5,9 @@ import { apiRoutes } from "./routes";
 import { envConfig } from "@push-manager/shared";
 import { responseMiddleware } from "./middlewares/response.middleware";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import { AppDataSource } from "./configs/db.config";
+import { AppDataSource, sequelize } from "./configs/db.config";
+import { initModels } from "./models/init-models";
+import { initializeRelations } from "./models/relations";
 
 const app = express();
 const port = envConfig.server.port;
@@ -20,18 +22,22 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 데이터베이스 초기화
 AppDataSource.initialize()
-  .then(() => console.log("Database connected"))
+  .then(() => console.log("TypeORM Database connected"))
   .catch(console.error);
 
-// 미들웨어 등록
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Sequelize Database connected");
+    initModels(sequelize);
+    initializeRelations();
+    console.log("Sequelize Models and Relations initialized");
+  })
+  .catch(console.error);
+
 app.use(responseMiddleware());
-
-// API 라우트 설정
 app.use("/api", apiRoutes);
-
-// 에러 미들웨어는 항상 마지막에 등록
 app.use(errorMiddleware);
 
 app.listen(port, () => {
