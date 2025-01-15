@@ -3,12 +3,11 @@ import { IPushService } from "../interfaces/push.interface";
 import {
   CreatePushDto,
   GetRecentPushesDto,
+  IPushStsMsg,
   UpdatePushStatusDto,
 } from "@push-manager/shared";
 
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
-import { PushStsMsg } from "../entities/pushStsMsg.entity";
-import { APP_CONFIG } from "../configs/app.config";
 import { PushMasterRepository } from "../repositories/pushMaster.repository";
 import { PModeEnum, StepEnum } from "@push-manager/shared";
 import { PushQueueRepository } from "../repositories/pushQueue.repository";
@@ -104,7 +103,7 @@ export class PushService implements IPushService {
     }, false);
   }
 
-  async getPushStsMsgDetail(idx: string): Promise<TblPushstsmsg | null> {
+  async getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null> {
     return this.pushStsMsgRepository.getPushStsMsgDetail(idx);
   }
 
