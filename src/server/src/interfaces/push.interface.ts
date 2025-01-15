@@ -1,6 +1,7 @@
 import {
   CreatePushDto,
   GetRecentPushesDto,
+  IPushStsMsg,
   UpdatePushStatusDto,
 } from "@push-manager/shared";
 import { PushMaster } from "../entities/pushMaster.entity";
@@ -10,6 +11,6 @@ export interface IPushService {
   createPushes(dto: CreatePushDto): Promise<number>;
   getRecentPushes(dto: GetRecentPushesDto): Promise<TblPushstsmsg[]>;
   getScheduledPushes(): Promise<PushMaster[]>;
-  getPushStsMsgDetail(idx: string): Promise<TblPushstsmsg | null>;
+  getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null>;
   updatePushStatus(dto: UpdatePushStatusDto): Promise<UpdatePushStatusDto>;
 }
