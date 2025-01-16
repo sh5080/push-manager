@@ -1,52 +1,75 @@
-import { QueryRunner } from "typeorm";
-import { TestIdentify } from "../entities/testIdentify.entity";
+import { TestIdentify } from "../models/TestIdentify";
 import { CreateIdentifyDto, UpdateIdentifyDto } from "@push-manager/shared";
 import { BaseRepository } from "./base.repository";
 import { AppDataSource } from "../configs/db.config";
+import { Op, QueryTypes } from "sequelize";
 
 export class IdentifyRepository extends BaseRepository<TestIdentify> {
   constructor() {
-    super(AppDataSource, TestIdentify);
+    super(AppDataSource, TestIdentify, TestIdentify);
   }
-
-  async findAll(
-    queryRunner: QueryRunner,
-    teamIds?: number[],
-    appIds?: number[]
-  ) {
-    const query = queryRunner.manager
-      .getRepository(TestIdentify)
-      .createQueryBuilder("identify");
+  async findOne(idx: number) {
+    return await this.findOneWithRownum<TestIdentify>({
+      where: { idx },
+      attributes: ["idx", "identify", "name", "teamid", "appid"],
+    });
+  }
+  async findOneByIdentify(identify: string) {
+    return await this.findOneWithRownum<TestIdentify>({
+      where: { identify },
+      attributes: ["idx", "identify", "name", "teamid", "appid"],
+    });
+  }
+  async findAll(teamIds?: number[], appIds?: number[]) {
+    const whereConditions = [];
 
     if (teamIds && teamIds.length > 0) {
-      query.andWhere("identify.TEAMID IN (:...teamIds)", { teamIds });
+      whereConditions.push({
+        TEAMID: {
+          [Op.in]: teamIds,
+        },
+      });
     }
 
     if (appIds && appIds.length > 0) {
-      query.andWhere("identify.APPID IN (:...appIds)", { appIds });
+      whereConditions.push({
+        APPID: {
+          [Op.in]: appIds,
+        },
+      });
     }
 
-    return query.orderBy("identify.IDX", "ASC").getMany();
+    return await TestIdentify.findAll({
+      where: whereConditions.length > 0 ? { [Op.and]: whereConditions } : {},
+      order: [["idx", "ASC"]],
+      attributes: ["idx", "identify", "name", "teamid", "appid"],
+    });
+  }
+  async create(dto: CreateIdentifyDto) {
+    return await this.createWithSeq<TestIdentify>({
+      values: {
+        identify: dto.identify,
+        name: dto.name,
+        teamid: dto.teamId,
+        appid: dto.appId,
+      },
+      fields: ["idx", "identify", "name", "teamid", "appid"],
+    });
   }
 
-  async create(queryRunner: QueryRunner, dto: CreateIdentifyDto) {
-    const identify = new TestIdentify();
-    identify.appId = dto.appId;
-    return queryRunner.manager.save(identify);
-  }
-
-  async update(queryRunner: QueryRunner, dto: UpdateIdentifyDto) {
-    const identify = await queryRunner.manager.findOne(TestIdentify, {
+  async update(dto: UpdateIdentifyDto) {
+    const identify = await TestIdentify.findOne({
       where: { idx: dto.idx },
     });
     if (!identify) {
       throw new Error("Identify not found");
     }
+
     identify.identify = dto.identify;
-    return queryRunner.manager.save(identify);
+    return identify.save();
   }
 
-  async delete(queryRunner: QueryRunner, idx: number) {
-    return queryRunner.manager.delete(TestIdentify, { idx });
+  async delete(idx: number) {
+    return await TestIdentify.destroy({ where: { idx } });
   }
 }
