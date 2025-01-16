@@ -6,16 +6,8 @@ import {
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "./base.api";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
-export class IdentifyAPI extends BaseAPI {
-  private static instance: IdentifyAPI;
 
-  public static getInstance(): IdentifyAPI {
-    if (!IdentifyAPI.instance) {
-      IdentifyAPI.instance = new IdentifyAPI();
-    }
-    return IdentifyAPI.instance;
-  }
-
+class IdentifyAPI extends BaseAPI {
   // 식별자 목록 조회
   async getIdentifies(dto: GetIdentifiesDto): Promise<ITestIdentify[]> {
     const validatedDto = await validateDto(GetIdentifiesDto, dto);
@@ -63,3 +55,5 @@ export class IdentifyAPI extends BaseAPI {
     });
   }
 }
+
+export const identifyApi = new IdentifyAPI();
