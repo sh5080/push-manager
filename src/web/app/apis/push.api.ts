@@ -2,6 +2,7 @@ import {
   CreatePushDto,
   GetRecentPushesDto,
   PushResponse,
+  GetScheduledPushesDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
@@ -34,9 +35,14 @@ export class PushAPI extends BaseAPI {
     );
   }
 
-  async getScheduledPushes(): Promise<PaginatedResponse<IPushMasterWithMsg>> {
+  async getScheduledPushes(
+    dto: GetScheduledPushesDto
+  ): Promise<PaginatedResponse<IPushMasterWithMsg>> {
+    const validatedDto = await validateDto(GetScheduledPushesDto, dto);
+    const { page, pageSize } = validatedDto;
+
     return this.customFetch<PaginatedResponse<IPushMasterWithMsg>>(
-      "/api/push/scheduled"
+      `/api/push/scheduled?page=${page}&pageSize=${pageSize}`
     );
   }
 
@@ -65,3 +71,5 @@ export class PushAPI extends BaseAPI {
     });
   }
 }
+
+export const pushApi = PushAPI.getInstance();

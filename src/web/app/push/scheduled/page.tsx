@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PushAPI } from "../../apis/push.api";
+import { pushApi } from "../../apis/push.api";
 import { formatDate } from "@push-manager/shared/utils/date";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { getStatusStyle, getStatusText } from "../../utils/chip.util";
 import { ScheduledPushDetailModal } from "./modals/scheduledPushDetail.modal";
+import { Pagination } from "../../common/components/pagination.component";
+import { GetScheduledPushesDto } from "@push-manager/shared";
+import { toast } from "react-toastify";
 
 export default function ScheduledPushPage() {
   const [scheduledPushes, setScheduledPushes] = useState<IPushMasterWithMsg[]>(
@@ -14,20 +17,38 @@ export default function ScheduledPushPage() {
   const [selectedPush, setSelectedPush] = useState<IPushMasterWithMsg | null>(
     null
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     const fetchScheduledPushes = async () => {
       try {
-        const pushApi = PushAPI.getInstance();
-        const pushes = await pushApi.getScheduledPushes();
-        setScheduledPushes(pushes);
+        const dto: GetScheduledPushesDto = {
+          page: currentPage,
+          pageSize: pageSize,
+        };
+        const response = await pushApi.getScheduledPushes(dto);
+        setScheduledPushes(response.data);
+        setTotal(response.total);
+        setTotalPages(response.totalPages);
       } catch (error) {
-        console.error("예약된 푸시 조회 실패:", error);
+        toast.error("예약된 푸시 조회 실패");
       }
     };
 
     fetchScheduledPushes();
-  }, []);
+  }, [currentPage, pageSize]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    setPageSize(newSize);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="p-6">
@@ -82,6 +103,15 @@ export default function ScheduledPushPage() {
             ))}
           </tbody>
         </table>
+
+        <Pagination
+          total={total}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
 
       {selectedPush && (
