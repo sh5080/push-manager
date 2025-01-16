@@ -97,10 +97,8 @@ export class PushService implements IPushService {
     return this.pushStsMsgRepository.getRecentTargetPushes(dto.limit);
   }
 
-  async getScheduledPushes(): Promise<PushMaster[]> {
-    return queryRunnerCreation(async (queryRunner) => {
-      return this.pushMasterRepository.getMasterRecords(queryRunner);
-    }, false);
+  async getScheduledPushes() {
+    return this.pushMasterRepository.getPushMasterWithMsg();
   }
 
   async getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null> {
