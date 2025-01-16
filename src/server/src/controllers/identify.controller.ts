@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import {
   CreateIdentifyDto,
-  GetIdentifyDto,
   GetIdentifiesDto,
+  GetIdentifyDto,
   UpdateIdentifyDto,
   validateDto,
 } from "@push-manager/shared";
@@ -43,7 +43,7 @@ export class IdentifyController {
 
   deleteIdentify = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const dto = await validateDto(GetIdentifyDto, req.body);
+      const dto = await validateDto(GetIdentifyDto, req.params);
       const identify = await this.identifyService.deleteIdentify(dto.idx);
       res.success(identify);
     } catch (error) {
