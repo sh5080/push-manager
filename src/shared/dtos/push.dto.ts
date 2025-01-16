@@ -22,8 +22,6 @@ import {
   OptAgreeEnum,
   StepEnum,
 } from "../types/constants/pushQueue.const";
-import { IPushStsMsgDetail } from "../types/entities/pushStsMsgDetail.entity";
-import { IPushStsMsg } from "../types/entities/pushStsMsg.entity";
 
 export interface TestPushDto
   extends Omit<
@@ -182,6 +180,17 @@ export class GetRecentPushesDto {
   @Max(100, { message: "limit는 최대 100까지만 가능합니다." })
   @Type(() => Number)
   limit?: number;
+}
+
+export class GetScheduledPushesDto {
+  @Min(1, { message: "page는 최소 1 이상이어야 합니다." })
+  @Type(() => Number)
+  page!: number;
+
+  @Min(1, { message: "pageSize는 최소 1 이상이어야 합니다." })
+  @Max(100, { message: "pageSize는 최대 100까지만 가능합니다." })
+  @Type(() => Number)
+  pageSize!: number;
 }
 
 export class UpdatePushStatusDto {
