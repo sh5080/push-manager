@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { IdentifyAPI } from "app/apis/identify.api";
+import { identifyApi } from "app/apis/identify.api";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
 
 interface TestIdentifiesProps {
@@ -15,7 +15,6 @@ export function TestIdentifies({
   const [selectedItems, setSelectedItems] = useState<Set<number>>(
     initialSelectedIds || new Set()
   );
-  const identifyApi = IdentifyAPI.getInstance();
 
   useEffect(() => {
     const loadData = async () => {
@@ -108,9 +107,9 @@ export function TestIdentifies({
                   </span>
                   <div className="flex items-center">
                     <span className="text-xs text-gray-700 mr-4">
-                      {identify.teamId === 1
+                      {identify.teamid === 1
                         ? "FREED"
-                        : identify.teamId === 2
+                        : identify.teamid === 2
                         ? "LG"
                         : "-"}
                     </span>

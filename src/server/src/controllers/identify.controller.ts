@@ -1,5 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { GetIdentifiesDto, validateDto } from "@push-manager/shared";
+import {
+  CreateIdentifyDto,
+  GetIdentifiesDto,
+  GetIdentifyDto,
+  UpdateIdentifyDto,
+  validateDto,
+} from "@push-manager/shared";
 import { IIdentifyService } from "../interfaces/identify.interface";
 
 export class IdentifyController {
@@ -9,22 +15,39 @@ export class IdentifyController {
     try {
       const dto = await validateDto(GetIdentifiesDto, req.query);
       const identifies = await this.identifyService.getIdentifies(dto);
-
       res.success(identifies);
     } catch (error) {
       next(error);
     }
   };
 
-  createIdentify = async (req: Request, res: Response) => {
-    // ... 생성 로직
+  createIdentify = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = await validateDto(CreateIdentifyDto, req.body);
+      const identify = await this.identifyService.createIdentify(dto);
+      res.success(identify);
+    } catch (error) {
+      next(error);
+    }
   };
 
-  updateIdentify = async (req: Request, res: Response) => {
-    // ... 수정 로직
+  updateIdentify = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = await validateDto(UpdateIdentifyDto, req.body);
+      const identify = await this.identifyService.updateIdentify(dto);
+      res.success(identify);
+    } catch (error) {
+      next(error);
+    }
   };
 
-  deleteIdentify = async (req: Request, res: Response) => {
-    // ... 삭제 로직
+  deleteIdentify = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = await validateDto(GetIdentifyDto, req.params);
+      const identify = await this.identifyService.deleteIdentify(dto.idx);
+      res.success(identify);
+    } catch (error) {
+      next(error);
+    }
   };
 }

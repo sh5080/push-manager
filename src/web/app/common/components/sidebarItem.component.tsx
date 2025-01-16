@@ -66,12 +66,12 @@ export const menuItems: MenuItem[] = [
   },
   {
     name: "식별자 관리",
-    path: "/push/identifies",
+    path: "/push/identify",
     icon: <HiOutlineIdentification />,
   },
   {
     name: "설정",
-    path: "/settings",
+    path: "/setting",
     icon: <HiOutlineCog />,
   },
 ];
