@@ -3,7 +3,9 @@ import { IPushService } from "../interfaces/push.interface";
 import {
   CreatePushDto,
   GetRecentPushesDto,
+  IPushMasterWithMsg,
   IPushStsMsg,
+  PaginatedResponse,
   UpdatePushStatusDto,
 } from "@push-manager/shared";
 
@@ -97,10 +99,11 @@ export class PushService implements IPushService {
     return this.pushStsMsgRepository.getRecentTargetPushes(dto.limit);
   }
 
-  async getScheduledPushes(): Promise<PushMaster[]> {
-    return queryRunnerCreation(async (queryRunner) => {
-      return this.pushMasterRepository.getMasterRecords(queryRunner);
-    }, false);
+  async getScheduledPushes(
+    page: number,
+    pageSize: number
+  ): Promise<PaginatedResponse<IPushMasterWithMsg>> {
+    return this.pushMasterRepository.getPushMasterWithMsg(page, pageSize);
   }
 
   async getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null> {

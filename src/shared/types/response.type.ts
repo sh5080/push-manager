@@ -11,3 +11,14 @@ export interface ErrorResponse {
     status: number;
   };
 }
+export interface Rnum {
+  rnum: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: (T & Rnum)[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}

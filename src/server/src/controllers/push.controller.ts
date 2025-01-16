@@ -3,6 +3,7 @@ import { IPushService } from "../interfaces/push.interface";
 import {
   CreatePushDto,
   GetRecentPushesDto,
+  GetScheduledPushesDto,
   UpdatePushStatusDto,
   validateDto,
 } from "@push-manager/shared";
@@ -41,7 +42,13 @@ export class PushController {
     next: NextFunction
   ) => {
     try {
-      const pushes = await this.pushService.getScheduledPushes();
+      const dto = await validateDto(GetScheduledPushesDto, {
+        page: Number(req.query.page) || 1,
+        pageSize: Number(req.query.pageSize) || 10,
+      });
+      const { page, pageSize } = dto;
+
+      const pushes = await this.pushService.getScheduledPushes(page, pageSize);
       res.success(pushes);
     } catch (error) {
       next(error);
