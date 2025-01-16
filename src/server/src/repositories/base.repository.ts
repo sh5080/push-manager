@@ -1,6 +1,58 @@
 import { DataSource, ObjectType, SelectQueryBuilder } from "typeorm";
 import { transformDbToEntity } from "../utils/transform.util";
-import { Model, ModelStatic, QueryTypes } from "sequelize";
+import { Model, ModelStatic, QueryTypes, Sequelize } from "sequelize";
+import { PaginatedResponse, Rnum } from "@push-manager/shared";
+
+interface PaginationOptions {
+  page: number;
+  pageSize: number;
+  orderBy: string;
+  orderDirection?: "ASC" | "DESC";
+}
+
+export async function paginationQuery<T>(
+  sequelize: Sequelize,
+  options: PaginationOptions,
+  innerQuery: string
+): Promise<PaginatedResponse<T>> {
+  const { page, pageSize, orderBy, orderDirection = "DESC" } = options;
+  const offset = (page - 1) * pageSize;
+
+  const paginatedQuery = `
+    SELECT * FROM (
+      SELECT a.*, ROWNUM as "rnum" FROM (
+        ${innerQuery}
+        ORDER BY ${orderBy} ${orderDirection}
+      ) a WHERE ROWNUM <= :endRow
+    ) WHERE "rnum" > :startRow
+  `;
+
+  const fromClause = innerQuery.substring(innerQuery.indexOf("FROM"));
+  const countQuery = `SELECT COUNT(*) as "total" ${fromClause}`;
+
+  const [results, total] = await Promise.all([
+    sequelize.query(paginatedQuery, {
+      replacements: {
+        startRow: offset,
+        endRow: offset + pageSize,
+      },
+      type: QueryTypes.SELECT,
+    }),
+    sequelize.query<{ total: number }>(countQuery, {
+      type: QueryTypes.SELECT,
+    }),
+  ]);
+
+  const totalPages = Math.ceil(total[0].total / pageSize);
+
+  return {
+    data: results as (T & Rnum)[],
+    total: total[0].total,
+    page,
+    pageSize,
+    totalPages,
+  };
+}
 
 export class BaseRepository<
   T extends Record<string, any>,
