@@ -10,6 +10,7 @@ import {
 } from "@headlessui/react";
 import { identifyApi } from "app/apis/identify.api";
 import { CreateIdentifyDto } from "@push-manager/shared";
+import { toast } from "react-toastify";
 
 interface AddIdentifyModalProps {
   isOpen: boolean;
@@ -31,19 +32,22 @@ export function AddIdentifyModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const dto: CreateIdentifyDto = {
-      identify: formData.identify,
-      appId: Number(formData.appId),
-      teamId: Number(formData.teamId),
-      name: formData.name,
-    };
     try {
+      if (isNaN(Number(formData.identify))) {
+        throw new Error("식별자는 숫자만 입력해주세요.");
+      }
+      const dto: CreateIdentifyDto = {
+        identify: formData.identify,
+        appId: Number(formData.appId),
+        teamId: Number(formData.teamId),
+        name: formData.name,
+      };
+
       await identifyApi.createIdentify(dto);
       onAdd();
       onClose();
-    } catch (error) {
-      console.error("식별자 추가 실패:", error);
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -102,10 +106,9 @@ export function AddIdentifyModal({
                     required
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    팀
+                    앱
                   </label>
                   <select
                     value={formData.appId}
@@ -113,6 +116,25 @@ export function AddIdentifyModal({
                       setFormData({
                         ...formData,
                         appId: Number(e.target.value),
+                      })
+                    }
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  >
+                    <option value="1">테스트</option>
+                    <option value="2">운영</option>
+                    <option value="3">둘 다 동일</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    팀
+                  </label>
+                  <select
+                    value={formData.teamId}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        teamId: Number(e.target.value),
                       })
                     }
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
