@@ -7,6 +7,7 @@ import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMast
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "./base.api";
+import { PaginatedResponse } from "@push-manager/shared";
 
 interface SendPushResponse {
   success: boolean;
@@ -33,8 +34,10 @@ export class PushAPI extends BaseAPI {
     );
   }
 
-  async getScheduledPushes(): Promise<IPushMasterWithMsg[]> {
-    return this.customFetch<IPushMasterWithMsg[]>("/api/push/scheduled");
+  async getScheduledPushes(): Promise<PaginatedResponse<IPushMasterWithMsg>> {
+    return this.customFetch<PaginatedResponse<IPushMasterWithMsg>>(
+      "/api/push/scheduled"
+    );
   }
 
   async getPushHistory(
