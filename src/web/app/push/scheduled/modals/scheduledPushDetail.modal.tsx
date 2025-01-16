@@ -63,6 +63,13 @@ export function ScheduledPushDetailModal({
               <p className="mt-1">{push.title}</p>
             </div>
 
+            {push.msgidx && (
+              <div>
+                <p className="text-sm text-gray-500 mt-1">
+                  메시지 IDX: {push.msgidx}
+                </p>
+              </div>
+            )}
             <div>
               <h3 className="text-sm font-medium text-gray-500">내용</h3>
               <p className="mt-1 whitespace-pre-wrap">{push.message}</p>
