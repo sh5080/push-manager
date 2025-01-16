@@ -1,11 +1,12 @@
 import { IIdentifyService } from "../interfaces/identify.interface";
 import { IdentifyRepository } from "../repositories/identify.repository";
 import {
+  BadRequestException,
   CreateIdentifyDto,
   GetIdentifiesDto,
+  NotFoundException,
   UpdateIdentifyDto,
-} from "@push-manager/shared/dtos/identify.dto";
-import { queryRunnerCreation } from "../utils/transaction.util";
+} from "@push-manager/shared";
 
 export class IdentifyService implements IIdentifyService {
   constructor(private readonly identifyRepository: IdentifyRepository) {}
@@ -40,30 +41,40 @@ export class IdentifyService implements IIdentifyService {
         teamIds = [2];
       }
     }
+    return this.identifyRepository.findAll(teamIds, appIds);
+  }
 
-    return queryRunnerCreation(
-      (queryRunner) =>
-        this.identifyRepository.findAll(queryRunner, teamIds, appIds),
-      false
-    );
+  async getIdentify(idx: number) {
+    return this.identifyRepository.findOne(idx);
   }
 
   async createIdentify(dto: CreateIdentifyDto) {
-    return queryRunnerCreation(async (queryRunner) => {
-      const data = await this.identifyRepository.create(queryRunner, dto);
-      return data.idx;
-    });
+    const identify = await this.identifyRepository.findOneByIdentify(
+      dto.identify
+    );
+    if (identify) {
+      throw new BadRequestException("이미 존재하는 식별자입니다.");
+    }
+    const data = await this.identifyRepository.create(dto);
+    if (!data) {
+      throw new BadRequestException("식별자 생성에 실패했습니다.");
+    }
+    return data;
   }
 
   async updateIdentify(dto: UpdateIdentifyDto) {
-    return queryRunnerCreation((queryRunner) =>
-      this.identifyRepository.update(queryRunner, dto)
-    );
+    const identify = await this.identifyRepository.findOne(dto.idx);
+    if (!identify) {
+      throw new NotFoundException("존재하지 않는 식별자입니다.");
+    }
+    return await this.identifyRepository.update(dto);
   }
 
   async deleteIdentify(idx: number) {
-    queryRunnerCreation((queryRunner) =>
-      this.identifyRepository.delete(queryRunner, idx)
-    );
+    const identify = await this.identifyRepository.findOne(idx);
+    if (!identify) {
+      throw new NotFoundException("존재하지 않는 식별자입니다.");
+    }
+    return await this.identifyRepository.delete(idx);
   }
 }
