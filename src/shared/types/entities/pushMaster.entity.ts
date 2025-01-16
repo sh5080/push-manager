@@ -2,19 +2,14 @@ import { IPushStsMsg } from "./pushStsMsg.entity";
 
 export interface IPushMaster {
   cmpncode: string;
+  msgidx: string;
+  pmode: string;
   step: string;
-  pMode: string;
-  rStartDate: Date;
-  rEndDate: Date;
-  tStartDate: Date;
-  tEndDate: Date;
-  sendDate: Date;
-  msgIdx: number;
-  appKey: string;
-  appSecret: string;
-  wDate: Date;
+  rstartDate: string;
+  rendDate: string;
 }
 
 export interface IPushMasterWithMsg extends IPushMaster {
-  pushStsMsg: IPushStsMsg;
+  title: string;
+  message: string;
 }

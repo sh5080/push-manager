@@ -60,21 +60,19 @@ export function ScheduledPushDetailModal({
           <div className="p-6 space-y-4">
             <div>
               <h3 className="text-sm font-medium text-gray-500">제목</h3>
-              <p className="mt-1">{push.pushStsMsg?.title}</p>
+              <p className="mt-1">{push.title}</p>
             </div>
 
             <div>
               <h3 className="text-sm font-medium text-gray-500">내용</h3>
-              <p className="mt-1 whitespace-pre-wrap">
-                {push.pushStsMsg?.tmpMessage}
-              </p>
+              <p className="mt-1 whitespace-pre-wrap">{push.message}</p>
             </div>
 
             <div>
               <h3 className="text-sm font-medium text-gray-500">
                 발송 예정 시각
               </h3>
-              <p className="mt-1">{formatDate(push.rStartDate)}</p>
+              <p className="mt-1">{formatDate(push.rstartDate)}</p>
             </div>
           </div>
 

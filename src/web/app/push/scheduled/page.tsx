@@ -62,11 +62,11 @@ export default function ScheduledPushPage() {
                   {push.cmpncode}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {push.pushStsMsg ? push.pushStsMsg.title : "제목 없음"}
+                  {push.title}
                 </td>
 
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(push.rStartDate)}
+                  {formatDate(push.rstartDate)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
