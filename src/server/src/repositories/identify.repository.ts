@@ -58,18 +58,16 @@ export class IdentifyRepository extends BaseRepository<TestIdentify> {
   }
 
   async update(dto: UpdateIdentifyDto) {
-    const identify = await TestIdentify.findOne({
-      where: { idx: dto.idx },
-    });
-    if (!identify) {
-      throw new Error("Identify not found");
-    }
-
-    identify.identify = dto.identify;
-    return identify.save();
+    const { idx, identify, name, teamId, appId } = dto;
+    await TestIdentify.update(
+      { identify, name, teamid: teamId, appid: appId },
+      { where: { idx } }
+    );
+    return;
   }
 
   async delete(idx: number) {
-    return await TestIdentify.destroy({ where: { idx } });
+    await TestIdentify.destroy({ where: { idx } });
+    return;
   }
 }
