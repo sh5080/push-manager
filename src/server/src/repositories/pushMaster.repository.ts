@@ -1,15 +1,13 @@
 import { PushMaster } from "../entities/pushMaster.entity";
 import { AppDataSource, sequelize } from "../configs/db.config";
-import { BaseRepository } from "./base.repository";
+import { BaseRepository, paginationQuery } from "./base.repository";
 import { QueryRunner } from "typeorm";
 import {
   IPushMasterWithMsg,
   StepEnum,
   PaginatedResponse,
-  Rnum,
 } from "@push-manager/shared";
 import { TblFpMaster } from "../models/TblFpMaster";
-import { QueryTypes } from "sequelize";
 
 export class PushMasterRepository extends BaseRepository<TblFpMaster> {
   constructor() {
@@ -64,56 +62,31 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
     page: number = 1,
     pageSize: number = 10
   ): Promise<PaginatedResponse<IPushMasterWithMsg>> {
-    const offset = (page - 1) * pageSize;
+    const innerQuery = `
+      SELECT 
+        m.CMPNCODE as "cmpncode",
+        m.MSGIDX as "msgidx",
+        m.PMODE as "pmode",
+        m.STEP as "step",
+        m.RSTART_DATE as "rstartDate",
+        m.REND_DATE as "rendDate",
+        CASE 
+          WHEN m.MSGIDX IS NOT NULL THEN p.TITLE 
+          ELSE q.MSGTITLE 
+        END as "title",
+        CASE 
+          WHEN m.MSGIDX IS NOT NULL THEN p.TMP_MESSAGE 
+          ELSE q.MSGCONTENTS 
+        END as "message"
+      FROM COKR_MBR_APP.TBL_FP_MASTER m
+      LEFT JOIN COKR_MBR_APP.TBL_PUSHSTSMSG p ON m.MSGIDX = p.IDX
+      LEFT JOIN COKR_MBR_APP.TBL_FP_QUEUE q ON m.CMPNCODE = q.CMPNCODE
+    `;
 
-    const [results, total] = await Promise.all([
-      sequelize.query(
-        `
-        SELECT * FROM (
-          SELECT a.*, ROWNUM as "rnum" FROM (
-            SELECT 
-              m.CMPNCODE as "cmpncode",
-              m.MSGIDX as "msgidx",
-              m.PMODE as "pmode",
-              m.STEP as "step",
-              m.RSTART_DATE as "rstartDate",
-              m.REND_DATE as "rendDate",
-              CASE 
-                WHEN m.MSGIDX IS NOT NULL THEN p.TITLE 
-                ELSE q.MSGTITLE 
-              END as "title",
-              CASE 
-                WHEN m.MSGIDX IS NOT NULL THEN p.TMP_MESSAGE 
-                ELSE q.MSGCONTENTS 
-              END as "message"
-            FROM COKR_MBR_APP.TBL_FP_MASTER m
-            LEFT JOIN COKR_MBR_APP.TBL_PUSHSTSMSG p ON m.MSGIDX = p.IDX
-            LEFT JOIN COKR_MBR_APP.TBL_FP_QUEUE q ON m.CMPNCODE = q.CMPNCODE
-            ORDER BY m.CMPNCODE DESC
-          ) a WHERE ROWNUM <= :endRow
-        ) WHERE "rnum" > :startRow
-        `,
-        {
-          replacements: {
-            startRow: offset,
-            endRow: offset + pageSize,
-          },
-          type: QueryTypes.SELECT,
-        }
-      ),
-      sequelize.query<{ total: number }>(
-        `SELECT COUNT(*) as "total" FROM COKR_MBR_APP.TBL_FP_MASTER`,
-        { type: QueryTypes.SELECT }
-      ),
-    ]);
-
-    const totalPages = Math.ceil(total[0].total / pageSize);
-    return {
-      data: results as (IPushMasterWithMsg & Rnum)[],
-      total: total[0].total,
-      page,
-      pageSize,
-      totalPages,
-    };
+    return await paginationQuery<IPushMasterWithMsg>(
+      sequelize,
+      { page, pageSize, orderBy: "m.CMPNCODE" },
+      innerQuery
+    );
   }
 }
