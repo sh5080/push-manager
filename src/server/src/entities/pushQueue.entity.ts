@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-import { IPushQueue } from "@push-manager/shared/types/entities/pushQueue.entity";
 import {
   StepEnum,
   PModeEnum,
@@ -12,7 +11,7 @@ import {
 } from "@push-manager/shared";
 
 @Entity("TBL_FP_QUEUE")
-export class PushQueue implements IPushQueue {
+export class PushQueue {
   /**
    * 큐 인덱스
    */
