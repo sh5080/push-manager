@@ -1,6 +1,8 @@
 import { IPushService } from "../interfaces/push.interface";
 
 import {
+  AddToQueueDto,
+  BadRequestException,
   CreatePushDto,
   GetPushQueuesDto,
   GetRecentPushesDto,
@@ -115,6 +117,62 @@ export class PushService implements IPushService {
     dto: GetPushQueuesDto
   ): Promise<PaginatedResponse<TblFpQueue>> {
     return this.pushQueueRepository.getPushQueues(dto);
+  }
+
+  async addToQueue(
+    dto: AddToQueueDto,
+    maxBatchSize: number = 1000
+  ): Promise<number> {
+    const { identifies, cmpncode } = dto;
+    const existingQueues = await this.pushQueueRepository.getAllPushQueues(
+      cmpncode
+    );
+
+    if (!existingQueues.length) {
+      throw new BadRequestException("예약된 대기열이 없습니다.");
+    }
+
+    // 기존 대기열의 identify 목록
+    const existingIdentifies = new Set(
+      existingQueues.map((queue) => queue.identify)
+    );
+
+    // 1. 입력값 중복 제거
+    const uniqueIdentifies = [...new Set(identifies)];
+    const duplicateCount = identifies.length - uniqueIdentifies.length;
+
+    if (duplicateCount > 0) {
+      console.log(
+        `입력값 중 중복된 식별자 ${duplicateCount}건이 제외되었습니다.`
+      );
+    }
+
+    // 2. 기존 대기열과 중복되는 값 제거
+    const newIdentifies = uniqueIdentifies.filter(
+      (id) => !existingIdentifies.has(id)
+    );
+    const queueDuplicateCount = uniqueIdentifies.length - newIdentifies.length;
+
+    if (queueDuplicateCount > 0) {
+      console.log(
+        `기존 대기열과 중복된 식별자 ${queueDuplicateCount}건이 제외되었습니다.`
+      );
+    }
+    if (!newIdentifies.length) {
+      throw new BadRequestException(
+        "기존 등록된 식별자이거나 예약된 대기열이 없습니다."
+      );
+    }
+    // 배치 처리
+    for (let i = 0; i < newIdentifies.length; i += maxBatchSize) {
+      const batchIdentifies = newIdentifies.slice(i, i + maxBatchSize);
+      await this.pushQueueRepository.addToQueue(
+        batchIdentifies,
+        existingQueues[0]
+      );
+    }
+
+    return newIdentifies.length;
   }
 
   async updatePushStatus(

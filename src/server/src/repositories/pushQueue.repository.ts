@@ -1,5 +1,4 @@
 import { AppDataSource, sequelize } from "../configs/db.config";
-
 import { BaseRepository, paginationQuery } from "./base.repository";
 import { PushQueue } from "../entities/pushQueue.entity";
 import { QueryRunner } from "typeorm";
@@ -30,14 +29,7 @@ export class PushQueueRepository extends BaseRepository<TblFpQueue> {
   ): Promise<PaginatedResponse<TblFpQueue>> {
     const { cmpncode, page, pageSize } = dto;
     const innerQuery = `
-      SELECT 
-        QUEUEIDX as "queueidx",
-        IDENTIFY as "identify",
-        MSGTITLE as "msgtitle",
-        MSGCONTENTS as "msgcontents",
-        STEP as "step",
-        SENDDATE as "senddate",
-        RESULTDATE as "resultdate"
+      SELECT *
       FROM COKR_MBR_APP.TBL_FP_QUEUE
       WHERE CMPNCODE = ${cmpncode}
     `;
@@ -56,10 +48,37 @@ export class PushQueueRepository extends BaseRepository<TblFpQueue> {
   }
 
   async getAllPushQueues(cmpncode: number): Promise<TblFpQueue[]> {
+    const attributes = Object.keys(TblFpQueue.getAttributes());
     return await TblFpQueue.findAll({
       where: { cmpncode },
-      attributes: ["identify"],
+      attributes,
       raw: true,
     });
+  }
+
+  async addToQueue(identifies: string[], queueData: TblFpQueue): Promise<void> {
+    const { queueidx, ...queueDataWithoutId } = queueData;
+
+    const values = identifies.map((identify: string) => ({
+      ...queueDataWithoutId,
+      identify,
+    }));
+
+    const attributes = Object.keys(TblFpQueue.getAttributes()).filter(
+      (attr) => attr.toLowerCase() !== "queueidx"
+    );
+
+    await this.bulkCreateWithSeq<TblFpQueue>({
+      values,
+      fields: attributes,
+      pkField: "QUEUEIDX",
+      sequenceName: "SEQ_FP_QUEUE",
+    });
+
+    return;
+  }
+
+  async getQueueCount(cmpncode: number): Promise<number> {
+    return await TblFpQueue.count({ where: { cmpncode } });
   }
 }
