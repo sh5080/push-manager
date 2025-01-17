@@ -2,6 +2,7 @@ import { IPushService } from "../interfaces/push.interface";
 
 import {
   CreatePushDto,
+  GetPushQueuesDto,
   GetRecentPushesDto,
   IPushMasterWithMsg,
   IPushStsMsg,
@@ -19,8 +20,8 @@ import { createPushBaseData } from "../utils/push.util";
 import { CreateBasePushDto } from "../types/push.type";
 import { QueryRunner } from "typeorm";
 import { queryRunnerCreation } from "../utils/transaction.util";
-import { PushMaster } from "../entities/pushMaster.entity";
 import { TblPushstsmsg } from "../models/TblPushstsmsg";
+import { TblFpQueue } from "../models/init-models";
 
 export class PushService implements IPushService {
   constructor(
@@ -108,6 +109,12 @@ export class PushService implements IPushService {
 
   async getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null> {
     return this.pushStsMsgRepository.getPushStsMsgDetail(idx);
+  }
+
+  async getPushQueues(
+    dto: GetPushQueuesDto
+  ): Promise<PaginatedResponse<TblFpQueue>> {
+    return this.pushQueueRepository.getPushQueues(dto);
   }
 
   async updatePushStatus(

@@ -85,7 +85,7 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
 
     return await paginationQuery<IPushMasterWithMsg>(
       sequelize,
-      { page, pageSize, orderBy: "m.CMPNCODE" },
+      { page, pageSize, orderBy: "m.CMPNCODE", model: TblFpMaster },
       innerQuery
     );
   }
