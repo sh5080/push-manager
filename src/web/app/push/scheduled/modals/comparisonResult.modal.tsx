@@ -90,7 +90,7 @@ export function ComparisonResultModal({
     <Dialog open={isOpen} onClose={onClose} className="relative z-[60]">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-4xl bg-white rounded-lg shadow-xl h-[calc(100vh-2rem)] overflow-y-auto">
+        <DialogPanel className="w-full max-w-3xl bg-white rounded-lg shadow-xl h-[calc(100vh-2rem)] overflow-y-auto">
           <div className="flex justify-between items-center p-6 border-b">
             <DialogTitle className="text-lg font-semibold">
               비교 결과 상세
