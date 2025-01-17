@@ -12,10 +12,10 @@ interface PaginationOptions {
 
 export async function paginationQuery<T>(
   sequelize: Sequelize,
-  options: PaginationOptions,
+  options: PaginationOptions & { model?: ModelStatic<Model> },
   innerQuery: string
 ): Promise<PaginatedResponse<T>> {
-  const { page, pageSize, orderBy, orderDirection = "DESC" } = options;
+  const { page, pageSize, orderBy, orderDirection = "DESC", model } = options;
   const offset = (page - 1) * pageSize;
 
   const paginatedQuery = `
@@ -30,13 +30,23 @@ export async function paginationQuery<T>(
   const fromClause = innerQuery.substring(innerQuery.indexOf("FROM"));
   const countQuery = `SELECT COUNT(*) as "total" ${fromClause}`;
 
+  const queryOptions = model
+    ? {
+        model,
+        mapToModel: true,
+        type: QueryTypes.SELECT,
+      }
+    : {
+        type: QueryTypes.SELECT,
+      };
+
   const [results, total] = await Promise.all([
     sequelize.query(paginatedQuery, {
+      ...queryOptions,
       replacements: {
         startRow: offset,
         endRow: offset + pageSize,
       },
-      type: QueryTypes.SELECT,
     }),
     sequelize.query<{ total: number }>(countQuery, {
       type: QueryTypes.SELECT,
