@@ -18,7 +18,7 @@ router.get("/recent", pushController.getRecentPushes);
 router.get("/scheduled", pushController.getScheduledPushes);
 router.get("/detail/:idx", pushController.getPushStsMsgDetail);
 router.patch("/:campaignCode/status", pushController.updatePushStatus);
-// router.get("/history", pushController.getPushHistory);
+router.get("/queue/:cmpncode", pushController.getPushQueues);
 // router.get("/stats", pushController.getPushStats);
 // router.get("/:campaignCode", pushController.getPushDetail);
 

@@ -25,7 +25,7 @@ export class IdentifyReader {
 
     return identifyData
       .slice(1)
-      .map((row) => row[identifyColumnIndex] as string)
+      .map((row) => String(row[identifyColumnIndex]))
       .filter((value) => value && value.trim());
   }
 
