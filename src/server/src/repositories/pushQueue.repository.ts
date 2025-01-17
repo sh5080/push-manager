@@ -1,12 +1,14 @@
-import { AppDataSource } from "../configs/db.config";
+import { AppDataSource, sequelize } from "../configs/db.config";
 
-import { BaseRepository } from "./base.repository";
+import { BaseRepository, paginationQuery } from "./base.repository";
 import { PushQueue } from "../entities/pushQueue.entity";
 import { QueryRunner } from "typeorm";
+import { GetPushQueuesDto, PaginatedResponse } from "@push-manager/shared";
+import { TblFpQueue } from "../models/init-models";
 
-export class PushQueueRepository extends BaseRepository<PushQueue> {
+export class PushQueueRepository extends BaseRepository<TblFpQueue> {
   constructor() {
-    super(AppDataSource, PushQueue);
+    super(AppDataSource, TblFpQueue, TblFpQueue);
   }
 
   async getNextQueueIdx(queryRunner: QueryRunner): Promise<number> {
@@ -22,42 +24,42 @@ export class PushQueueRepository extends BaseRepository<PushQueue> {
   ) {
     return queryRunner.manager.getRepository(PushQueue).insert(pushBatch);
   }
-  // async countSuccessfulPushes(): Promise<number> {
-  //   return await AppDataSource.getRepository(PushQueue)
-  //     .createQueryBuilder("push")
-  //     .where("push.STEP = :step", { step: StepEnum.RESULT })
-  //     .getCount();
-  // }
-  // async countTotalPushes(): Promise<number> {
-  //   return await AppDataSource.getRepository(PushQueue)
-  //     .createQueryBuilder("push")
-  //     .getCount();
-  // }
-  // async findPushByCampaignCode(
-  //   campaignCode: number
-  // ): Promise<PushQueue | null> {
-  //   return await AppDataSource.getRepository(PushQueue)
-  //     .createQueryBuilder("push")
-  //     .where("push.CMPNCODE = :campaignCode", { campaignCode })
-  //     .getOne();
-  // }
-  // async findPushHistory(page: number = 1, limit: number = 10) {
-  //   const skip = (page - 1) * limit;
-  //   return await AppDataSource.getRepository(PushQueue)
-  //     .createQueryBuilder("push")
-  //     .skip(skip)
-  //     .take(limit)
-  //     .getMany();
-  // }
-  // async findPushStats() {
-  //   return await AppDataSource.getRepository(PushQueue)
-  //     .createQueryBuilder("push")
-  //     .getMany();
-  // }
-  // async findPushDetail(campaignCode: number) {
-  //   return await AppDataSource.getRepository(PushQueue)
-  //     .createQueryBuilder("push")
-  //     .where("push.CMPNCODE = :campaignCode", { campaignCode })
-  //     .getOne();
-  // }
+
+  async getPushQueues(
+    dto: GetPushQueuesDto
+  ): Promise<PaginatedResponse<TblFpQueue>> {
+    const { cmpncode, page, pageSize } = dto;
+    const innerQuery = `
+      SELECT 
+        QUEUEIDX as "queueidx",
+        IDENTIFY as "identify",
+        MSGTITLE as "msgtitle",
+        MSGCONTENTS as "msgcontents",
+        STEP as "step",
+        SENDDATE as "senddate",
+        RESULTDATE as "resultdate"
+      FROM COKR_MBR_APP.TBL_FP_QUEUE
+      WHERE CMPNCODE = ${cmpncode}
+    `;
+
+    return await paginationQuery<TblFpQueue>(
+      sequelize,
+      {
+        page,
+        pageSize,
+        orderBy: "QUEUEIDX",
+        orderDirection: "DESC",
+        model: TblFpQueue,
+      },
+      innerQuery
+    );
+  }
+
+  async getAllPushQueues(cmpncode: number): Promise<TblFpQueue[]> {
+    return await TblFpQueue.findAll({
+      where: { cmpncode },
+      attributes: ["identify"],
+      raw: true,
+    });
+  }
 }
