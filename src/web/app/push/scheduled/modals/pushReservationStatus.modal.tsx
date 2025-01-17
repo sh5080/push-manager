@@ -1,0 +1,137 @@
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { HiX } from "react-icons/hi";
+import { useEffect, useState } from "react";
+import { Pagination } from "app/common/components/pagination.component";
+import { pushApi } from "app/apis/push.api";
+import { Toast } from "app/utils/toast.util";
+import { getStatusStyle, getStatusText } from "app/utils/chip.util";
+import { ExcelComparison } from "../components/excelComparison.component";
+
+interface PushReservationStatusModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  cmpncode: number;
+}
+
+export function PushReservationStatusModal({
+  isOpen,
+  onClose,
+  cmpncode,
+}: PushReservationStatusModalProps) {
+  const [queues, setQueues] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchQueues();
+    }
+  }, [isOpen, currentPage, pageSize]);
+
+  const fetchQueues = async () => {
+    setIsLoading(true);
+    try {
+      const response = await pushApi.getPushQueues({
+        cmpncode,
+        page: currentPage,
+        pageSize,
+      });
+      setQueues(response.data);
+      setTotal(response.total);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      Toast.error("식별자 목록 조회 실패");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <DialogPanel className="w-full max-w-3xl bg-white rounded-lg shadow-xl">
+          <div className="flex justify-between items-center p-6 border-b">
+            <DialogTitle className="text-lg font-semibold">
+              예약 상태 확인
+            </DialogTitle>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-500"
+            >
+              <HiX className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="p-6 space-y-6">
+            {/* 엑셀 비교 컴포넌트 */}
+            <ExcelComparison queues={queues} />
+
+            {/* 식별자 목록 테이블 */}
+            <div className="mt-6">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      번호
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      식별자
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      상태
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={3} className="px-6 py-4 text-center">
+                        로딩 중...
+                      </td>
+                    </tr>
+                  ) : (
+                    queues.map((queue, index) => (
+                      <tr key={queue.queueidx}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {(currentPage - 1) * pageSize + index + 1}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          {queue.identify}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <span
+                            className={`
+                    inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                    ${getStatusStyle(queue.step)}
+                  `}
+                          >
+                            {getStatusText(queue.step)}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+
+              <div className="mt-4">
+                <Pagination
+                  total={total}
+                  currentPage={currentPage}
+                  pageSize={pageSize}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  onPageSizeChange={setPageSize}
+                />
+              </div>
+            </div>
+          </div>
+        </DialogPanel>
+      </div>
+    </Dialog>
+  );
+}
