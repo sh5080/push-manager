@@ -39,7 +39,7 @@ export const Toast = {
       render: message,
       type,
       isLoading: false,
-      autoClose: 3000,
+      autoClose: 2000,
     });
   },
 
