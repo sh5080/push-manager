@@ -3,12 +3,13 @@ import {
   GetRecentPushesDto,
   PushResponse,
   GetScheduledPushesDto,
+  GetPushQueuesDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "./base.api";
-import { PaginatedResponse } from "@push-manager/shared";
+import { IPushQueue, PaginatedResponse } from "@push-manager/shared";
 
 interface SendPushResponse {
   success: boolean;
@@ -69,6 +70,17 @@ export class PushAPI extends BaseAPI {
       method: "POST",
       body: JSON.stringify(validatedDto),
     });
+  }
+
+  async getPushQueues(
+    dto: GetPushQueuesDto
+  ): Promise<PaginatedResponse<IPushQueue>> {
+    const validatedDto = await validateDto(GetPushQueuesDto, dto);
+    const { cmpncode, page, pageSize } = validatedDto;
+
+    return this.customFetch<PaginatedResponse<IPushQueue>>(
+      `/api/push/queue/${cmpncode}?page=${page}&pageSize=${pageSize}`
+    );
   }
 }
 

@@ -12,6 +12,7 @@ import {
   IsArray,
   ArrayMinSize,
   IsDateString,
+  IsNumber,
 } from "class-validator";
 import "reflect-metadata";
 import {
@@ -22,6 +23,7 @@ import {
   OptAgreeEnum,
   StepEnum,
 } from "../types/constants/pushQueue.const";
+import { PaginationDto } from "./common.dto";
 
 export interface TestPushDto
   extends Omit<
@@ -182,16 +184,7 @@ export class GetRecentPushesDto {
   limit?: number;
 }
 
-export class GetScheduledPushesDto {
-  @Min(1, { message: "page는 최소 1 이상이어야 합니다." })
-  @Type(() => Number)
-  page!: number;
-
-  @Min(1, { message: "pageSize는 최소 1 이상이어야 합니다." })
-  @Max(100, { message: "pageSize는 최대 100까지만 가능합니다." })
-  @Type(() => Number)
-  pageSize!: number;
-}
+export class GetScheduledPushesDto extends PaginationDto {}
 
 export class UpdatePushStatusDto {
   @IsNotEmpty({ message: "캠페인 코드는 필수입니다." })
@@ -201,4 +194,11 @@ export class UpdatePushStatusDto {
     message: "유효하지 않은 상태값입니다.",
   })
   step!: (typeof StepEnum)[keyof typeof StepEnum];
+}
+
+export class GetPushQueuesDto extends PaginationDto {
+  @IsNumber()
+  @Type(() => Number)
+  @IsNotEmpty({ message: "캠페인 코드는 필수입니다." })
+  cmpncode!: number;
 }
