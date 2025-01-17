@@ -45,7 +45,15 @@ export interface IPushQueue {
   optagree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
   ptag?: string;
   beschmode?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
-
+  cmpncode?: number;
+  extra1?: string;
+  extra2?: string;
+  extra3?: string;
+  failtochannel?: string;
+  rno?: string;
+  sno?: string;
+  txtMsgcontents?: string;
+  txtMsgtitle?: string;
   wdate?: () => string;
   udate?: () => string;
 }
