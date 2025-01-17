@@ -31,27 +31,33 @@ export function ComparisonResultModal({
   const [missingCurrentPage, setMissingCurrentPage] = useState(1);
   const [extraCurrentPage, setExtraCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [missingSearchTerm, setMissingSearchTerm] = useState("");
+  const [extraSearchTerm, setExtraSearchTerm] = useState("");
   const [paginatedMissing, setPaginatedMissing] = useState<string[]>([]);
   const [paginatedExtra, setPaginatedExtra] = useState<string[]>([]);
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
 
   const filteredResults = useMemo(() => {
-    const term = searchTerm.toLowerCase().trim();
+    const missingTerm = missingSearchTerm.toLowerCase().trim();
+    const extraTerm = extraSearchTerm.toLowerCase().trim();
+
     return {
-      missing: term
-        ? result.missing.filter((id) => id.toLowerCase().includes(term))
+      missing: missingTerm
+        ? result.missing.filter((id) => id.toLowerCase().includes(missingTerm))
         : result.missing,
-      extra: term
-        ? result.extra.filter((id) => id.toLowerCase().includes(term))
+      extra: extraTerm
+        ? result.extra.filter((id) => id.toLowerCase().includes(extraTerm))
         : result.extra,
     };
-  }, [result.missing, result.extra, searchTerm]);
+  }, [result.missing, result.extra, missingSearchTerm, extraSearchTerm]);
 
   useEffect(() => {
     setMissingCurrentPage(1);
+  }, [missingSearchTerm]);
+
+  useEffect(() => {
     setExtraCurrentPage(1);
-  }, [searchTerm]);
+  }, [extraSearchTerm]);
 
   useEffect(() => {
     if (isOpen) {
@@ -90,7 +96,7 @@ export function ComparisonResultModal({
     <Dialog open={isOpen} onClose={onClose} className="relative z-[60]">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-3xl bg-white rounded-lg shadow-xl h-[calc(100vh-2rem)] overflow-y-auto">
+        <DialogPanel className="w-full max-w-4xl bg-white rounded-lg shadow-xl h-[calc(100vh-2rem)] overflow-y-auto">
           <div className="flex justify-between items-center p-6 border-b">
             <DialogTitle className="text-lg font-semibold">
               비교 결과 상세
@@ -104,25 +110,19 @@ export function ComparisonResultModal({
           </div>
 
           <div className="p-6 space-y-6">
-            <Search
-              value={searchTerm}
-              onChange={setSearchTerm}
-              placeholder="식별자 검색..."
-            />
+            <div className="text-sm text-gray-600 flex gap-4">
+              <p>엑셀 파일 식별자 수: {result.totalExcel}개</p>
+              <p>예약된 식별자 수: {result.totalApi}개</p>
+            </div>
 
             <div className="space-y-4">
-              <div className="text-sm text-gray-600 flex gap-4">
-                <p>엑셀 파일 식별자 수: {result.totalExcel}개</p>
-                <p>예약된 식별자 수: {result.totalApi}개</p>
-              </div>
-
               <Disclosure as="div">
                 {({ open }) => (
                   <div>
                     <DisclosureButton className="flex w-full justify-between rounded-lg bg-blue-50 px-4 py-3 text-left text-sm font-medium text-blue-900 hover:bg-blue-100">
                       <span>
                         누락된 식별자
-                        {searchTerm
+                        {missingSearchTerm
                           ? `(검색결과 ${filteredResults.missing.length}개/전체 ${result.missing.length}개)`
                           : `(${result.missing.length}개)`}
                       </span>
@@ -134,6 +134,11 @@ export function ComparisonResultModal({
                     </DisclosureButton>
                     <DisclosurePanel className="px-4 pt-4 pb-2 text-sm text-gray-600">
                       <div className="space-y-4">
+                        <Search
+                          value={missingSearchTerm}
+                          onChange={setMissingSearchTerm}
+                          placeholder="누락된 식별자 검색..."
+                        />
                         <div className="space-y-2 max-h-[40vh] overflow-y-auto">
                           {paginatedMissing.map((id, index) => (
                             <div key={index} className="p-2 bg-gray-50 rounded">
@@ -145,7 +150,9 @@ export function ComparisonResultModal({
                           total={filteredResults.missing.length}
                           currentPage={missingCurrentPage}
                           pageSize={pageSize}
-                          totalPages={missingTotalPages}
+                          totalPages={Math.ceil(
+                            filteredResults.missing.length / pageSize
+                          )}
                           onPageChange={setMissingCurrentPage}
                           onPageSizeChange={setPageSize}
                         />
@@ -161,7 +168,7 @@ export function ComparisonResultModal({
                     <DisclosureButton className="flex w-full justify-between rounded-lg bg-blue-50 px-4 py-3 text-left text-sm font-medium text-blue-900 hover:bg-blue-100">
                       <span>
                         추가된 식별자
-                        {searchTerm
+                        {extraSearchTerm
                           ? `(검색결과 ${filteredResults.extra.length}개/전체 ${result.extra.length}개)`
                           : `(${result.extra.length}개)`}
                       </span>
@@ -173,6 +180,11 @@ export function ComparisonResultModal({
                     </DisclosureButton>
                     <DisclosurePanel className="px-4 pt-4 pb-2 text-sm text-gray-600">
                       <div className="space-y-4">
+                        <Search
+                          value={extraSearchTerm}
+                          onChange={setExtraSearchTerm}
+                          placeholder="추가된 식별자 검색..."
+                        />
                         <div className="space-y-2 max-h-[40vh] overflow-y-auto">
                           {paginatedExtra.map((id, index) => (
                             <div key={index} className="p-2 bg-gray-50 rounded">
@@ -184,7 +196,9 @@ export function ComparisonResultModal({
                           total={filteredResults.extra.length}
                           currentPage={extraCurrentPage}
                           pageSize={pageSize}
-                          totalPages={extraTotalPages}
+                          totalPages={Math.ceil(
+                            filteredResults.extra.length / pageSize
+                          )}
                           onPageChange={setExtraCurrentPage}
                           onPageSizeChange={setPageSize}
                         />
