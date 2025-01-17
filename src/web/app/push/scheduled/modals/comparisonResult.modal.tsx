@@ -21,12 +21,26 @@ interface ComparisonResultModalProps {
     totalExcel: number;
     totalApi: number;
   };
+  initialResult: {
+    missing: string[];
+    extra: string[];
+    totalExcel: number;
+    totalApi: number;
+  };
+  onUpdateResult: (newResult: {
+    missing: string[];
+    extra: string[];
+    totalExcel: number;
+    totalApi: number;
+  }) => void;
 }
 
 export function ComparisonResultModal({
   isOpen,
   onClose,
   result,
+  initialResult,
+  onUpdateResult,
 }: ComparisonResultModalProps) {
   const [missingCurrentPage, setMissingCurrentPage] = useState(1);
   const [extraCurrentPage, setExtraCurrentPage] = useState(1);
@@ -92,6 +106,35 @@ export function ComparisonResultModal({
   );
   const extraTotalPages = Math.ceil(filteredResults.extra.length / pageSize);
 
+  const handleReset = () => {
+    onUpdateResult({ ...initialResult });
+  };
+
+  const handleMoveIdentifier = (id: string) => {
+    const newResult = {
+      ...result,
+      missing: result.missing.filter((item) => item !== id),
+      extra: [...result.extra, id],
+    };
+    onUpdateResult(newResult);
+  };
+
+  const handleExcludeIdentifier = (id: string) => {
+    const newResult = {
+      ...result,
+      extra: result.extra.filter((item) => item !== id),
+      missing: [...result.missing, id],
+    };
+    onUpdateResult(newResult);
+  };
+
+  const handleMoveAllFiltered = () => {
+    onUpdateResult({
+      ...result,
+      missing: [...result.missing, ...filteredResults.missing],
+    });
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-[60]">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -101,12 +144,20 @@ export function ComparisonResultModal({
             <DialogTitle className="text-lg font-semibold">
               비교 결과 상세
             </DialogTitle>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-500"
-            >
-              <HiX className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleReset}
+                className="text-sm text-gray-600 hover:text-gray-800"
+              >
+                초기화
+              </button>
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <HiX className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           <div className="p-6 space-y-6">
@@ -134,15 +185,34 @@ export function ComparisonResultModal({
                     </DisclosureButton>
                     <DisclosurePanel className="px-4 pt-4 pb-2 text-sm text-gray-600">
                       <div className="space-y-4">
-                        <Search
-                          value={missingSearchTerm}
-                          onChange={setMissingSearchTerm}
-                          placeholder="누락된 식별자 검색..."
-                        />
+                        <div className="flex justify-between items-center">
+                          <Search
+                            value={missingSearchTerm}
+                            onChange={setMissingSearchTerm}
+                            placeholder="누락된 식별자 검색..."
+                          />
+                          {filteredResults.missing.length > 0 && (
+                            <button
+                              onClick={handleMoveAllFiltered}
+                              className="px-3 py-1 text-sm text-blue-600 hover:text-blue-700 border border-blue-600 rounded-md hover:bg-blue-50"
+                            >
+                              검색결과 전체 추가
+                            </button>
+                          )}
+                        </div>
                         <div className="space-y-2 max-h-[40vh] overflow-y-auto">
                           {paginatedMissing.map((id, index) => (
-                            <div key={index} className="p-2 bg-gray-50 rounded">
-                              {id}
+                            <div
+                              key={index}
+                              className="flex justify-between items-center p-2 bg-gray-50 rounded group hover:bg-gray-100"
+                            >
+                              <span>{id}</span>
+                              <button
+                                onClick={() => handleMoveIdentifier(id)}
+                                className="opacity-0 group-hover:opacity-100 text-blue-600 hover:text-blue-700 px-2"
+                              >
+                                추가 →
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -187,8 +257,19 @@ export function ComparisonResultModal({
                         />
                         <div className="space-y-2 max-h-[40vh] overflow-y-auto">
                           {paginatedExtra.map((id, index) => (
-                            <div key={index} className="p-2 bg-gray-50 rounded">
-                              {id}
+                            <div
+                              key={index}
+                              className="flex justify-between items-center p-2 bg-gray-50 rounded group hover:bg-gray-100"
+                            >
+                              <span>{id}</span>
+                              {!initialResult.extra.includes(id) && (
+                                <button
+                                  onClick={() => handleExcludeIdentifier(id)}
+                                  className="opacity-0 group-hover:opacity-100 text-red-600 hover:text-red-700 px-2"
+                                >
+                                  ← 제외
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>

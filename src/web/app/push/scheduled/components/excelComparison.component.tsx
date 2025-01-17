@@ -7,15 +7,20 @@ interface ExcelComparisonProps {
   queues: any[];
 }
 
+interface ComparisonResult {
+  missing: string[];
+  extra: string[];
+  totalExcel: number;
+  totalApi: number;
+}
+
 export function ExcelComparison({ queues }: ExcelComparisonProps) {
   const [compareFile, setCompareFile] = useState<File | null>(null);
   const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false);
-  const [comparisonResult, setComparisonResult] = useState<{
-    missing: string[];
-    extra: string[];
-    totalExcel: number;
-    totalApi: number;
-  } | null>(null);
+  const [initialComparisonResult, setInitialComparisonResult] =
+    useState<ComparisonResult | null>(null);
+  const [comparisonResult, setComparisonResult] =
+    useState<ComparisonResult | null>(null);
 
   const handleCompareWithExcel = async () => {
     if (!compareFile) return;
@@ -25,12 +30,14 @@ export function ExcelComparison({ queues }: ExcelComparisonProps) {
     });
 
     if (result) {
-      setComparisonResult({
+      const newResult: ComparisonResult = {
         ...result,
         totalExcel:
           result.missing.length + (queues.length - result.extra.length),
         totalApi: queues.length,
-      });
+      };
+      setInitialComparisonResult(newResult);
+      setComparisonResult(newResult);
     }
   };
 
@@ -116,11 +123,13 @@ export function ExcelComparison({ queues }: ExcelComparisonProps) {
         </div>
       )}
 
-      {comparisonResult && (
+      {comparisonResult && initialComparisonResult && (
         <ComparisonResultModal
           isOpen={isComparisonModalOpen}
           onClose={() => setIsComparisonModalOpen(false)}
           result={comparisonResult}
+          initialResult={initialComparisonResult}
+          onUpdateResult={setComparisonResult}
         />
       )}
     </>
