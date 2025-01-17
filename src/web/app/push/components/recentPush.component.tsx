@@ -23,7 +23,6 @@ export function RecentPushes() {
         limit: 5,
         targetMode: AppIdEnum.PROD,
       });
-      console.log("data: ", data);
       setPushes(data);
     } catch (e) {
       setError(e instanceof Error ? e : new Error("Failed to fetch pushes"));
@@ -34,7 +33,6 @@ export function RecentPushes() {
     try {
       const pushAPI = PushAPI.getInstance();
       const detailData = await pushAPI.getPushDetail(push.idx);
-      console.log("detailData: ", detailData);
       setSelectedPush(detailData);
       setIsModalOpen(true);
     } catch (e) {
