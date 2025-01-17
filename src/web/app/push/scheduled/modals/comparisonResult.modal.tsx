@@ -1,38 +1,26 @@
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-import { HiChevronDown, HiX } from "react-icons/hi";
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { HiX } from "react-icons/hi";
 import { useState, useEffect, useMemo } from "react";
-import { Pagination } from "app/common/components/pagination.component";
 import { useLoadingStore } from "app/store";
-import { Search } from "app/common/components/search.component";
+import { QueueSubmitButton } from "../components/queueSubmitButton.component";
+import { IdentifierList } from "../components/identifierList.component";
 
 interface ComparisonResultModalProps {
   isOpen: boolean;
   onClose: () => void;
-  result: {
-    missing: string[];
-    extra: string[];
-    totalExcel: number;
-    totalApi: number;
-  };
-  initialResult: {
-    missing: string[];
-    extra: string[];
-    totalExcel: number;
-    totalApi: number;
-  };
-  onUpdateResult: (newResult: {
-    missing: string[];
-    extra: string[];
-    totalExcel: number;
-    totalApi: number;
-  }) => void;
+  result: ComparisonResult;
+  initialResult: ComparisonResult;
+  onUpdateResult: (newResult: ComparisonResult) => void;
+  onSubmitQueue: (identifies: string[], cmpncode: number) => Promise<void>;
+  cmpncode: number;
+}
+
+interface ComparisonResult {
+  missing: string[];
+  extra: string[];
+  existing: string[];
+  totalExcel: number;
+  totalApi: number;
 }
 
 export function ComparisonResultModal({
@@ -41,6 +29,8 @@ export function ComparisonResultModal({
   result,
   initialResult,
   onUpdateResult,
+  onSubmitQueue,
+  cmpncode,
 }: ComparisonResultModalProps) {
   const [missingCurrentPage, setMissingCurrentPage] = useState(1);
   const [extraCurrentPage, setExtraCurrentPage] = useState(1);
@@ -101,11 +91,6 @@ export function ComparisonResultModal({
     }
   };
 
-  const missingTotalPages = Math.ceil(
-    filteredResults.missing.length / pageSize
-  );
-  const extraTotalPages = Math.ceil(filteredResults.extra.length / pageSize);
-
   const handleReset = () => {
     onUpdateResult({ ...initialResult });
   };
@@ -128,11 +113,25 @@ export function ComparisonResultModal({
     onUpdateResult(newResult);
   };
 
-  const handleMoveAllFiltered = () => {
-    onUpdateResult({
-      ...result,
-      missing: [...result.missing, ...filteredResults.missing],
-    });
+  const handleMoveAllFiltered = async () => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 0)); // UI 블로킹 방지
+      const newResult = {
+        ...result,
+        missing: result.missing.filter(
+          (id) => !filteredResults.missing.includes(id)
+        ),
+        extra: [...result.extra, ...filteredResults.missing],
+      };
+      onUpdateResult(newResult);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    onSubmitQueue(result.extra, cmpncode);
   };
 
   return (
@@ -144,151 +143,64 @@ export function ComparisonResultModal({
             <DialogTitle className="text-lg font-semibold">
               비교 결과 상세
             </DialogTitle>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={handleReset}
-                className="text-sm text-gray-600 hover:text-gray-800"
-              >
-                초기화
-              </button>
-              <button
-                onClick={onClose}
-                className="text-gray-400 hover:text-gray-500"
-              >
-                <HiX className="w-5 h-5" />
-              </button>
-            </div>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-500"
+            >
+              <HiX className="w-5 h-5" />
+            </button>
           </div>
 
           <div className="p-6 space-y-6">
             <div className="text-sm text-gray-600 flex gap-4">
-              <p>엑셀 파일 식별자 수: {result.totalExcel}개</p>
-              <p>예약된 식별자 수: {result.totalApi}개</p>
+              <p>엑셀 파일 식별자 수: {result.totalExcel}건</p>
+              <p>예약 대기열 식별자 수: {result.totalApi}건</p>
             </div>
 
             <div className="space-y-4">
-              <Disclosure as="div">
-                {({ open }) => (
-                  <div>
-                    <DisclosureButton className="flex w-full justify-between rounded-lg bg-blue-50 px-4 py-3 text-left text-sm font-medium text-blue-900 hover:bg-blue-100">
-                      <span>
-                        누락된 식별자
-                        {missingSearchTerm
-                          ? `(검색결과 ${filteredResults.missing.length}개/전체 ${result.missing.length}개)`
-                          : `(${result.missing.length}개)`}
-                      </span>
-                      <HiChevronDown
-                        className={`${
-                          open ? "transform rotate-180" : ""
-                        } w-5 h-5 text-blue-500`}
-                      />
-                    </DisclosureButton>
-                    <DisclosurePanel className="px-4 pt-4 pb-2 text-sm text-gray-600">
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <Search
-                            value={missingSearchTerm}
-                            onChange={setMissingSearchTerm}
-                            placeholder="누락된 식별자 검색..."
-                          />
-                          {filteredResults.missing.length > 0 && (
-                            <button
-                              onClick={handleMoveAllFiltered}
-                              className="px-3 py-1 text-sm text-blue-600 hover:text-blue-700 border border-blue-600 rounded-md hover:bg-blue-50"
-                            >
-                              검색결과 전체 추가
-                            </button>
-                          )}
-                        </div>
-                        <div className="space-y-2 max-h-[40vh] overflow-y-auto">
-                          {paginatedMissing.map((id, index) => (
-                            <div
-                              key={index}
-                              className="flex justify-between items-center p-2 bg-gray-50 rounded group hover:bg-gray-100"
-                            >
-                              <span>{id}</span>
-                              <button
-                                onClick={() => handleMoveIdentifier(id)}
-                                className="opacity-0 group-hover:opacity-100 text-blue-600 hover:text-blue-700 px-2"
-                              >
-                                추가 →
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                        <Pagination
-                          total={filteredResults.missing.length}
-                          currentPage={missingCurrentPage}
-                          pageSize={pageSize}
-                          totalPages={Math.ceil(
-                            filteredResults.missing.length / pageSize
-                          )}
-                          onPageChange={setMissingCurrentPage}
-                          onPageSizeChange={setPageSize}
-                        />
-                      </div>
-                    </DisclosurePanel>
-                  </div>
-                )}
-              </Disclosure>
+              <IdentifierList
+                title="누락된 식별자"
+                identifiers={result.missing}
+                searchTerm={missingSearchTerm}
+                onSearchChange={setMissingSearchTerm}
+                filteredCount={filteredResults.missing.length}
+                totalCount={result.missing.length}
+                currentPage={missingCurrentPage}
+                onPageChange={setMissingCurrentPage}
+                pageSize={pageSize}
+                onPageSizeChange={setPageSize}
+                paginatedItems={paginatedMissing}
+                onItemAction={handleMoveIdentifier}
+                actionLabel="추가 →"
+                showMoveAllButton
+                onMoveAll={handleMoveAllFiltered}
+              />
 
-              <Disclosure as="div">
-                {({ open }) => (
-                  <div>
-                    <DisclosureButton className="flex w-full justify-between rounded-lg bg-blue-50 px-4 py-3 text-left text-sm font-medium text-blue-900 hover:bg-blue-100">
-                      <span>
-                        추가된 식별자
-                        {extraSearchTerm
-                          ? `(검색결과 ${filteredResults.extra.length}개/전체 ${result.extra.length}개)`
-                          : `(${result.extra.length}개)`}
-                      </span>
-                      <HiChevronDown
-                        className={`${
-                          open ? "transform rotate-180" : ""
-                        } w-5 h-5 text-blue-500`}
-                      />
-                    </DisclosureButton>
-                    <DisclosurePanel className="px-4 pt-4 pb-2 text-sm text-gray-600">
-                      <div className="space-y-4">
-                        <Search
-                          value={extraSearchTerm}
-                          onChange={setExtraSearchTerm}
-                          placeholder="추가된 식별자 검색..."
-                        />
-                        <div className="space-y-2 max-h-[40vh] overflow-y-auto">
-                          {paginatedExtra.map((id, index) => (
-                            <div
-                              key={index}
-                              className="flex justify-between items-center p-2 bg-gray-50 rounded group hover:bg-gray-100"
-                            >
-                              <span>{id}</span>
-                              {!initialResult.extra.includes(id) && (
-                                <button
-                                  onClick={() => handleExcludeIdentifier(id)}
-                                  className="opacity-0 group-hover:opacity-100 text-red-600 hover:text-red-700 px-2"
-                                >
-                                  ← 제외
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                        <Pagination
-                          total={filteredResults.extra.length}
-                          currentPage={extraCurrentPage}
-                          pageSize={pageSize}
-                          totalPages={Math.ceil(
-                            filteredResults.extra.length / pageSize
-                          )}
-                          onPageChange={setExtraCurrentPage}
-                          onPageSizeChange={setPageSize}
-                        />
-                      </div>
-                    </DisclosurePanel>
-                  </div>
-                )}
-              </Disclosure>
+              <IdentifierList
+                title="추가된 식별자"
+                identifiers={result.extra}
+                searchTerm={extraSearchTerm}
+                onSearchChange={setExtraSearchTerm}
+                filteredCount={filteredResults.extra.length}
+                totalCount={result.extra.length}
+                currentPage={extraCurrentPage}
+                onPageChange={setExtraCurrentPage}
+                pageSize={pageSize}
+                onPageSizeChange={setPageSize}
+                paginatedItems={paginatedExtra}
+                onItemAction={handleExcludeIdentifier}
+                actionLabel="← 제외"
+                showResetButton
+                onReset={handleReset}
+                disableAction={(id) => initialResult.extra.includes(id)}
+                actionClassName="text-red-600 hover:text-red-700"
+              />
             </div>
+
+            <QueueSubmitButton
+              extraCount={result.extra.length}
+              onSubmit={handleSubmit}
+            />
           </div>
         </DialogPanel>
       </div>
