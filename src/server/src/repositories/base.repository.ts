@@ -178,19 +178,24 @@ export class BaseRepository<
   protected async createWithSeq<M extends Model>(data: {
     values: any;
     fields: string[];
+    pkField?: string;
+    sequenceName?: string;
   }) {
     if (!this.sequelizeModel?.sequelize) {
       throw new Error("Sequelize is not initialized");
     }
 
-    const { values, fields } = data;
-
+    const { values, fields, pkField = "IDX" } = data;
     const tableName = await this.getTableName();
+    const sequenceName = data.sequenceName || `${tableName}_SEQ`;
 
-    const sequenceName = `${tableName}_SEQ`;
     const nextId = await this.getNextSeq(sequenceName);
 
-    const allFields = fields.map((field) => field.toUpperCase());
+    const allFields = [pkField, ...fields].map((field) => {
+      const attribute = this.sequelizeModel?.rawAttributes[field];
+      return attribute?.field || field.toUpperCase();
+    });
+
     const allValues = [nextId, ...Object.values(values)];
 
     await this.sequelizeModel.sequelize.query(
@@ -199,11 +204,70 @@ export class BaseRepository<
       {
         type: QueryTypes.INSERT,
         replacements: allValues,
+        model: this.sequelizeModel,
       }
     );
+
     return await this.findOneWithRownum<M>({
-      where: { idx: nextId },
-      attributes: fields,
+      where: { [pkField.toLowerCase()]: nextId },
+      attributes: [pkField.toLowerCase(), ...fields],
     });
+  }
+
+  protected async bulkCreateWithSeq<M extends Model>(data: {
+    values: Partial<M>[];
+    fields: string[];
+    pkField?: string;
+    sequenceName?: string;
+  }) {
+    if (!this.sequelizeModel?.sequelize) {
+      throw new Error("Sequelize is not initialized");
+    }
+
+    const { pkField = "IDX" } = data;
+    const tableName = await this.getTableName();
+    const sequenceName = data.sequenceName || `${tableName}_SEQ`;
+
+    const seqValues = await Promise.all(
+      data.values.map(() => this.getNextSeq(sequenceName))
+    );
+    console.log("seqValues: ", seqValues);
+    const allFields = [pkField, ...data.fields].map((field) => {
+      const attribute = this.sequelizeModel?.getAttributes()[field];
+      return attribute?.field || field.toUpperCase();
+    });
+
+    const allValues = data.values.map(
+      (value, index) =>
+        ({
+          [pkField.toLowerCase()]: seqValues[index],
+          ...value,
+        } as Record<string, any>)
+    );
+
+    const placeholders = allValues
+      .map(() => `(${allFields.map(() => "?").join(", ")})`)
+      .join(", ");
+
+    const query = `
+      INSERT INTO ${tableName} ("${allFields.join('", "')}") 
+      VALUES ${placeholders}
+    `;
+
+    const flatValues = allValues.flatMap((value) => {
+      const values = [value[pkField.toLowerCase()]];
+      for (const field of data.fields) {
+        values.push(value[field] ?? null);
+      }
+      return values;
+    });
+
+    await this.sequelizeModel.sequelize.query(query, {
+      type: QueryTypes.INSERT,
+      replacements: flatValues,
+      model: this.sequelizeModel,
+    });
+
+    return;
   }
 }
