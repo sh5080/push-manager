@@ -13,7 +13,7 @@ export default function PushPage() {
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <PageHeader
-          title="푸시 알림 관리"
+          title="타겟 푸시 예약"
           description={
             <span className="whitespace-pre-line">
               타겟 푸시 알림을 생성하고 발송 현황을 관리할 수 있습니다.{"\n"}

@@ -61,7 +61,7 @@ export default function ScheduledPushPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">푸시 예약 조회</h1>
+      <h1 className="text-2xl font-bold mb-6">타겟 푸시 발송 현황</h1>
       <div className="bg-white rounded-lg shadow">
         <table className="min-w-full">
           <thead className="bg-gray-50">
