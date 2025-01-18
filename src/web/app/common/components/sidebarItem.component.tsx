@@ -112,20 +112,20 @@ export const menuItems: MenuItem[] = [
     icon: <HiOutlineHome />,
   },
   {
-    name: "타겟 푸시 발송",
+    name: "타겟 푸시 예약",
     path: "/push",
     icon: <HiOutlineBell />,
   },
   {
-    name: "타겟 푸시 예약",
+    name: "타겟 푸시 발송",
     path: "/push/scheduled",
     icon: <HiOutlineCalendar />,
   },
-  // {
-  //   name: "푸시 내역",
-  //   path: "/push/history",
-  //   icon: <HiOutlineClipboardList />,
-  // },
+  {
+    name: "타겟 푸시 내역",
+    path: "/push/history",
+    icon: <HiOutlineClipboardList />,
+  },
   {
     name: "식별자 관리",
     path: "/push/identify",
