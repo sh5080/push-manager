@@ -485,6 +485,11 @@ import type {
   ToadPlanTableAttributes,
   ToadPlanTableCreationAttributes,
 } from "./ToadPlanTable";
+import { SubscriptionRewardRequest as _SubscriptionRewardRequest } from "./admin/SubscriptionRewardRequest";
+import type {
+  SubscriptionRewardRequestAttributes,
+  SubscriptionRewardRequestCreationAttributes,
+} from "./admin/SubscriptionRewardRequest";
 
 export {
   _IfAppInstallTemp09 as IfAppInstallTemp09,
@@ -586,6 +591,7 @@ export {
   _TblTimezone as TblTimezone,
   _TestIdentify as TestIdentify,
   _ToadPlanTable as ToadPlanTable,
+  _SubscriptionRewardRequest as SubscriptionRewardRequest,
 };
 
 export type {
@@ -787,6 +793,8 @@ export type {
   TestIdentifyCreationAttributes,
   ToadPlanTableAttributes,
   ToadPlanTableCreationAttributes,
+  SubscriptionRewardRequestAttributes,
+  SubscriptionRewardRequestCreationAttributes,
 };
 
 export function initModels(sequelize: Sequelize) {
@@ -890,7 +898,8 @@ export function initModels(sequelize: Sequelize) {
   const TblTimezone = _TblTimezone.initModel(sequelize);
   const TestIdentify = _TestIdentify.initModel(sequelize);
   const ToadPlanTable = _ToadPlanTable.initModel(sequelize);
-
+  const SubscriptionRewardRequest =
+    _SubscriptionRewardRequest.initModel(sequelize);
   return {
     IfAppInstallTemp09: IfAppInstallTemp09,
     SyncCi01: SyncCi01,
@@ -991,5 +1000,6 @@ export function initModels(sequelize: Sequelize) {
     TblTimezone: TblTimezone,
     TestIdentify: TestIdentify,
     ToadPlanTable: ToadPlanTable,
+    SubscriptionRewardRequest: SubscriptionRewardRequest,
   };
 }

@@ -42,6 +42,13 @@ export const envConfig: EnvConfig = {
     database: envVars.TYPEORM_DATABASE,
     clientDir: envVars.TYPEORM_CLIENTDIR,
   },
+  admin: {
+    dbUsername: envVars.ADMIN_DB_USERNAME,
+    dbPassword: envVars.ADMIN_DB_PASSWORD,
+    dbHost: envVars.ADMIN_DB_HOST,
+    dbPort: parseInt(envVars.ADMIN_DB_PORT, 10),
+    dbDatabase: envVars.ADMIN_DB_DATABASE,
+  },
   push: {
     keyPrd: envVars.PUSH_APP_KEY_PRD,
     secretPrd: envVars.PUSH_APP_SECRET_PRD,
