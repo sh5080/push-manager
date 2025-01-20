@@ -58,3 +58,20 @@ export const sequelize = new Sequelize({
     freezeTableName: true,
   },
 });
+
+export const sequelizeAdmin = new Sequelize({
+  dialect: "postgres",
+  username: envConfig.admin.dbUsername,
+  password: envConfig.admin.dbPassword,
+  host: envConfig.admin.dbHost,
+  port: envConfig.admin.dbPort,
+  database: envConfig.admin.dbDatabase,
+  dialectOptions: {
+    pool_timeout: 0,
+    // channel_binding: "disable",
+  },
+  define: {
+    timestamps: false,
+    freezeTableName: true,
+  },
+});

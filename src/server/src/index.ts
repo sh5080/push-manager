@@ -5,7 +5,7 @@ import { apiRoutes } from "./routes";
 import { envConfig } from "@push-manager/shared";
 import { responseMiddleware } from "./middlewares/response.middleware";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import { AppDataSource, sequelize } from "./configs/db.config";
+import { AppDataSource, sequelize, sequelizeAdmin } from "./configs/db.config";
 import { initModels } from "./models/init-models";
 import { initializeRelations } from "./models/relations";
 
@@ -33,6 +33,16 @@ sequelize
     initModels(sequelize);
     initializeRelations();
     console.log("Sequelize Models and Relations initialized");
+  })
+  .catch(console.error);
+
+sequelizeAdmin
+  .authenticate()
+  .then(() => {
+    console.log("Sequelize Admin Database connected");
+    initModels(sequelizeAdmin);
+    initializeRelations();
+    console.log("Sequelize Admin Models and Relations initialized");
   })
   .catch(console.error);
 
