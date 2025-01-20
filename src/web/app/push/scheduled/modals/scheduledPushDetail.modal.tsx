@@ -3,7 +3,7 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { HiX } from "react-icons/hi";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
-import { formatDate } from "@push-manager/shared/utils/date";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 import { Toast } from "app/utils/toast.util";
 import { useState } from "react";
 import { PushReservationStatusModal } from "./pushReservationStatus.modal";
