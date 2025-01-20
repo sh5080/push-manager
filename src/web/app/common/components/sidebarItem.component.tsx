@@ -6,20 +6,81 @@ import {
   HiOutlineCog,
   HiOutlineCalendar,
   HiOutlineIdentification,
+  HiOutlineShieldCheck,
+  HiChevronDown,
+  HiChevronUp,
 } from "react-icons/hi";
 
 export interface MenuItem {
   name: string;
   path: string;
   icon: React.ReactNode;
+  children?: MenuItem[];
 }
 
 interface SidebarItemProps {
   item: MenuItem;
   isActive: boolean;
+  isOpen?: boolean;
+  onToggle?: () => void;
+  depth?: number;
 }
 
-export function SidebarItem({ item, isActive }: SidebarItemProps) {
+export function SidebarItem({
+  item,
+  isActive,
+  isOpen = false,
+  onToggle,
+  depth = 0,
+}: SidebarItemProps) {
+  const hasChildren = item.children && item.children.length > 0;
+
+  if (hasChildren) {
+    return (
+      <div>
+        <button
+          onClick={onToggle}
+          className={`
+            w-full px-4 py-2.5 rounded-md
+            flex items-center justify-between
+            transition-colors duration-150
+            ${
+              isActive
+                ? "bg-gray-100 text-blue-600"
+                : "text-gray-700 hover:bg-green-50"
+            }
+          `}
+        >
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center justify-center w-5 h-5 text-[18px]">
+              {item.icon}
+            </span>
+            <span className="text-[14px] font-medium">{item.name}</span>
+          </div>
+          {isOpen ? (
+            <HiChevronUp className="w-4 h-4" />
+          ) : (
+            <HiChevronDown className="w-4 h-4" />
+          )}
+        </button>
+
+        {isOpen && (
+          <div className="mt-1 space-y-1">
+            {item.children &&
+              item.children.map((child) => (
+                <SidebarItem
+                  key={child.path}
+                  item={child}
+                  isActive={isActive}
+                  depth={depth + 1}
+                />
+              ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <Link
       href={item.path}
@@ -28,6 +89,7 @@ export function SidebarItem({ item, isActive }: SidebarItemProps) {
         px-4 py-2.5 rounded-md
         flex items-center gap-3
         transition-colors duration-150
+        ${depth > 0 ? "pl-6" : ""}
         ${
           isActive
             ? "bg-gray-100 text-blue-600"
@@ -68,6 +130,18 @@ export const menuItems: MenuItem[] = [
     name: "식별자 관리",
     path: "/push/identify",
     icon: <HiOutlineIdentification />,
+  },
+  {
+    name: "어드민",
+    path: "/admin",
+    icon: <HiOutlineShieldCheck />,
+    children: [
+      {
+        name: "구독쿠폰 조회",
+        path: "/admin/subscription-reward-request",
+        icon: <HiOutlineClipboardList />,
+      },
+    ],
   },
   {
     name: "설정",
