@@ -1,5 +1,6 @@
 import { Switch } from "@headlessui/react";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
+import { DatePicker } from "app/common/components/datePicker.component";
 import { HiQuestionMarkCircle } from "react-icons/hi2";
 
 interface PushConditionTabProps {
@@ -73,17 +74,10 @@ export function PushConditionTab({
           발송 날짜 및 시각
         </label>
         <div className="relative">
-          <input
+          <DatePicker
             type="datetime-local"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-              focus:border-blue-500 focus:ring-blue-500 cursor-pointer"
-            min={new Date().toISOString().slice(0, 16)}
             value={sendDateString}
-            onChange={(e) => onChange("sendDateString", e.target.value)}
-            onClick={(e) => {
-              const input = e.target as HTMLInputElement;
-              input.showPicker();
-            }}
+            onChange={(value) => onChange("sendDateString", value)}
           />
         </div>
         <p className="mt-1 text-sm text-gray-500">
