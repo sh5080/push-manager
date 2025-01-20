@@ -138,7 +138,7 @@ export const menuItems: MenuItem[] = [
     children: [
       {
         name: "구독쿠폰 조회",
-        path: "/admin/subscription-reward-request",
+        path: "/admin/subscriptionRewardRequest",
         icon: <HiOutlineClipboardList />,
       },
     ],
