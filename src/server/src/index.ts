@@ -8,6 +8,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import { AppDataSource, sequelize, sequelizeAdmin } from "./configs/db.config";
 import { initModels } from "./models/init-models";
 import { initializeRelations } from "./models/relations";
+import { initAdminModels } from "./models/admin/init-models";
 
 const app = express();
 const port = envConfig.server.port;
@@ -40,8 +41,7 @@ sequelizeAdmin
   .authenticate()
   .then(() => {
     console.log("Sequelize Admin Database connected");
-    initModels(sequelizeAdmin);
-    initializeRelations();
+    initAdminModels(sequelizeAdmin);
     console.log("Sequelize Admin Models and Relations initialized");
   })
   .catch(console.error);
