@@ -7,12 +7,16 @@ import {
   IPushStsMsg,
   PaginatedResponse,
   ConfirmPushQueueDto,
+  GetTargetPushesDto,
 } from "@push-manager/shared";
 import { TblFpMaster, TblFpQueue, TblPushstsmsg } from "../models/init-models";
 
 export interface IPushService {
   createPushes(dto: CreatePushDto): Promise<number>;
   getRecentPushes(dto: GetRecentPushesDto): Promise<TblPushstsmsg[]>;
+  getTargetPushes(
+    dto: GetTargetPushesDto
+  ): Promise<PaginatedResponse<TblPushstsmsg>>;
   getScheduledPushes(
     page: number,
     pageSize: number

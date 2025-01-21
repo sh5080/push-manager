@@ -25,49 +25,6 @@ import {
 } from "../types/constants/pushQueue.const";
 import { PaginationDto } from "./common.dto";
 
-export interface TestPushDto
-  extends Omit<
-    IPushQueue,
-    | "IDENTIFY"
-    | "SENDDATE"
-    | "QUEUEIDX"
-    | "STEP"
-    | "ANDROID_SOUND"
-    | "ANDROID_BADGE"
-    | "IOS_SOUND"
-    | "IOS_BADGE"
-    | "WDATE"
-    | "UDATE"
-  > {
-  /**
-   * 메시지 발송 후 몇 분 뒤에 발송할지 설정합니다.
-   * @default 1
-   */
-  sendInMinutes?: number;
-}
-export interface ProdPushDto
-  extends Required<
-    Omit<
-      IPushQueue,
-      | "IDENTIFY"
-      | "SENDDATE"
-      | "QUEUEIDX"
-      | "STEP"
-      | "ANDROID_SOUND"
-      | "ANDROID_BADGE"
-      | "IOS_SOUND"
-      | "IOS_BADGE"
-      | "WDATE"
-      | "UDATE"
-    >
-  > {
-  /**
-   * 발송할 날짜와 시간을 지정합니다.
-   * @example 'YYYY-MM-DD HH:MM' 형식의 문자열
-   */
-  sendDateString: string;
-}
-
 export interface PushResponse {
   pushes: IPushQueue[];
   pagination: {
@@ -182,6 +139,20 @@ export class GetRecentPushesDto {
   @Max(100, { message: "limit는 최대 100까지만 가능합니다." })
   @Type(() => Number)
   limit?: number;
+}
+
+export class GetTargetPushesDto extends PaginationDto {
+  @IsEnum(AppIdEnum, {
+    message: "유효하지 않은 targetMode입니다. (FREED: 0, TEST: 1, PROD: 2)",
+  })
+  @IsOptional()
+  targetMode?: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+
+  @IsNotEmpty()
+  startDate!: Date;
+
+  @IsNotEmpty()
+  endDate!: Date;
 }
 
 export class GetScheduledPushesDto extends PaginationDto {}

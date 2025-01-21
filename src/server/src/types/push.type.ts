@@ -6,3 +6,11 @@ export interface CreateBasePushDto {
   sendDate: string;
   now: string;
 }
+
+export interface PushMsgStats {
+  stats: {
+    sent: number;
+    failed: number;
+    opened: number;
+  };
+}
