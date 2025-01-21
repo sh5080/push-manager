@@ -12,6 +12,7 @@ import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.enti
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "./base.api";
 import {
+  GetTargetPushesDto,
   IPushMaster,
   IPushQueue,
   PaginatedResponse,
@@ -53,12 +54,11 @@ export class PushAPI extends BaseAPI {
     );
   }
 
-  async getPushHistory(
-    page: number = 1,
-    limit: number = 10
-  ): Promise<PushResponse> {
-    return this.customFetch<PushResponse>(
-      `/api/push/history?page=${page}&limit=${limit}`
+  async getTargetPushes(
+    dto: GetTargetPushesDto
+  ): Promise<PaginatedResponse<IPushStsMsg>> {
+    return this.customFetch<PaginatedResponse<IPushStsMsg>>(
+      `/api/push?page=${dto.page}&pageSize=${dto.pageSize}&targetMode=${dto.targetMode}`
     );
   }
 
