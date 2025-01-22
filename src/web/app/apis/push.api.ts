@@ -4,6 +4,7 @@ import {
   PushResponse,
   GetScheduledPushesDto,
   GetPushQueuesDto,
+  AddToQueueDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
@@ -81,6 +82,16 @@ export class PushAPI extends BaseAPI {
     return this.customFetch<PaginatedResponse<IPushQueue>>(
       `/api/push/queue/${cmpncode}?page=${page}&pageSize=${pageSize}`
     );
+  }
+
+  async addToQueue(dto: AddToQueueDto): Promise<void> {
+    const validatedDto = await validateDto(AddToQueueDto, dto);
+    const { cmpncode } = validatedDto;
+
+    return this.customFetch<void>(`/api/push/queue/${cmpncode}`, {
+      method: "POST",
+      body: JSON.stringify(validatedDto),
+    });
   }
 }
 

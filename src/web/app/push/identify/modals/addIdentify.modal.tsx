@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -10,8 +10,8 @@ import {
 } from "@headlessui/react";
 import { identifyApi } from "app/apis/identify.api";
 import { CreateIdentifyDto } from "@push-manager/shared";
-import { toast } from "react-toastify";
 import { IdentifyForm } from "../components/identifyForm.component";
+import { Toast } from "app/utils/toast.util";
 
 interface AddIdentifyModalProps {
   isOpen: boolean;
@@ -45,7 +45,7 @@ export function AddIdentifyModal({
       onAdd();
       onClose();
     } catch (error: any) {
-      toast.error(error.message);
+      Toast.error(error.message);
     }
   };
 

@@ -33,37 +33,14 @@ export default function RootLayout({
             minHeight: "100vh",
           }}
         >
-          <div
-            style={{
-              height: "64px",
-              // border: '4px solid red'
-            }}
-          >
+          <div style={{ height: "64px" }}>
             <Header />
           </div>
-          <div
-            style={{
-              display: "flex",
-              flex: 1,
-            }}
-          >
-            <div
-              style={{
-                width: "200px",
-                // border: '4px solid green'
-              }}
-            >
+          <div style={{ display: "flex", flex: 1 }}>
+            <div style={{ width: "200px" }}>
               <Sidebar />
             </div>
-            <div
-              style={{
-                // flex: 1,
-                // border: '4px solid blue',
-                padding: "1rem",
-              }}
-            >
-              {children}
-            </div>
+            <div style={{ padding: "1rem" }}>{children}</div>
           </div>
         </div>
         <ToastContainer />

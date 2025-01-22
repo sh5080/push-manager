@@ -1,4 +1,5 @@
 import {
+  AddToQueueDto,
   CreatePushDto,
   GetPushQueuesDto,
   GetRecentPushesDto,
@@ -18,5 +19,6 @@ export interface IPushService {
   ): Promise<PaginatedResponse<IPushMasterWithMsg>>;
   getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null>;
   getPushQueues(dto: GetPushQueuesDto): Promise<PaginatedResponse<TblFpQueue>>;
+  addToQueue(dto: AddToQueueDto): Promise<number>;
   updatePushStatus(dto: UpdatePushStatusDto): Promise<UpdatePushStatusDto>;
 }

@@ -202,3 +202,15 @@ export class GetPushQueuesDto extends PaginationDto {
   @IsNotEmpty({ message: "캠페인 코드는 필수입니다." })
   cmpncode!: number;
 }
+
+export class AddToQueueDto {
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  identifies!: string[];
+
+  @IsNumber()
+  @Type(() => Number)
+  @IsNotEmpty({ message: "캠페인 코드는 필수입니다." })
+  cmpncode!: number;
+}

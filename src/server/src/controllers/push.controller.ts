@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { IPushService } from "../interfaces/push.interface";
 import {
+  AddToQueueDto,
   CreatePushDto,
   GetPushQueuesDto,
   GetRecentPushesDto,
@@ -79,6 +80,19 @@ export class PushController {
       });
       const queues = await this.pushService.getPushQueues(dto);
       res.success(queues);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  addToQueue = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = await validateDto(AddToQueueDto, {
+        identifies: req.body.identifies,
+        cmpncode: Number(req.params.cmpncode),
+      });
+      const result = await this.pushService.addToQueue(dto);
+      res.success(result);
     } catch (error) {
       next(error);
     }

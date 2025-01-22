@@ -1,61 +1,81 @@
-import { PushMaster } from "../entities/pushMaster.entity";
-import { AppDataSource, sequelize } from "../configs/db.config";
+import { sequelize } from "../configs/db.config";
 import { BaseRepository, paginationQuery } from "./base.repository";
-import { QueryRunner } from "typeorm";
+
 import {
   IPushMasterWithMsg,
   StepEnum,
   PaginatedResponse,
 } from "@push-manager/shared";
 import { TblFpMaster } from "../models/TblFpMaster";
+import { Transaction, QueryTypes } from "sequelize";
 
 export class PushMasterRepository extends BaseRepository<TblFpMaster> {
   constructor() {
-    super(AppDataSource, TblFpMaster);
+    super(TblFpMaster);
   }
 
-  async getLastCampaignCode(queryRunner: QueryRunner): Promise<TblFpMaster[]> {
-    const result = await queryRunner.manager
-      .getRepository(TblFpMaster)
-      .createQueryBuilder("MASTER")
-      .select("MASTER.CMPNCODE", "CMPNCODE")
-      .orderBy("MASTER.CMPNCODE", "DESC")
-      .getRawOne();
+  async getLastCampaignCode(transaction: Transaction): Promise<TblFpMaster[]> {
+    const [result] = await TblFpMaster.findAll({
+      attributes: ["cmpncode"],
+      order: [["cmpncode", "DESC"]],
+      transaction,
+    });
 
     return result ? [result] : [];
   }
 
   async createMasterRecord(
-    queryRunner: QueryRunner,
+    transaction: Transaction,
     dto: {
       campaignCode: number;
       pmode: string;
       step: (typeof StepEnum)[keyof typeof StepEnum];
-      startDate: () => string;
+      startDate: string;
     }
   ) {
-    const masterRepository = queryRunner.manager.getRepository(PushMaster);
-    return masterRepository.insert({
-      cmpncode: dto.campaignCode,
-      pMode: dto.pmode,
-      step: dto.step,
-      rStartDate: dto.startDate,
+    const query = `
+        INSERT INTO COKR_MBR_APP.TBL_FP_MASTER 
+        (CMPNCODE, PMODE, STEP, RSTART_DATE) 
+        VALUES 
+        (:cmpncode, :pmode, :step, ${dto.startDate})
+      `;
+
+    const result = await sequelize.query(query, {
+      replacements: {
+        cmpncode: dto.campaignCode,
+        pmode: dto.pmode,
+        step: dto.step,
+      },
+      type: QueryTypes.INSERT,
+      transaction,
     });
+
+    return result;
   }
 
   async updateMasterRecord(
-    queryRunner: QueryRunner,
+    transaction: Transaction,
     dto: {
       campaignCode: number;
       step: (typeof StepEnum)[keyof typeof StepEnum];
-      endDate: () => string;
+      endDate: string;
     }
   ) {
-    const masterRepository = queryRunner.manager.getRepository(PushMaster);
-    return masterRepository.update(
-      { cmpncode: dto.campaignCode },
-      { rEndDate: dto.endDate, step: dto.step }
-    );
+    const query = `
+    UPDATE COKR_MBR_APP.TBL_FP_MASTER 
+    SET 
+      REND_DATE = ${dto.endDate},
+      STEP = :step
+    WHERE CMPNCODE = :campaignCode
+  `;
+    return await sequelize.query(query, {
+      replacements: {
+        step: dto.step,
+        campaignCode: dto.campaignCode,
+      },
+      type: QueryTypes.UPDATE,
+      transaction,
+    });
   }
 
   async getPushMasterWithMsg(

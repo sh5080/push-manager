@@ -6,6 +6,7 @@ import { pushApi } from "app/apis/push.api";
 import { Toast } from "app/utils/toast.util";
 import { getStatusStyle, getStatusText } from "app/utils/chip.util";
 import { ExcelComparison } from "../components/excelComparison.component";
+import { IPushQueue, Rnum } from "@push-manager/shared";
 
 interface PushReservationStatusModalProps {
   isOpen: boolean;
@@ -18,7 +19,7 @@ export function PushReservationStatusModal({
   onClose,
   cmpncode,
 }: PushReservationStatusModalProps) {
-  const [queues, setQueues] = useState<any[]>([]);
+  const [queues, setQueues] = useState<(IPushQueue & Rnum)[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
