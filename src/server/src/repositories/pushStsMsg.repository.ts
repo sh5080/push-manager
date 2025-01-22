@@ -1,16 +1,14 @@
 import { BaseRepository } from "./base.repository";
-import { PushStsMsg } from "../entities/pushStsMsg.entity";
-import { AppDataSource } from "../configs/db.config";
 import { APP_CONFIG } from "../configs/app.config";
 import { TblPushstsmsg, TblPushstssendStatsDay } from "../models/init-models";
 import { Sequelize } from "sequelize";
 import { IPushStsMsg } from "@push-manager/shared";
 
-export class PushStsMsgRepository extends BaseRepository<PushStsMsg> {
+export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
   private appIds: string[];
 
   constructor() {
-    super(AppDataSource, PushStsMsg);
+    super(TblPushstsmsg);
     this.appIds = [
       APP_CONFIG[0].appId,
       APP_CONFIG[1].appId,
