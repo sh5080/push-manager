@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState, useEffect } from "react";
+import { Fragment } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -12,7 +12,7 @@ import { identifyApi } from "app/apis/identify.api";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
 import { UpdateIdentifyDto } from "@push-manager/shared";
 import { IdentifyForm } from "../components/identifyForm.component";
-import { toast } from "react-toastify";
+import { Toast } from "app/utils/toast.util";
 
 interface EditIdentifyModalProps {
   isOpen: boolean;
@@ -45,7 +45,7 @@ export function EditIdentifyModal({
       await identifyApi.updateIdentify(dto);
       onEdit();
     } catch (error: any) {
-      toast.error(error.message);
+      Toast.error(error.message);
     }
   };
 

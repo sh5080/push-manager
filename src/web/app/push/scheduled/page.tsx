@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { pushApi } from "../../apis/push.api";
-import { formatDate } from "@push-manager/shared/utils/date";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { getStatusStyle, getStatusText } from "../../utils/chip.util";
 import { ScheduledPushDetailModal } from "./modals/scheduledPushDetail.modal";

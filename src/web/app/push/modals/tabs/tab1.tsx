@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Modal } from "app/common/components/modal.component";
 import { TestIdentifies } from "app/push/identify/components/testIdentifies.component";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
+import { Button } from "app/common/components/button.component";
 
 interface TargetUploadTabProps {
   targetFile: File | null;
@@ -337,33 +338,29 @@ export function TargetUploadTab({
       <div className="flex justify-end space-x-2">
         {isEditing ? (
           <>
-            <button
-              onClick={handleCancel}
-              className="px-4 py-2 text-sm rounded-md text-gray-600 bg-gray-100 hover:bg-gray-200"
-            >
+            <Button variant="square-line" size="38" onClick={handleCancel}>
               취소
-            </button>
-            <button
-              onClick={handleSave}
-              className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
-            >
+            </Button>
+            <Button variant="square-solid" size="38" onClick={handleSave}>
               저장
-            </button>
+            </Button>
           </>
         ) : (
           <>
-            <button
+            <Button
+              variant="square-point"
+              size="38"
               onClick={handleDirectInput}
-              className="px-4 py-2 text-sm rounded-md text-white bg-gray-600 hover:bg-gray-700"
             >
               직접 입력
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="square-green"
+              size="38"
               onClick={() => setIsTestIdentifiersModalOpen(true)}
-              className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
             >
               식별자 불러오기
-            </button>
+            </Button>
           </>
         )}
       </div>
@@ -377,12 +374,9 @@ export function TargetUploadTab({
         title="테스트 식별자 목록"
         size="lg"
         actions={
-          <button
-            onClick={handleAddIdentifiers}
-            className="px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
-          >
+          <Button variant="solid" size="38" onClick={handleAddIdentifiers}>
             선택한 식별자 추가 ({selectedIdentifierIds.size}개)
-          </button>
+          </Button>
         }
       >
         <TestIdentifies

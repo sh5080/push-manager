@@ -12,7 +12,7 @@ import {
   TabPanels,
 } from "@headlessui/react";
 import { HiX } from "react-icons/hi";
-import { PushAPI } from "app/apis/push.api";
+import { pushApi } from "app/apis/push.api";
 import { IdentifyReader } from "../../utils/excelCsv.util";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 import { TargetUploadTab } from "./tabs/tab1";
@@ -20,6 +20,7 @@ import { PushConditionTab } from "./tabs/tab2";
 import { PushContentTab } from "./tabs/tab3";
 import { Toast } from "app/utils/toast.util";
 import { useRouter } from "next/navigation";
+import { Button } from "app/common/components/button.component";
 
 interface SendPushModalProps {
   isOpen: boolean;
@@ -120,28 +121,26 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (isReady: boolean = false) => {
     const toastId = Toast.loading("푸시 발송 요청 처리중...");
 
     try {
       setIsLoading(true);
       setError(null);
 
-      // 필수 입력값 검증
-      if (!pushData.title.trim()) {
-        throw new Error("푸시 제목을 입력해주세요.");
-      }
-      if (!pushData.content.trim()) {
-        throw new Error("푸시 내용을 입력해주세요.");
-      }
       if (pushData.identifyArray.length === 0) {
         throw new Error("타겟 대상을 입력하거나 파일을 업로드해주세요.");
       }
       if (!pushData.sendDateString) {
         throw new Error("발송 시간을 설정해주세요.");
       }
+      if (!pushData.title.trim()) {
+        throw new Error("푸시 제목을 입력해주세요.");
+      }
+      if (!pushData.content.trim()) {
+        throw new Error("푸시 내용을 입력해주세요.");
+      }
 
-      const pushApi = PushAPI.getInstance();
       const response = await pushApi.sendPush({
         identifyArray: pushData.identifyArray,
         ...(pushData.imageEnabled && { fname: pushData.fname }),
@@ -150,6 +149,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         title: pushData.title,
         content: pushData.content,
         appId: pushData.appId,
+        isReady,
       });
 
       if (response) {
@@ -179,7 +179,6 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         [field]: value,
       };
 
-      // Switch가 꺼지면 해당 필드 초기화
       if (field === "imageEnabled" && !value) {
         newState.fname = "";
       }
@@ -200,15 +199,12 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-3xl bg-white rounded-lg shadow-xl">
-          <div className="flex justify-between items-center p-6 border-b">
-            <DialogTitle className="text-lg font-semibold">
+        <DialogPanel className="w-full max-w-3xl bg-white rounded-2xl shadow-xl">
+          <div className="flex justify-between items-center p-6 border-b border-gray-100">
+            <DialogTitle className="text-lg font-semibold text-gray-900">
               타겟 푸시 예약
             </DialogTitle>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-500"
-            >
+            <button onClick={onClose} className="!p-2">
               <HiX className="w-5 h-5" />
             </button>
           </div>
@@ -291,48 +287,56 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
 
           {error && (
             <div className="px-6 mb-4">
-              <div className="p-4 text-sm text-red-700 bg-red-100 rounded-lg">
+              <div className="p-4 text-sm text-red-600 bg-red-50 rounded-xl border border-red-100">
                 {error}
               </div>
             </div>
           )}
 
-          <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 rounded-b-lg">
+          <div className="flex justify-end gap-3 p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
             <div className="flex-1">
-              <p className="text-sm ml-2 text-gray-600">
+              <p className="text-sm text-gray-600 leading-6">
                 생성을 완료한 뒤{" "}
-                <button
+                <Button
+                  variant="green-point"
+                  size="32"
                   onClick={handleNavigateToScheduled}
-                  className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
+                  className="!p-0 !border-0"
                 >
                   타겟 푸시 예약
-                </button>
-                에서 정상적으로 식별자가 삽입되었는지 확인 후<br /> 예약을
-                확정해야 전송이 시작됩니다.
+                </Button>
+                에서 정상적으로 식별자가 삽입되었는지 확인 후 예약을 확정해야
+                전송이 시작됩니다.
+                <br />
+                (즉시 발송시 예약 확정 과정 없이 바로 전송 가능하나,
+                지양해주세요.)
               </p>
             </div>
             <div className="flex gap-3">
-              <button
+              <Button
+                variant="line"
+                size="38"
                 onClick={onClose}
-                className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                 disabled={isLoading}
               >
                 취소
-              </button>
-              <button
-                onClick={handleSubmit}
+              </Button>
+              <Button
+                variant="solid"
+                size="38"
+                onClick={() => handleSubmit(false)}
                 disabled={isLoading}
-                className={`
-                  px-4 py-2 text-sm text-white rounded-md
-                  ${
-                    isLoading
-                      ? "bg-blue-400 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }
-                `}
               >
                 {isLoading ? "처리중..." : "생성하기"}
-              </button>
+              </Button>
+              <Button
+                variant="green-point"
+                size="38"
+                onClick={() => handleSubmit(true)}
+                disabled={isLoading}
+              >
+                {isLoading ? "처리중..." : "즉시 발송"}
+              </Button>
             </div>
           </div>
         </DialogPanel>

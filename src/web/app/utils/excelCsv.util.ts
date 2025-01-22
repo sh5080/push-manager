@@ -26,7 +26,7 @@ export class IdentifyReader {
     return identifyData
       .slice(1)
       .map((row) => String(row[identifyColumnIndex]))
-      .filter((value) => value && value.trim());
+      .filter((value) => value && value.trim() && value !== "undefined");
   }
 
   static async csvToIdentify(file: File): Promise<string[]> {

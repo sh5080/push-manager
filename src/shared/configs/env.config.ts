@@ -6,12 +6,19 @@ import path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const envSchema = Joi.object({
-  TYPEORM_HOST: Joi.string().required(),
-  TYPEORM_PORT: Joi.number().required(),
-  TYPEORM_USERNAME: Joi.string().required(),
-  TYPEORM_PASSWORD: Joi.string().required(),
-  TYPEORM_DATABASE: Joi.string().required(),
-  TYPEORM_CLIENTDIR: Joi.string().required(),
+  PUSH_DB_HOST: Joi.string().required(),
+  PUSH_DB_PORT: Joi.number().required(),
+  PUSH_DB_USERNAME: Joi.string().required(),
+  PUSH_DB_PASSWORD: Joi.string().required(),
+  PUSH_DB_DATABASE: Joi.string().required(),
+  PUSH_DB_CLIENTDIR: Joi.string().required(),
+
+  ADMIN_DB_USERNAME: Joi.string().required(),
+  ADMIN_DB_PASSWORD: Joi.string().required(),
+  ADMIN_DB_HOST: Joi.string().required(),
+  ADMIN_DB_PORT: Joi.number().required(),
+  ADMIN_DB_DATABASE: Joi.string().required(),
+
   PUSH_APP_KEY_PRD: Joi.string().required(),
   PUSH_APP_SECRET_PRD: Joi.string().required(),
   PUSH_APP_KEY_STG: Joi.string().required(),
@@ -34,13 +41,20 @@ if (error) {
 }
 
 export const envConfig: EnvConfig = {
-  typeorm: {
-    host: envVars.TYPEORM_HOST,
-    port: parseInt(envVars.TYPEORM_PORT, 10),
-    username: envVars.TYPEORM_USERNAME,
-    password: envVars.TYPEORM_PASSWORD,
-    database: envVars.TYPEORM_DATABASE,
-    clientDir: envVars.TYPEORM_CLIENTDIR,
+  pushDB: {
+    host: envVars.PUSH_DB_HOST,
+    port: parseInt(envVars.PUSH_DB_PORT, 10),
+    username: envVars.PUSH_DB_USERNAME,
+    password: envVars.PUSH_DB_PASSWORD,
+    database: envVars.PUSH_DB_DATABASE,
+    clientDir: envVars.PUSH_DB_CLIENTDIR,
+  },
+  adminDB: {
+    username: envVars.ADMIN_DB_USERNAME,
+    password: envVars.ADMIN_DB_PASSWORD,
+    host: envVars.ADMIN_DB_HOST,
+    port: parseInt(envVars.ADMIN_DB_PORT, 10),
+    database: envVars.ADMIN_DB_DATABASE,
   },
   push: {
     keyPrd: envVars.PUSH_APP_KEY_PRD,

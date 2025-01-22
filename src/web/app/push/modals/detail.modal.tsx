@@ -21,7 +21,6 @@ interface DetailModalProps {
 
 export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
   if (!push) return null;
-  console.log("push in detail modal: ", push);
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>

@@ -1,8 +1,6 @@
 import * as XLSX from "xlsx";
-
-import * as fs from "fs";
-import { parse } from "csv-parse/sync";
 import { ExcelResult, PushResultStats } from "../types/push.type";
+import { formatDate } from "./date.util";
 
 export class ExcelHandler {
   /**
@@ -86,35 +84,12 @@ export class ExcelHandler {
     console.log(`푸시 결과가 ${filePath} 파일의 2번째 시트에 저장되었습니다.`);
   }
 
-  static convertCsvToExcel(csvFilePath: string, excelFilePath: string): void {
-    try {
-      // CSV 파일 읽기
-      const csvContent = fs.readFileSync(csvFilePath, "utf-8");
+  static async convertDataToExcel(data: any[]): Promise<void> {
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
 
-      // CSV 파싱
-      const records = parse(csvContent, {
-        columns: true,
-        skip_empty_lines: true,
-      });
-
-      // 워크북 생성
-      const workbook = XLSX.utils.book_new();
-
-      // 워크시트 생성
-      const worksheet = XLSX.utils.json_to_sheet(records);
-
-      // 워크북에 워크시트 추가
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-      // 엑셀 파일로 저장
-      XLSX.writeFile(workbook, excelFilePath);
-
-      console.log(
-        `CSV 파일이 성공적으로 Excel 파일로 변환되었습니다: ${excelFilePath}`
-      );
-    } catch (error) {
-      console.error("CSV를 Excel로 변환하는 중 오류 발생:", error);
-      throw error;
-    }
+    const now = formatDate(new Date());
+    XLSX.writeFile(workbook, `subscriptionRewardRequest-${now}.xlsx`);
   }
 }

@@ -4,6 +4,7 @@ import { IdentifyReader } from "./excelCsv.util";
 interface ComparisonResult {
   missing: string[];
   extra: string[];
+  existing: string[];
 }
 
 export class ExcelCompareUtil {
@@ -27,7 +28,6 @@ export class ExcelCompareUtil {
     const toastId = Toast.loading("파일 비교 중...");
 
     try {
-      // 파일 확장자에 따라 적절한 방법으로 식별자 읽기
       let fileIdentifies: string[];
       if (file.name.toLowerCase().endsWith(".csv")) {
         fileIdentifies = await IdentifyReader.csvToIdentify(file);
@@ -35,9 +35,11 @@ export class ExcelCompareUtil {
         fileIdentifies = await IdentifyReader.excelToIdentify(file);
       }
 
+      const fileIdentifySet = new Set(fileIdentifies);
+
       const apiIdentifies = new Set(apiData.map(options.getIdentify));
       const result = await this.compareIdentifies(
-        new Set(fileIdentifies),
+        fileIdentifySet,
         apiIdentifies
       );
 
@@ -62,6 +64,7 @@ export class ExcelCompareUtil {
   ): Promise<ComparisonResult> {
     const missing: string[] = [];
     const extra: string[] = [];
+    const existing: string[] = [];
 
     // 청크 단위로 비교
     const processChunk = async (
@@ -77,7 +80,19 @@ export class ExcelCompareUtil {
             resultArray.push(id);
           }
         });
-        // 청크 처리 후 잠시 대기하여 메인 스레드 차단 방지
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    };
+
+    // 기 등록 건수 확인
+    const processExisting = async (identifies: string[]) => {
+      for (let i = 0; i < identifies.length; i += this.CHUNK_SIZE) {
+        const chunk = identifies.slice(i, i + this.CHUNK_SIZE);
+        chunk.forEach((id) => {
+          if (apiIdentifies.has(id) && fileIdentifies.has(id)) {
+            existing.push(id);
+          }
+        });
         await new Promise((resolve) => setTimeout(resolve, 0));
       }
     };
@@ -85,8 +100,9 @@ export class ExcelCompareUtil {
     await Promise.all([
       processChunk([...fileIdentifies], fileIdentifies, apiIdentifies, missing),
       processChunk([...apiIdentifies], apiIdentifies, fileIdentifies, extra),
+      processExisting([...fileIdentifies]),
     ]);
 
-    return { missing, extra };
+    return { missing, extra, existing };
   }
 }

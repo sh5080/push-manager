@@ -10,25 +10,23 @@ import {
 } from "../constants/pushQueue.const";
 
 export interface IPushQueue {
-  // 필수 필드
-  queueIdx: number;
-  appKey: string;
-  appSecret: string;
-  msgTitle: string;
-  sendDate?: () => string;
-  resultDate?: string;
-  feedbackDate?: string;
-  msgContents: string;
+  queueidx: number;
+  appkey: string;
+  appsecret: string;
+  msgtitle: string;
+  senddate?: () => string;
+  resultdate?: string;
+  feedbackdate?: string;
+  msgcontents: string;
   identify: string;
   step?: (typeof StepEnum)[keyof typeof StepEnum];
-  pMode?: (typeof PModeEnum)[keyof typeof PModeEnum];
-  fName?: string;
+  pmode?: (typeof PModeEnum)[keyof typeof PModeEnum];
+  fname?: string;
   sendStat?: (typeof SendStatEnum)[keyof typeof SendStatEnum];
   androidSound?: string;
   androidBadge?: number;
   iosSound?: string;
   iosBadge?: number;
-
   plink?: string;
   customKey1?: string;
   customValue1?: string;
@@ -37,17 +35,25 @@ export interface IPushQueue {
   customKey3?: string;
   customValue3?: string;
   labelCode?: string;
-  bgColor?: string;
-  fontColor?: string;
+  bgcolor?: string;
+  fontcolor?: string;
   andPriority?: (typeof AndPriorityEnum)[keyof typeof AndPriorityEnum];
-  isEtiquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
+  isetiquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
   etiquetteStime?: number;
   etiquetteEtime?: number;
   ofbTime?: (typeof OfbTimeEnum)[keyof typeof OfbTimeEnum];
-  optAgree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
-  pTag?: string;
-  beschMode?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
-
-  wDate?: () => string;
-  uDate?: () => string;
+  optagree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
+  ptag?: string;
+  beschmode?: (typeof BeschModeEnum)[keyof typeof BeschModeEnum];
+  cmpncode?: number;
+  extra1?: string;
+  extra2?: string;
+  extra3?: string;
+  failtochannel?: string;
+  rno?: string;
+  sno?: string;
+  txtMsgcontents?: string;
+  txtMsgtitle?: string;
+  wdate?: () => string;
+  udate?: () => string;
 }

@@ -7,7 +7,7 @@ module.exports = {
       name: "push-web",
       cwd: "C:\\Users\\1\\push-manager",
       script: "./scripts/start-web.js",
-      max_restarts: 3,
+      // max_restarts: 3,
       env: {
         NODE_ENV: "production",
         ...process.env,
@@ -22,7 +22,7 @@ module.exports = {
       name: "push-server",
       cwd: "C:\\Users\\1\\push-manager",
       script: "./scripts/start-server.js",
-      max_restarts: 3,
+      // max_restarts: 3,
       env: {
         NODE_ENV: "production",
         ...process.env,
