@@ -28,15 +28,14 @@ export class ExcelCompareUtil {
     const toastId = Toast.loading("파일 비교 중...");
 
     try {
-      // 파일 확장자에 따라 적절한 방법으로 식별자 읽기
       let fileIdentifies: string[];
       if (file.name.toLowerCase().endsWith(".csv")) {
         fileIdentifies = await IdentifyReader.csvToIdentify(file);
       } else {
         fileIdentifies = await IdentifyReader.excelToIdentify(file);
       }
+
       const fileIdentifySet = new Set(fileIdentifies);
-      fileIdentifySet.delete("undefined");
 
       const apiIdentifies = new Set(apiData.map(options.getIdentify));
       const result = await this.compareIdentifies(
