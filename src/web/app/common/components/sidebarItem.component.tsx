@@ -92,7 +92,7 @@ export function SidebarItem({
         ${depth > 0 ? "pl-6" : ""}
         ${
           isActive
-            ? "bg-gray-100 text-blue-600"
+            ? "bg-gray-100 text-[#00CD3C]"
             : "text-gray-700 hover:bg-green-50"
         }
       `}

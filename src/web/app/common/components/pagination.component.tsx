@@ -30,12 +30,27 @@ export function Pagination({
   onPageChange,
   onPageSizeChange,
 }: PaginationProps) {
+  const buttonStyle = (disabled: boolean) =>
+    `
+    p-2
+    rounded-full
+    transition-all
+    duration-200
+    ${
+      disabled
+        ? "text-gray-300 cursor-not-allowed"
+        : "text-gray-600 hover:bg-[#00CD3C]/10 hover:text-[#00CD3C]"
+    }
+  `
+      .trim()
+      .replace(/\s+/g, " ");
+
   return (
-    <div className="px-6 py-4 border-t border-gray-200">
+    <div className="px-6 py-4 border-t border-gray-100">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="text-sm text-gray-500">
-            총 <span className="font-medium">{total}</span>건
+          <div className="text-sm text-gray-600">
+            총 <span className="text-[#00CD3C] font-medium">{total}</span>건
           </div>
           <Dropdown
             options={PAGE_SIZE_OPTIONS}
@@ -44,53 +59,38 @@ export function Pagination({
             buttonLabel={(value) => `${value}개씩 보기`}
             itemLabel={(value) => `${value}개씩 보기`}
             direction="up"
+            size="32"
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             onClick={() => onPageChange(1)}
             disabled={currentPage === 1}
-            className={`p-2 ${
-              currentPage === 1
-                ? "text-gray-300 cursor-not-allowed"
-                : "text-gray-600 hover:bg-gray-100"
-            } rounded`}
+            className={buttonStyle(currentPage === 1)}
           >
             <HiChevronDoubleLeft className="w-5 h-5" />
           </button>
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`p-2 ${
-              currentPage === 1
-                ? "text-gray-300 cursor-not-allowed"
-                : "text-gray-600 hover:bg-gray-100"
-            } rounded`}
+            className={buttonStyle(currentPage === 1)}
           >
             <HiChevronLeft className="w-5 h-5" />
           </button>
-          <span className="px-3 py-1 text-sm text-gray-700">
+          <div className="px-4 py-1.5 text-sm font-medium text-gray-900">
             {currentPage} / {totalPages}
-          </span>
+          </div>
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`p-2 ${
-              currentPage === totalPages
-                ? "text-gray-300 cursor-not-allowed"
-                : "text-gray-600 hover:bg-gray-100"
-            } rounded`}
+            className={buttonStyle(currentPage === totalPages)}
           >
             <HiChevronRight className="w-5 h-5" />
           </button>
           <button
             onClick={() => onPageChange(totalPages)}
             disabled={currentPage === totalPages}
-            className={`p-2 ${
-              currentPage === totalPages
-                ? "text-gray-300 cursor-not-allowed"
-                : "text-gray-600 hover:bg-gray-100"
-            } rounded`}
+            className={buttonStyle(currentPage === totalPages)}
           >
             <HiChevronDoubleRight className="w-5 h-5" />
           </button>
