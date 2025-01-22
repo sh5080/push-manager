@@ -206,9 +206,9 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
             <DialogTitle className="text-lg font-semibold text-gray-900">
               타겟 푸시 예약
             </DialogTitle>
-            <Button variant="line" size="32" onClick={onClose} className="!p-2">
+            <button onClick={onClose} className="!p-2">
               <HiX className="w-5 h-5" />
-            </Button>
+            </button>
           </div>
 
           <TabGroup>
