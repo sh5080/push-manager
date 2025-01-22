@@ -5,7 +5,7 @@ import { apiRoutes } from "./routes";
 import { envConfig } from "@push-manager/shared";
 import { responseMiddleware } from "./middlewares/response.middleware";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import { AppDataSource, sequelize, sequelizeAdmin } from "./configs/db.config";
+import { sequelize, sequelizeAdmin } from "./configs/db.config";
 import { initModels } from "./models/init-models";
 import { initializeRelations } from "./models/relations";
 import { initAdminModels } from "./models/admin/init-models";
@@ -22,10 +22,6 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-AppDataSource.initialize()
-  .then(() => console.log("TypeORM Database connected"))
-  .catch(console.error);
 
 sequelize
   .authenticate()

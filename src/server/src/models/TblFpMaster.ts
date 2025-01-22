@@ -1,5 +1,5 @@
 import * as Sequelize from "sequelize";
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, literal, Model, Optional } from "sequelize";
 
 export interface TblFpMasterAttributes {
   appkey?: string;
@@ -14,8 +14,9 @@ export interface TblFpMasterAttributes {
   msgidx?: any;
   msgidxRcvDate?: Date;
   pmode?: string;
-  rendDate?: Date;
-  rstartDate?: Date;
+  rendDate: Date | string;
+  rstartDate: Date | string;
+
   senddate?: Date;
   step?: string;
   tendDate?: Date;
@@ -65,8 +66,8 @@ export class TblFpMaster
   msgidx?: any;
   msgidxRcvDate?: Date;
   pmode?: string;
-  rendDate?: Date;
-  rstartDate?: Date;
+  rendDate!: Date;
+  rstartDate!: Date;
   senddate?: Date;
   step?: string;
   tendDate?: Date;

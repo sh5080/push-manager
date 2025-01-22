@@ -1,11 +1,11 @@
 import { SubscriptionRewardRequest } from "../../models/admin/SubscriptionRewardRequest";
 import { BaseRepository } from "../base.repository";
-import { AppDataSource } from "../../configs/db.config";
+
 import { Op } from "sequelize";
 
 export class SubscriptionRewardRequestRepository extends BaseRepository<SubscriptionRewardRequest> {
   constructor() {
-    super(AppDataSource, SubscriptionRewardRequest, SubscriptionRewardRequest);
+    super(SubscriptionRewardRequest);
   }
   async findByDate(startAt: Date, endAt: Date) {
     return await SubscriptionRewardRequest.findAll({

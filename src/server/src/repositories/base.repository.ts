@@ -1,6 +1,10 @@
-import { DataSource, ObjectType, SelectQueryBuilder } from "typeorm";
-import { transformDbToEntity } from "../utils/transform.util";
-import { Model, ModelStatic, QueryTypes, Sequelize } from "sequelize";
+import {
+  Model,
+  ModelStatic,
+  QueryTypes,
+  Sequelize,
+  Transaction,
+} from "sequelize";
 import { PaginatedResponse, Rnum } from "@push-manager/shared";
 
 interface PaginationOptions {
@@ -8,6 +12,7 @@ interface PaginationOptions {
   pageSize: number;
   orderBy: string;
   orderDirection?: "ASC" | "DESC";
+  replacements?: Record<string, any>;
 }
 
 export async function paginationQuery<T>(
@@ -15,7 +20,14 @@ export async function paginationQuery<T>(
   options: PaginationOptions & { model?: ModelStatic<Model> },
   innerQuery: string
 ): Promise<PaginatedResponse<T>> {
-  const { page, pageSize, orderBy, orderDirection = "DESC", model } = options;
+  const {
+    page,
+    pageSize,
+    orderBy,
+    orderDirection = "DESC",
+    model,
+    replacements = {},
+  } = options;
   const offset = (page - 1) * pageSize;
 
   const paginatedQuery = `
@@ -44,12 +56,14 @@ export async function paginationQuery<T>(
     sequelize.query(paginatedQuery, {
       ...queryOptions,
       replacements: {
+        ...replacements,
         startRow: offset,
         endRow: offset + pageSize,
       },
     }),
     sequelize.query<{ total: number }>(countQuery, {
       type: QueryTypes.SELECT,
+      replacements,
     }),
   ]);
 
@@ -64,65 +78,19 @@ export async function paginationQuery<T>(
   };
 }
 
-export class BaseRepository<
-  T extends Record<string, any>,
-  M extends Model = Model
-> {
-  protected sequelizeModel?: ModelStatic<M>;
+export class BaseRepository<T extends Model> {
+  constructor(protected model: ModelStatic<T>) {}
 
-  constructor(
-    protected readonly dataSource: DataSource,
-    private readonly entityClass: new () => T,
-    sequelizeModel?: ModelStatic<M>
-  ) {
-    this.sequelizeModel = sequelizeModel;
-  }
-
-  protected getRepository(entity: ObjectType<T>) {
-    if (!this.dataSource) {
-      throw new Error("DataSource is not initialized");
-    }
-    return this.dataSource.getRepository(entity);
-  }
-
-  protected async execute<R>(
-    queryBuilder: SelectQueryBuilder<T>,
-    callback: (qb: SelectQueryBuilder<T>) => Promise<any[]>
-  ): Promise<T[]> {
-    try {
-      const rawResults = await callback(queryBuilder);
-      return rawResults.map((row) =>
-        transformDbToEntity(row, this.entityClass)
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  protected async executeRaw(
-    query: string,
-    parameters: any[] = []
-  ): Promise<T[]> {
-    try {
-      const rawResults = await this.dataSource.query(query, parameters);
-      const result = rawResults.map((row: any) =>
-        transformDbToEntity(row, this.entityClass)
-      );
-      console.log("result: ", result);
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  }
   async getTableName() {
-    const tableInfo = this.sequelizeModel!.getTableName();
+    const tableInfo = this.model.getTableName();
     return typeof tableInfo === "string" ? tableInfo : tableInfo.tableName;
   }
+
   protected async findOneWithRownum<T extends Model>(data: {
     where: any;
     attributes: string[];
   }): Promise<T | null> {
-    if (!this.sequelizeModel) {
+    if (!this.model) {
       throw new Error("Sequelize model is not initialized");
     }
 
@@ -144,7 +112,7 @@ export class BaseRepository<
       ) WHERE ROWNUM = 1
     `;
 
-    const [result] = await this.sequelizeModel.sequelize!.query(query, {
+    const [result] = await this.model.sequelize!.query(query, {
       type: QueryTypes.SELECT,
       raw: true,
       replacements: Object.values(whereWithoutRownum),
@@ -158,11 +126,11 @@ export class BaseRepository<
   }
 
   protected async getNextSeq(sequenceName: string): Promise<number> {
-    if (!this.sequelizeModel?.sequelize) {
+    if (!this.model?.sequelize) {
       throw new Error("Sequelize is not initialized");
     }
 
-    const [result] = await this.sequelizeModel.sequelize.query<{
+    const [result] = await this.model.sequelize.query<{
       NEXTVAL: number;
     }>(`SELECT "${sequenceName}".NEXTVAL FROM DUAL`, {
       type: QueryTypes.SELECT,
@@ -175,13 +143,13 @@ export class BaseRepository<
     return result.NEXTVAL;
   }
 
-  protected async createWithSeq<M extends Model>(data: {
+  protected async createWithSeq<T extends Model>(data: {
     values: any;
     fields: string[];
     pkField?: string;
     sequenceName?: string;
   }) {
-    if (!this.sequelizeModel?.sequelize) {
+    if (!this.model?.sequelize) {
       throw new Error("Sequelize is not initialized");
     }
 
@@ -192,82 +160,129 @@ export class BaseRepository<
     const nextId = await this.getNextSeq(sequenceName);
 
     const allFields = [pkField, ...fields].map((field) => {
-      const attribute = this.sequelizeModel?.rawAttributes[field];
+      const attribute = this.model?.rawAttributes[field];
       return attribute?.field || field.toUpperCase();
     });
 
     const allValues = [nextId, ...Object.values(values)];
 
-    await this.sequelizeModel.sequelize.query(
+    await this.model.sequelize.query(
       `INSERT INTO ${tableName} ("${allFields.join('", "')}") 
        VALUES (${allFields.map(() => "?").join(", ")})`,
       {
         type: QueryTypes.INSERT,
         replacements: allValues,
-        model: this.sequelizeModel,
+        model: this.model,
       }
     );
 
-    return await this.findOneWithRownum<M>({
+    return await this.findOneWithRownum<T>({
       where: { [pkField.toLowerCase()]: nextId },
       attributes: [pkField.toLowerCase(), ...fields],
     });
   }
 
-  protected async bulkCreateWithSeq<M extends Model>(data: {
-    values: Partial<M>[];
+  protected async bulkCreateWithSeq<M extends object>(data: {
+    values: M[];
     fields: string[];
     pkField?: string;
     sequenceName?: string;
+    transaction?: Transaction;
   }) {
-    if (!this.sequelizeModel?.sequelize) {
+    if (!this.model?.sequelize) {
       throw new Error("Sequelize is not initialized");
     }
 
-    const { pkField = "IDX" } = data;
+    const { pkField = "IDX", transaction } = data;
     const tableName = await this.getTableName();
     const sequenceName = data.sequenceName || `${tableName}_SEQ`;
 
-    const seqValues = await Promise.all(
-      data.values.map(() => this.getNextSeq(sequenceName))
-    );
-    console.log("seqValues: ", seqValues);
-    const allFields = [pkField, ...data.fields].map((field) => {
-      const attribute = this.sequelizeModel?.getAttributes()[field];
-      return attribute?.field || field.toUpperCase();
-    });
+    try {
+      const seqValues = await Promise.all(
+        data.values.map(() => this.getNextSeq(sequenceName))
+      );
 
-    const allValues = data.values.map(
-      (value, index) =>
-        ({
+      const fieldMappings = Object.entries(this.model.getAttributes()).reduce(
+        (acc, [fieldName, attr]) => {
+          const dbField = (attr.field || fieldName).toLowerCase();
+          acc[dbField] = fieldName.toLowerCase();
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+
+      const allFields = [pkField, ...data.fields].map((field) => {
+        const attribute = this.model?.getAttributes()[field];
+        return attribute?.field || field.toUpperCase();
+      });
+
+      const allValues = data.values.map((value, index) => {
+        const mappedValue = {
           [pkField.toLowerCase()]: seqValues[index],
-          ...value,
-        } as Record<string, any>)
-    );
+        } as Record<string, any>;
+        Object.entries(value as Record<string, any>).forEach(([key, val]) => {
+          mappedValue[key.toLowerCase()] =
+            typeof val === "function" ? val() : val;
+        });
+        return mappedValue;
+      });
 
-    const placeholders = allValues
-      .map(() => `(${allFields.map(() => "?").join(", ")})`)
-      .join(", ");
+      const placeholders = allValues
+        .map((record) => {
+          return `(${allFields
+            .map((field) => {
+              const modelField = fieldMappings[field.toLowerCase()];
+              const value = record[modelField];
+              return typeof value === "string" &&
+                value.toUpperCase().includes("SYSDATE")
+                ? value.toUpperCase()
+                : "?";
+            })
+            .join(", ")})`;
+        })
+        .join(", ");
 
-    const query = `
-      INSERT INTO ${tableName} ("${allFields.join('", "')}") 
-      VALUES ${placeholders}
-    `;
+      const query = `
+        INSERT INTO ${tableName} ("${allFields.join('", "')}") 
+        VALUES ${placeholders}
+      `;
 
-    const flatValues = allValues.flatMap((value) => {
-      const values = [value[pkField.toLowerCase()]];
-      for (const field of data.fields) {
-        values.push(value[field] ?? null);
-      }
-      return values;
-    });
+      const flatValues = allValues.flatMap((record) => {
+        return allFields
+          .map((field) => {
+            const modelField = fieldMappings[field.toLowerCase()];
+            const value = record[modelField];
 
-    await this.sequelizeModel.sequelize.query(query, {
-      type: QueryTypes.INSERT,
-      replacements: flatValues,
-      model: this.sequelizeModel,
-    });
+            if (
+              typeof value === "string" &&
+              value.toUpperCase().includes("SYSDATE")
+            ) {
+              return undefined;
+            }
+            return value !== undefined ? value : null;
+          })
+          .filter((val) => val !== undefined);
+      });
 
-    return;
+      console.log("Original Values:", allValues);
+      console.log("Flattened Values:", flatValues);
+      console.log("Field mappings:", fieldMappings);
+
+      return await this.model.sequelize.query(query, {
+        type: QueryTypes.INSERT,
+        replacements: flatValues,
+        model: this.model,
+        transaction,
+        mapToModel: true,
+      });
+    } catch (error: any) {
+      console.error("Error in bulkCreateWithSeq:", {
+        message: error.message,
+        stack: error.stack,
+        recordCount: data.values.length,
+        query: error?.sql,
+      });
+      throw error;
+    }
   }
 }

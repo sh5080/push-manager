@@ -1,4 +1,4 @@
-export interface TypeOrmConfig {
+export interface PushDBConfig {
   host: string;
   port: number;
   username: string;
@@ -28,18 +28,18 @@ export interface WebConfig {
   port: number;
 }
 
-export interface AdminConfig {
-  dbUsername: string;
-  dbPassword: string;
-  dbHost: string;
-  dbPort: number;
-  dbDatabase: string;
+export interface AdminDBConfig {
+  username: string;
+  password: string;
+  host: string;
+  port: number;
+  database: string;
 }
 
 export interface EnvConfig {
-  typeorm: TypeOrmConfig;
+  pushDB: PushDBConfig;
   push: PushConfig;
   server: ServerConfig;
   web: WebConfig;
-  admin: AdminConfig;
+  adminDB: AdminDBConfig;
 }

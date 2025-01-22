@@ -48,14 +48,14 @@ export interface TblFpQueueAttributes {
   queueidx: any;
   resultdate?: Date;
   rno?: string;
-  senddate?: Date;
+  senddate?: Date | string;
   sendStat: string;
   sno?: string;
   step: string;
   txtMsgcontents?: string;
   txtMsgtitle?: string;
-  udate: Date;
-  wdate: Date;
+  udate: Date | string;
+  wdate: Date | string;
 }
 
 export type TblFpQueueOptionalAttributes =

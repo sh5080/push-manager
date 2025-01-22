@@ -17,13 +17,15 @@ import { PushMasterRepository } from "../repositories/pushMaster.repository";
 import { PModeEnum, StepEnum } from "@push-manager/shared";
 import { PushQueueRepository } from "../repositories/pushQueue.repository";
 import { convertToSysdate } from "../utils/transform.util";
-import { PushQueue } from "../entities/pushQueue.entity";
 import { createPushBaseData } from "../utils/push.util";
 import { CreateBasePushDto } from "../types/push.type";
-import { QueryRunner } from "typeorm";
-import { queryRunnerCreation } from "../utils/transaction.util";
 import { TblPushstsmsg } from "../models/TblPushstsmsg";
-import { TblFpQueue } from "../models/init-models";
+import {
+  TblFpQueue,
+  TblFpQueueCreationAttributes,
+} from "../models/init-models";
+import { sequelize } from "../configs/db.config";
+import { Optional, Transaction } from "sequelize";
 
 export class PushService implements IPushService {
   constructor(
@@ -36,17 +38,19 @@ export class PushService implements IPushService {
     dto: CreatePushDto,
     maxBatchSize: number = 1000
   ): Promise<number> {
-    const now = () => "SYSDATE";
+    const now = "SYSDATE";
     const SENDDATE = convertToSysdate(dto.sendDateString!);
     const identifyArray = dto.identifyArray;
 
-    return queryRunnerCreation(async (queryRunner) => {
+    const result = await sequelize.transaction(async (transaction) => {
+      // 마지막 캠페인 코드 조회
       const lastCampaign = await this.pushMasterRepository.getLastCampaignCode(
-        queryRunner
+        transaction
       );
-
       const campaignCode = lastCampaign[0].cmpncode + 1;
-      await this.pushMasterRepository.createMasterRecord(queryRunner, {
+
+      // 마스터 레코드 생성
+      await this.pushMasterRepository.createMasterRecord(transaction, {
         campaignCode,
         pmode: PModeEnum.CAMP,
         step: StepEnum.PENDING,
@@ -73,7 +77,7 @@ export class PushService implements IPushService {
       for (let i = 0; i < uniqueIdentifies.length; i += maxBatchSize) {
         const batchIdentifies = uniqueIdentifies.slice(i, i + maxBatchSize);
         const nextQueueIdx = await this.pushQueueRepository.getNextQueueIdx(
-          queryRunner
+          transaction
         );
 
         const pushBatch = await this.createPushBatch(
@@ -82,13 +86,13 @@ export class PushService implements IPushService {
           baseData
         );
 
-        await this.pushQueueRepository.insertPushBatch(queryRunner, pushBatch);
+        await this.pushQueueRepository.insertPushBatch(transaction, pushBatch);
       }
 
       // isReady가 true일 때만 상태 업데이트
       if (dto.isReady) {
         await this.updateMasterStatus(
-          queryRunner,
+          transaction,
           campaignCode,
           StepEnum.TRANSACTION
         );
@@ -96,6 +100,8 @@ export class PushService implements IPushService {
 
       return campaignCode;
     });
+
+    return result;
   }
 
   async getRecentPushes(dto: GetRecentPushesDto): Promise<TblPushstsmsg[]> {
@@ -178,20 +184,20 @@ export class PushService implements IPushService {
   async updatePushStatus(
     dto: UpdatePushStatusDto
   ): Promise<UpdatePushStatusDto> {
-    return queryRunnerCreation(async (queryRunner) => {
-      await this.updateMasterStatus(queryRunner, dto.campaignCode, dto.step);
-      return dto;
-    }, false);
+    await sequelize.transaction(async (transaction) => {
+      await this.updateMasterStatus(transaction, dto.campaignCode, dto.step);
+    });
+    return dto;
   }
 
   private async updateMasterStatus(
-    queryRunner: QueryRunner,
+    transaction: Transaction,
     campaignCode: number,
     step: (typeof StepEnum)[keyof typeof StepEnum]
   ): Promise<void> {
-    await this.pushMasterRepository.updateMasterRecord(queryRunner, {
+    await this.pushMasterRepository.updateMasterRecord(transaction, {
       campaignCode,
-      endDate: () => "SYSDATE",
+      endDate: "SYSDATE",
       step,
     });
   }
@@ -199,8 +205,8 @@ export class PushService implements IPushService {
   private async createPushBatch(
     identifies: string[],
     startQueueIdx: number,
-    baseData: Partial<PushQueue>
-  ): Promise<Partial<PushQueue>[]> {
+    baseData: Optional<TblFpQueueCreationAttributes, "queueidx">
+  ): Promise<Optional<TblFpQueueCreationAttributes, "queueidx">[]> {
     return identifies.map((identify, index) => ({
       ...baseData,
       queueIdx: startQueueIdx + index,

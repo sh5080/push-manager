@@ -1,12 +1,11 @@
 import { TestIdentify } from "../models/TestIdentify";
 import { CreateIdentifyDto, UpdateIdentifyDto } from "@push-manager/shared";
 import { BaseRepository } from "./base.repository";
-import { AppDataSource } from "../configs/db.config";
-import { Op, QueryTypes } from "sequelize";
+import { Op } from "sequelize";
 
 export class IdentifyRepository extends BaseRepository<TestIdentify> {
   constructor() {
-    super(AppDataSource, TestIdentify, TestIdentify);
+    super(TestIdentify);
   }
   async findOne(idx: number) {
     return await this.findOneWithRownum<TestIdentify>({
