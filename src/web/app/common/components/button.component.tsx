@@ -1,7 +1,17 @@
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "line" | "point" | "red-point" | "green-point" | "solid";
+  variant?:
+    | "line"
+    | "point"
+    | "red-point"
+    | "green-point"
+    | "solid"
+    | "square-line"
+    | "square-point"
+    | "square-red"
+    | "square-green"
+    | "square-solid";
   size?: "32" | "38" | "46";
   children: ReactNode;
 }
@@ -23,12 +33,24 @@ export function Button({
 
   // variant별 스타일
   const variantStyle = {
-    line: "border border-gray-200 text-gray-900 hover:border-gray-400",
-    point: "border border-gray-900 text-gray-900 hover:bg-gray-50",
-    "red-point": "border border-red-500 text-red-500 hover:bg-red-50",
+    line: "rounded-full border border-gray-200 text-gray-900 hover:border-gray-400",
+    point: "rounded-full border border-gray-900 text-gray-900 hover:bg-gray-50",
+    "red-point":
+      "rounded-full border border-red-500 text-red-500 hover:bg-red-50",
     "green-point":
-      "border border-[#00CD3C] text-[#00CD3C] hover:bg-[#00CD3C]/10",
-    solid: "bg-[#00CD3C] text-white hover:bg-[#00B534] shadow-sm",
+      "rounded-full border border-[#00CD3C] text-[#00CD3C] hover:bg-[#00CD3C]/10",
+    solid: "rounded-full bg-[#00CD3C] text-white hover:bg-[#00B534] shadow-sm",
+
+    "square-line":
+      "rounded-lg border border-gray-200 text-gray-900 hover:border-gray-400",
+    "square-point":
+      "rounded-lg border border-gray-900 text-gray-900 hover:bg-gray-50",
+    "square-red":
+      "rounded-lg border border-red-500 text-red-500 hover:bg-red-50",
+    "square-green":
+      "rounded-lg border border-[#00CD3C] text-[#00CD3C] hover:bg-[#00CD3C]/10",
+    "square-solid":
+      "rounded-lg bg-[#00CD3C] text-white hover:bg-[#00B534] shadow-sm",
   }[variant];
 
   // disabled 스타일
