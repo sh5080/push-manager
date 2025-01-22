@@ -13,11 +13,9 @@ export class SubscriptionRewardRequestService
     private readonly subscriptionRewardRequestRepository: SubscriptionRewardRequestRepository
   ) {}
   async getSubscriptionRewardRequests(dto: GetSubscriptionRewardRequestsDto) {
-    const startAt = parseDateTime(dto.startAt);
-    const endAt = parseDateTime(dto.endAt);
     return await this.subscriptionRewardRequestRepository.findByDate(
-      startAt,
-      endAt
+      dto.startAt,
+      dto.endAt
     );
   }
 }
