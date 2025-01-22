@@ -143,9 +143,9 @@ export const menuItems: MenuItem[] = [
       },
     ],
   },
-  {
-    name: "설정",
-    path: "/setting",
-    icon: <HiOutlineCog />,
-  },
+  // {
+  //   name: "설정",
+  //   path: "/setting",
+  //   icon: <HiOutlineCog />,
+  // },
 ];
