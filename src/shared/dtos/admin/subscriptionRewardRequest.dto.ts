@@ -1,12 +1,10 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 import "reflect-metadata";
 
 export class GetSubscriptionRewardRequestsDto {
-  @IsString()
   @IsNotEmpty()
-  startAt!: string;
+  startAt!: Date;
 
-  @IsString()
   @IsNotEmpty()
-  endAt!: string;
+  endAt!: Date;
 }
