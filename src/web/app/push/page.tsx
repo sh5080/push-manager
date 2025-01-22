@@ -8,6 +8,7 @@ import {
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { RecentPushes } from "./components/recentPush.component";
 import { SendPushModal } from "./modals/sendPush.modal";
+import { Button } from "app/common/components/button.component";
 
 export default function PushPage() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
@@ -41,8 +42,10 @@ export default function PushPage() {
           }
           actions={
             <>
-              <CreateButton
-                text="타겟 푸시 발송"
+              <Button
+                variant="solid"
+                size="38"
+                children="타겟 푸시 발송"
                 onClick={() => setIsModalOpen(true)}
               />
             </>
