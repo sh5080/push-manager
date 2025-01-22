@@ -20,6 +20,7 @@ import { PushConditionTab } from "./tabs/tab2";
 import { PushContentTab } from "./tabs/tab3";
 import { Toast } from "app/utils/toast.util";
 import { useRouter } from "next/navigation";
+import { Button } from "app/common/components/button.component";
 
 interface SendPushModalProps {
   isOpen: boolean;
@@ -200,17 +201,14 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-3xl bg-white rounded-lg shadow-xl">
-          <div className="flex justify-between items-center p-6 border-b">
-            <DialogTitle className="text-lg font-semibold">
+        <DialogPanel className="w-full max-w-3xl bg-white rounded-2xl shadow-xl">
+          <div className="flex justify-between items-center p-6 border-b border-gray-100">
+            <DialogTitle className="text-lg font-semibold text-gray-900">
               타겟 푸시 예약
             </DialogTitle>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-500"
-            >
+            <Button variant="line" size="32" onClick={onClose} className="!p-2">
               <HiX className="w-5 h-5" />
-            </button>
+            </Button>
           </div>
 
           <TabGroup>
@@ -291,48 +289,46 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
 
           {error && (
             <div className="px-6 mb-4">
-              <div className="p-4 text-sm text-red-700 bg-red-100 rounded-lg">
+              <div className="p-4 text-sm text-red-600 bg-red-50 rounded-xl border border-red-100">
                 {error}
               </div>
             </div>
           )}
 
-          <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 rounded-b-lg">
+          <div className="flex justify-end gap-3 p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
             <div className="flex-1">
-              <p className="text-sm ml-2 text-gray-600">
+              <p className="text-sm text-gray-600">
                 생성을 완료한 뒤{" "}
-                <button
+                <Button
+                  variant="green-point"
+                  size="32"
                   onClick={handleNavigateToScheduled}
-                  className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
+                  className="!p-0 !border-0"
                 >
                   타겟 푸시 예약
-                </button>
-                에서 정상적으로 식별자가 삽입되었는지 확인 후<br /> 예약을
-                확정해야 전송이 시작됩니다.
+                </Button>
+                에서 정상적으로 식별자가 삽입되었는지 확인 후
+                <br />
+                예약을 확정해야 전송이 시작됩니다.
               </p>
             </div>
             <div className="flex gap-3">
-              <button
+              <Button
+                variant="line"
+                size="38"
                 onClick={onClose}
-                className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                 disabled={isLoading}
               >
                 취소
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="solid"
+                size="38"
                 onClick={handleSubmit}
                 disabled={isLoading}
-                className={`
-                  px-4 py-2 text-sm text-white rounded-md
-                  ${
-                    isLoading
-                      ? "bg-blue-400 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }
-                `}
               >
                 {isLoading ? "처리중..." : "생성하기"}
-              </button>
+              </Button>
             </div>
           </div>
         </DialogPanel>
