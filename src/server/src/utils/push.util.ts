@@ -1,4 +1,3 @@
-import { PushQueue } from "../entities/pushQueue.entity";
 import { APP_CONFIG } from "../configs/app.config";
 import {
   AndPriorityEnum,
@@ -10,37 +9,43 @@ import {
   StepEnum,
 } from "@push-manager/shared";
 import { CreateBasePushDto } from "../types/push.type";
+import { Optional } from "sequelize";
+import { TblFpQueueCreationAttributes } from "../models/TblFpQueue";
 
 export function createPushBaseData(
   baseDto: CreateBasePushDto
-): Partial<PushQueue> {
+): Optional<TblFpQueueCreationAttributes, "queueidx"> {
   const { dto, campaignCode, sendDate, now } = baseDto;
   return {
-    appKey: APP_CONFIG[dto.appId].appId,
-    appSecret: APP_CONFIG[dto.appId].appSecret,
-    msgTitle: dto.title,
-    sendDate: sendDate,
-    msgContents: dto.content,
+    appkey: APP_CONFIG[dto.appId].appId,
+    appsecret: APP_CONFIG[dto.appId].appSecret,
+    msgtitle: dto.title,
+    senddate: sendDate,
+    msgcontents: dto.content,
     step: StepEnum.PENDING,
-    pMode: PModeEnum.CAMP,
-    fName: dto.fname,
+    pmode: PModeEnum.CAMP,
+    fname: dto.fname,
     sendStat: SendStatEnum.SEND_NOW,
-    pLink: dto.plink || "",
+    plink: dto.plink || "",
     customKey1: dto.customKey1 === "maskingtext" ? "maskingtext" : "",
     customValue1: dto.customKey1 === "maskingtext" ? dto.customValue1 : "",
     labelCode: dto.labelCode || "",
-    bgColor: dto.bgColor || "",
-    fontColor: dto.fontColor || "",
+    bgcolor: dto.bgColor || "",
+    fontcolor: dto.fontColor || "",
     andPriority: dto.andPriority || AndPriorityEnum.MEDIUM,
-    isEtiquette: dto.isetIquette || IsEtiquetteEnum.NO,
+    isetiquette: dto.isetIquette || IsEtiquetteEnum.NO,
     etiquetteStime: dto.etiqueStime,
     etiquetteEtime: dto.etiqueEtime,
     ofbTime: OfbTimeEnum.ONE_W,
-    optAgree: OptAgreeEnum.AGREE,
-    pTag: dto.ptag || "",
-    beschMode: dto.beschMode,
-    wDate: now,
-    uDate: now,
-    cmpnCode: campaignCode,
+    optagree: OptAgreeEnum.AGREE,
+    ptag: dto.ptag || "",
+    beschmode: dto.beschMode,
+    wdate: now,
+    udate: now,
+    cmpncode: campaignCode,
+    androidBadge: 0,
+    androidSound: "default",
+    iosBadge: 0,
+    iosSound: "default",
   };
 }
