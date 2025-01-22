@@ -45,9 +45,10 @@ export default function PushPage() {
               <Button
                 variant="solid"
                 size="38"
-                children="타겟 푸시 발송"
                 onClick={() => setIsModalOpen(true)}
-              />
+              >
+                타겟 푸시 발송
+              </Button>
             </>
           }
         />
