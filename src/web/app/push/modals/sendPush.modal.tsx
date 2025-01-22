@@ -12,7 +12,7 @@ import {
   TabPanels,
 } from "@headlessui/react";
 import { HiX } from "react-icons/hi";
-import { PushAPI } from "app/apis/push.api";
+import { pushApi } from "app/apis/push.api";
 import { IdentifyReader } from "../../utils/excelCsv.util";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 import { TargetUploadTab } from "./tabs/tab1";
@@ -121,28 +121,26 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (isReady: boolean = false) => {
     const toastId = Toast.loading("푸시 발송 요청 처리중...");
 
     try {
       setIsLoading(true);
       setError(null);
 
-      // 필수 입력값 검증
-      if (!pushData.title.trim()) {
-        throw new Error("푸시 제목을 입력해주세요.");
-      }
-      if (!pushData.content.trim()) {
-        throw new Error("푸시 내용을 입력해주세요.");
-      }
       if (pushData.identifyArray.length === 0) {
         throw new Error("타겟 대상을 입력하거나 파일을 업로드해주세요.");
       }
       if (!pushData.sendDateString) {
         throw new Error("발송 시간을 설정해주세요.");
       }
+      if (!pushData.title.trim()) {
+        throw new Error("푸시 제목을 입력해주세요.");
+      }
+      if (!pushData.content.trim()) {
+        throw new Error("푸시 내용을 입력해주세요.");
+      }
 
-      const pushApi = PushAPI.getInstance();
       const response = await pushApi.sendPush({
         identifyArray: pushData.identifyArray,
         ...(pushData.imageEnabled && { fname: pushData.fname }),
@@ -151,6 +149,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         title: pushData.title,
         content: pushData.content,
         appId: pushData.appId,
+        isReady,
       });
 
       if (response) {
@@ -180,7 +179,6 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         [field]: value,
       };
 
-      // Switch가 꺼지면 해당 필드 초기화
       if (field === "imageEnabled" && !value) {
         newState.fname = "";
       }
@@ -297,7 +295,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
 
           <div className="flex justify-end gap-3 p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
             <div className="flex-1">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 leading-6">
                 생성을 완료한 뒤{" "}
                 <Button
                   variant="green-point"
@@ -307,9 +305,11 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
                 >
                   타겟 푸시 예약
                 </Button>
-                에서 정상적으로 식별자가 삽입되었는지 확인 후
+                에서 정상적으로 식별자가 삽입되었는지 확인 후 예약을 확정해야
+                전송이 시작됩니다.
                 <br />
-                예약을 확정해야 전송이 시작됩니다.
+                (즉시 발송시 예약 확정 과정 없이 바로 전송 가능하나,
+                지양해주세요.)
               </p>
             </div>
             <div className="flex gap-3">
@@ -324,10 +324,18 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
               <Button
                 variant="solid"
                 size="38"
-                onClick={handleSubmit}
+                onClick={() => handleSubmit(false)}
                 disabled={isLoading}
               >
                 {isLoading ? "처리중..." : "생성하기"}
+              </Button>
+              <Button
+                variant="green-point"
+                size="38"
+                onClick={() => handleSubmit(true)}
+                disabled={isLoading}
+              >
+                {isLoading ? "처리중..." : "즉시 발송"}
               </Button>
             </div>
           </div>
