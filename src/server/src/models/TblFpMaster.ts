@@ -92,6 +92,7 @@ export class TblFpMaster
           type: "NUMBER",
           allowNull: false,
           field: "CMPNCODE",
+          primaryKey: true,
         },
         feedbackEnddate: {
           type: DataTypes.DATE(6),
