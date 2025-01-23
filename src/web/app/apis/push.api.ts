@@ -5,12 +5,17 @@ import {
   GetScheduledPushesDto,
   GetPushQueuesDto,
   AddToQueueDto,
+  ConfirmPushQueueDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "./base.api";
-import { IPushQueue, PaginatedResponse } from "@push-manager/shared";
+import {
+  IPushMaster,
+  IPushQueue,
+  PaginatedResponse,
+} from "@push-manager/shared";
 
 interface SendPushResponse {
   success: boolean;
@@ -90,6 +95,15 @@ export class PushAPI extends BaseAPI {
 
     return this.customFetch<void>(`/api/push/queue/${cmpncode}`, {
       method: "POST",
+      body: JSON.stringify(validatedDto),
+    });
+  }
+
+  async confirmScheduledPush(dto: ConfirmPushQueueDto): Promise<IPushMaster> {
+    const validatedDto = await validateDto(ConfirmPushQueueDto, dto);
+
+    return this.customFetch<IPushMaster>(`/api/push/queue/confirm`, {
+      method: "PATCH",
       body: JSON.stringify(validatedDto),
     });
   }
