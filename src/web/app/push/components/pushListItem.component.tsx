@@ -1,8 +1,8 @@
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
-import { formatDate } from "../../utils/push.util";
+import { formatDateToString } from "../../utils/push.util";
 import {
   getStatusStyle,
-  getStatusText,
+  getMasterStatusText,
   getStatusDotStyle,
 } from "../../utils/chip.util";
 
@@ -57,7 +57,7 @@ export function PushListItem({ push, index, onClick }: PushListItemProps) {
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          {formatDate(push.senddate)}
+          {formatDateToString(push.senddate)}
         </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
@@ -71,7 +71,7 @@ export function PushListItem({ push, index, onClick }: PushListItemProps) {
               push.step
             )}`}
           ></span>
-          {getStatusText(push.step)}
+          {getMasterStatusText(push.step!)}
         </span>
       </td>
     </tr>

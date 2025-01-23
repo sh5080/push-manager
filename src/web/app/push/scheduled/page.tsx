@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { pushApi } from "../../apis/push.api";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
-import { getStatusStyle, getStatusText } from "../../utils/chip.util";
+import { getStatusStyle, getMasterStatusText } from "../../utils/chip.util";
 import { ScheduledPushDetailModal } from "./modals/scheduledPushDetail.modal";
 import { Pagination } from "../../common/components/pagination.component";
 import { GetScheduledPushesDto } from "@push-manager/shared";
@@ -96,7 +96,7 @@ export default function ScheduledPushPage() {
                     ${getStatusStyle(push.step)}
                   `}
                   >
-                    {getStatusText(push.step)}
+                    {getMasterStatusText(push.step, push.fpstep)}
                   </span>
                 </td>
               </tr>

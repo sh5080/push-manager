@@ -1,7 +1,4 @@
-import {
-  formatDate,
-  formatDateToKST,
-} from "@push-manager/shared/utils/date.util";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 import { ISubscriptionRewardRequest } from "@push-manager/shared/types/entities/admin/subscriptionRewardRequest.entity";
 
 export function SubscriptionRewardList({
@@ -18,7 +15,7 @@ export function SubscriptionRewardList({
 
   const formatValue = (value: any, key: keyof ISubscriptionRewardRequest) => {
     if (key === "createdAt") {
-      return formatDateToKST(value);
+      return formatDate(value);
     }
     return String(value);
   };

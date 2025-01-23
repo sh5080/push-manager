@@ -1,4 +1,4 @@
-export function formatDate(date: Date | undefined) {
+export function formatDateToString(date: Date | undefined) {
   if (!date) return "-";
   return new Date(date).toLocaleString("ko-KR", {
     year: "numeric",
