@@ -96,6 +96,7 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
         m.MSGIDX as "msgidx",
         m.PMODE as "pmode",
         m.STEP as "step",
+        m.FPSTEP as "fpstep",
         m.RSTART_DATE as "rstartDate",
         m.REND_DATE as "rendDate",
         CASE 
