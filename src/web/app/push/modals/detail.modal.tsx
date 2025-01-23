@@ -8,9 +8,10 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { formatDate } from "../../utils/push.util";
-import { getStatusStyle, getStatusText } from "../../utils/chip.util";
+import { formatDateToString } from "../../utils/push.util";
+import { getStatusStyle, getMessageStatusText } from "../../utils/chip.util";
 import { PushStats } from "../components/PushStats.component";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushStsMsg } from "@push-manager/shared";
 
 interface DetailModalProps {
@@ -74,7 +75,9 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                       <p className="text-sm font-medium text-gray-500">
                         발송일
                       </p>
-                      <p className="mt-1">{formatDate(push.senddate)}</p>
+                      <p className="mt-1">
+                        {formatDate(formatDateToString(push.senddate))}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-500">상태</p>
@@ -84,7 +87,7 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                         ${getStatusStyle(push.step)}
                       `}
                       >
-                        {getStatusText(push.step)}
+                        {getMessageStatusText(push.step)}
                       </span>
                     </div>
                   </div>

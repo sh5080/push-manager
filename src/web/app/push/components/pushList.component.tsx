@@ -1,8 +1,8 @@
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
-import { formatDate } from "../../utils/push.util";
+import { formatDateToString } from "../../utils/push.util";
 import {
   getStatusStyle,
-  getStatusText,
+  getMasterStatusText,
   getStatusDotStyle,
 } from "../../utils/chip.util";
 import {
@@ -79,7 +79,7 @@ export function PushList({ pushes, onPushSelect }: PushListProps) {
                 </div>
                 <div className="flex items-center gap-1">
                   <HiOutlineClock className="w-3 h-3" />
-                  {formatDate(push.senddate)}
+                  {formatDateToString(push.senddate)}
                 </div>
               </div>
             </div>
@@ -100,7 +100,7 @@ export function PushList({ pushes, onPushSelect }: PushListProps) {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span>{formatDate(push.senddate)}</span>
+                <span>{formatDateToString(push.senddate)}</span>
               </div>
             </div>
 
@@ -117,7 +117,7 @@ export function PushList({ pushes, onPushSelect }: PushListProps) {
                     push.step
                   )}`}
                 ></span>
-                {getStatusText(push.step)}
+                {getMasterStatusText(push.step!)}
               </span>
             </div>
 

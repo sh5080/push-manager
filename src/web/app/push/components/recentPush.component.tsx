@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PushAPI } from "app/apis/push.api";
+import { pushApi } from "app/apis/push.api";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import ErrorFallback from "app/common/components/errorFallback.component";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
-import { formatDate } from "../../utils/push.util";
-import { getStatusStyle, getStatusText } from "../../utils/chip.util";
+import { formatDateToString } from "../../utils/push.util";
+import { getStatusStyle, getMessageStatusText } from "../../utils/chip.util";
 import { DetailModal } from "../modals/detail.modal";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 
 export function RecentPushes() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
@@ -18,8 +19,7 @@ export function RecentPushes() {
   const fetchPushes = async () => {
     try {
       setError(null);
-      const pushAPI = PushAPI.getInstance();
-      const data = await pushAPI.getRecentPushes({
+      const data = await pushApi.getRecentPushes({
         limit: 5,
         targetMode: AppIdEnum.PROD,
       });
@@ -31,8 +31,7 @@ export function RecentPushes() {
 
   const handlePushClick = async (push: IPushStsMsg) => {
     try {
-      const pushAPI = PushAPI.getInstance();
-      const detailData = await pushAPI.getPushDetail(push.idx);
+      const detailData = await pushApi.getPushDetail(push.idx);
       setSelectedPush(detailData);
       setIsModalOpen(true);
     } catch (e) {
@@ -98,7 +97,7 @@ export function RecentPushes() {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatDate(push.senddate)}
+                  {formatDate(formatDateToString(push.senddate))}
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm text-gray-900 truncate max-w-md">
@@ -112,7 +111,7 @@ export function RecentPushes() {
                     ${getStatusStyle(push.step)}
                   `}
                   >
-                    {getStatusText(push.step)}
+                    {getMessageStatusText(push.step)}
                   </span>
                 </td>
               </tr>
