@@ -13,3 +13,5 @@ export type ButtonVariant =
 export type ButtonSize = "32" | "38" | "46";
 
 export type PositionType = "top" | "right" | "bottom" | "left";
+
+export type StatusChipType = "master" | "message";

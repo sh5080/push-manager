@@ -120,7 +120,7 @@ export function ScheduledPushDetailModal({
                   onClick={handleConfirmSchedule}
                   className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700"
                 >
-                  예약 확정하기
+                  발송 요청하기
                 </button>
               )}
             </div>

@@ -1,11 +1,43 @@
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
 
-export function getStatusStyle(
+export function getMasterStatusStyle(
   step?: (typeof StepEnum)[keyof typeof StepEnum],
   fpstep?: (typeof StepEnum)[keyof typeof StepEnum]
 ) {
   if (step === StepEnum.COMPLETED && fpstep === StepEnum.FAILED) {
     return "bg-red-50 text-red-700";
+  }
+
+  if (step === StepEnum.COMPLETED && fpstep === StepEnum.SENDING) {
+    return "bg-blue-50 text-blue-700";
+  }
+
+  if (step === StepEnum.PENDING && !fpstep) {
+    return "bg-yellow-50 text-yellow-700";
+  }
+
+  switch (step) {
+    case StepEnum.COMPLETED:
+      return "bg-green-50 text-green-700";
+    case StepEnum.FAILED:
+      return "bg-red-50 text-red-700";
+    case StepEnum.TRANSACTION:
+      return "bg-blue-50 text-blue-700";
+
+    default:
+      return "bg-gray-50 text-gray-700";
+  }
+}
+export function getMessageStatusStyle(
+  step?: (typeof StepEnum)[keyof typeof StepEnum],
+  fpstep?: (typeof StepEnum)[keyof typeof StepEnum]
+) {
+  if (step === StepEnum.COMPLETED && fpstep === StepEnum.FAILED) {
+    return "bg-red-50 text-red-700";
+  }
+
+  if (step === StepEnum.PENDING && !fpstep) {
+    return "bg-blue-50 text-blue-700";
   }
 
   switch (step) {
@@ -49,9 +81,9 @@ export function getMasterStatusText(
     case StepEnum.FAILED:
       return "실패";
     case StepEnum.TRANSACTION:
-      return "발송 요청중";
+      return "발송 요청 중";
     case StepEnum.PENDING:
-      return "예약 대기중";
+      return "예약 대기 중";
     default:
       return "오류";
   }
@@ -66,11 +98,11 @@ export function getMessageStatusText(
     case StepEnum.FAILED:
       return "실패";
     case StepEnum.TRANSACTION:
-      return "발송 준비중";
+      return "발송 준비 중";
     case StepEnum.PENDING:
       return "발송 요청 완료";
     case StepEnum.SENDING:
-      return "발송 준비중";
+      return "발송 준비 중";
     default:
       return "오류";
   }
