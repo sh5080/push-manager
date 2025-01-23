@@ -1,18 +1,9 @@
+import { ButtonSize, ButtonVariant } from "app/types/prop.type";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?:
-    | "line"
-    | "point"
-    | "red-point"
-    | "green-point"
-    | "solid"
-    | "square-line"
-    | "square-point"
-    | "square-red"
-    | "square-green"
-    | "square-solid";
-  size?: "32" | "38" | "46";
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   children: ReactNode;
 }
 
