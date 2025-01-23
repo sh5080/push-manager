@@ -121,11 +121,11 @@ export const menuItems: MenuItem[] = [
     path: "/push/scheduled",
     icon: <HiOutlineCalendar />,
   },
-  {
-    name: "푸시 내역",
-    path: "/push/history",
-    icon: <HiOutlineClipboardList />,
-  },
+  // {
+  //   name: "푸시 내역",
+  //   path: "/push/history",
+  //   icon: <HiOutlineClipboardList />,
+  // },
   {
     name: "식별자 관리",
     path: "/push/identify",
@@ -143,9 +143,9 @@ export const menuItems: MenuItem[] = [
       },
     ],
   },
-  {
-    name: "설정",
-    path: "/setting",
-    icon: <HiOutlineCog />,
-  },
+  // {
+  //   name: "설정",
+  //   path: "/setting",
+  //   icon: <HiOutlineCog />,
+  // },
 ];

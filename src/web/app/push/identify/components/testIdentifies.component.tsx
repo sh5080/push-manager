@@ -16,16 +16,6 @@ export function TestIdentifies({
     initialSelectedIds || new Set()
   );
 
-  useEffect(() => {
-    const loadData = async () => {
-      await handleLoadTestIds(3);
-      if (initialSelectedIds && initialSelectedIds.size > 0) {
-        setSelectedItems(initialSelectedIds);
-      }
-    };
-    loadData();
-  }, []);
-
   const handleLoadTestIds = async (teamId?: number) => {
     try {
       const response = await identifyApi.getIdentifies({ teamId });
@@ -45,6 +35,16 @@ export function TestIdentifies({
       console.error("식별자 로드 실패:", error);
     }
   };
+
+  useEffect(() => {
+    const loadData = async () => {
+      await handleLoadTestIds(3);
+      if (initialSelectedIds && initialSelectedIds.size > 0) {
+        setSelectedItems(initialSelectedIds);
+      }
+    };
+    loadData();
+  }, []);
 
   const toggleSelection = (idx: number) => {
     const newSelection = new Set(selectedItems);

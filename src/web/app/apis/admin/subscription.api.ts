@@ -20,7 +20,7 @@ class SubscriptionAPI extends BaseAPI {
     if (endAt) {
       queryParams.append("endAt", endAt.toISOString());
     }
-    console.log(queryParams.toString());
+
     return this.customFetch<ISubscriptionRewardRequest[]>(
       `/api/admin/subscription?${queryParams.toString()}`
     );
