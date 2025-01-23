@@ -15,8 +15,10 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
   }
 
   async getOnePushMaster(cmpncode: number): Promise<TblFpMaster> {
-    const result = await TblFpMaster.findOne({
+    const columns = Object.keys(TblFpMaster.getAttributes());
+    const [result] = await TblFpMaster.findAll({
       where: { cmpncode },
+      attributes: columns,
     });
 
     return result!;
