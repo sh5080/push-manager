@@ -1,33 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  PageHeader,
-  CreateButton,
-} from "../common/components/pageHeader.component";
-import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
+import { useState } from "react";
+import { PageHeader } from "../common/components/pageHeader.component";
 import { RecentPushes } from "./components/recentPush.component";
 import { SendPushModal } from "./modals/sendPush.modal";
 import { Button } from "app/common/components/button.component";
 
 export default function PushPage() {
-  const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
-  const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    fetchPushes();
-  }, []);
-
-  const fetchPushes = async () => {
-    try {
-      const response = await fetch("/api/push");
-      const data = await response.json();
-      setPushes(data);
-    } catch (error) {
-      console.error("Failed to fetch pushes:", error);
-    }
-  };
 
   return (
     <div className="min-h-screen py-8">
