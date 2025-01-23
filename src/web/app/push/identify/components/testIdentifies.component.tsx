@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { identifyApi } from "app/apis/identify.api";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
+import { Button } from "../../../common/components/button.component";
 
 interface TestIdentifiesProps {
   onIdentifiersLoad: (identifies: ITestIdentify[]) => void;
@@ -15,6 +16,7 @@ export function TestIdentifies({
   const [selectedItems, setSelectedItems] = useState<Set<number>>(
     initialSelectedIds || new Set()
   );
+  const [selectedTeam, setSelectedTeam] = useState<number>(3);
 
   const handleLoadTestIds = async (teamId?: number) => {
     try {
@@ -31,6 +33,7 @@ export function TestIdentifies({
         filteredSelection.has(item.idx)
       );
       onIdentifiersLoad(selectedIdentifiers);
+      setSelectedTeam(teamId || 3);
     } catch (error) {
       console.error("식별자 로드 실패:", error);
     }
@@ -66,24 +69,27 @@ export function TestIdentifies({
       <div className="flex justify-between items-center">
         <h3 className="text-sm font-medium text-gray-700">테스트 식별자</h3>
         <div className="flex space-x-2">
-          <button
+          <Button
+            variant={selectedTeam === 3 ? "square-solid" : "square-line"}
+            size="32"
             onClick={() => handleLoadTestIds(3)}
-            className={`px-4 py-2 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700`}
           >
             전체
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={selectedTeam === 1 ? "square-green" : "square-line"}
+            size="32"
             onClick={() => handleLoadTestIds(1)}
-            className={`px-4 py-2 text-sm rounded-md text-white bg-green-600 hover:bg-green-700`}
           >
             FREED
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={selectedTeam === 2 ? "square-point" : "square-line"}
+            size="32"
             onClick={() => handleLoadTestIds(2)}
-            className={`px-4 py-2 text-sm rounded-md text-white bg-purple-600 hover:bg-purple-700`}
           >
             LG
-          </button>
+          </Button>
         </div>
       </div>
 
