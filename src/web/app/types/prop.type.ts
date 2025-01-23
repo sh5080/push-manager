@@ -11,3 +11,5 @@ export type ButtonVariant =
   | "square-solid";
 
 export type ButtonSize = "32" | "38" | "46";
+
+export type PositionType = "top" | "right" | "bottom" | "left";
