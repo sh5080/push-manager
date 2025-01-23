@@ -30,9 +30,7 @@ export function convertToSysdate(dateString: string): string {
 
   // 한국 시간 기준으로 Date 객체 생성
   const targetDate = new Date(Date.UTC(year, month - 1, day, hour - 9, minute));
-
   const currentDate = new Date();
-  currentDate.setHours(currentDate.getHours() + 9);
 
   // 유효성 검사
   if (isNaN(targetDate.getTime())) {
