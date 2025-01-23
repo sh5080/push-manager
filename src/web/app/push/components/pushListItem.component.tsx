@@ -1,7 +1,7 @@
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { formatDateToString } from "../../utils/push.util";
 import {
-  getStatusStyle,
+  getMasterStatusStyle,
   getMasterStatusText,
   getStatusDotStyle,
 } from "../../utils/chip.util";
@@ -62,7 +62,7 @@ export function PushListItem({ push, index, onClick }: PushListItemProps) {
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(
+          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getMasterStatusStyle(
             push.step
           )}`}
         >

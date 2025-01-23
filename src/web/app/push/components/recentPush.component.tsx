@@ -6,9 +6,14 @@ import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.enti
 import ErrorFallback from "app/common/components/errorFallback.component";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 import { formatDateToString } from "../../utils/push.util";
-import { getStatusStyle, getMessageStatusText } from "../../utils/chip.util";
+import {
+  getMessageStatusStyle,
+  getMessageStatusText,
+} from "../../utils/chip.util";
 import { DetailModal } from "../modals/detail.modal";
 import { formatDate } from "@push-manager/shared/utils/date.util";
+import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { StatusGuideContent } from "./statusGuide.component";
 
 export function RecentPushes() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
@@ -77,6 +82,11 @@ export function RecentPushes() {
               </th>
               <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                 상태
+                <InfoTooltip
+                  content={<StatusGuideContent type="message" />}
+                  width="w-[400px]"
+                  position="left"
+                />
               </th>
             </tr>
           </thead>
@@ -108,7 +118,7 @@ export function RecentPushes() {
                   <span
                     className={`
                     inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                    ${getStatusStyle(push.step)}
+                    ${getMessageStatusStyle(push.step)}
                   `}
                   >
                     {getMessageStatusText(push.step)}
