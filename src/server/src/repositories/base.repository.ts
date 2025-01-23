@@ -211,7 +211,11 @@ export class BaseRepository<T extends Model> {
         {} as Record<string, string>
       );
 
-      const allFields = [pkField, ...data.fields].map((field) => {
+      const filteredFields = data.fields.filter(
+        (field) => field.toLowerCase() !== pkField.toLowerCase()
+      );
+
+      const uniqueFields = [pkField, ...filteredFields].map((field) => {
         const attribute = this.model?.getAttributes()[field];
         return attribute?.field || field.toUpperCase();
       });
@@ -229,7 +233,7 @@ export class BaseRepository<T extends Model> {
 
       const placeholders = allValues
         .map((record) => {
-          return `(${allFields
+          return `(${uniqueFields
             .map((field) => {
               const modelField = fieldMappings[field.toLowerCase()];
               const value = record[modelField];
@@ -243,12 +247,12 @@ export class BaseRepository<T extends Model> {
         .join(", ");
 
       const query = `
-        INSERT INTO ${tableName} ("${allFields.join('", "')}") 
+        INSERT INTO ${tableName} ("${uniqueFields.join('", "')}") 
         VALUES ${placeholders}
       `;
 
       const flatValues = allValues.flatMap((record) => {
-        return allFields
+        return uniqueFields
           .map((field) => {
             const modelField = fieldMappings[field.toLowerCase()];
             const value = record[modelField];
