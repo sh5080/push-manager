@@ -11,6 +11,7 @@ export const sequelize = new Sequelize({
   password: envConfig.pushDB.password,
   host: envConfig.pushDB.host,
   port: envConfig.pushDB.port,
+  timezone: "+09:00",
   dialectOptions: {
     connectString: `${envConfig.pushDB.host}:${envConfig.pushDB.port}/${envConfig.pushDB.database}`,
     oracleClient: { _oracledb: oracledb },
