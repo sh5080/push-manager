@@ -10,6 +10,7 @@ module.exports = {
       // max_restarts: 3,
       env: {
         NODE_ENV: "production",
+        TZ: "UTC",
         ...process.env,
       },
       error_file: "logs/pm2/push-web-error.log",
@@ -25,6 +26,7 @@ module.exports = {
       // max_restarts: 3,
       env: {
         NODE_ENV: "production",
+        TZ: "UTC",
         ...process.env,
       },
       error_file: "logs/pm2/push-server-error.log",
