@@ -23,7 +23,13 @@ export function transformDbToEntity<T extends Record<string, any>>(
  * @throws {Error} 유효하지 않은 날짜 형식이거나 과거 시간인 경우
  */
 export function convertToSysdate(dateString: string): string {
-  const targetDate = new Date(dateString);
+  // 입력된 날짜 문자열을 명시적으로 한국 시간으로 파싱
+  const [datePart, timePart] = dateString.split(" ");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
+
+  // 한국 시간 기준으로 Date 객체 생성
+  const targetDate = new Date(Date.UTC(year, month - 1, day, hour - 9, minute));
 
   const currentDate = new Date();
   currentDate.setHours(currentDate.getHours() + 9);
