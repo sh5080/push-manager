@@ -6,7 +6,7 @@ import {
   GetPushQueuesDto,
   GetRecentPushesDto,
   GetScheduledPushesDto,
-  UpdatePushStatusDto,
+  ConfirmPushQueueDto,
   validateDto,
 } from "@push-manager/shared";
 
@@ -98,16 +98,15 @@ export class PushController {
     }
   };
 
-  updatePushStatus = async (
+  confirmPushQueue = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      const dto = await validateDto(UpdatePushStatusDto, req.body);
+      const dto = await validateDto(ConfirmPushQueueDto, req.body);
 
-      const result = await this.pushService.updatePushStatus(dto);
-
+      const result = await this.pushService.confirmPushQueue(dto);
       res.success(result);
     } catch (error) {
       next(error);
