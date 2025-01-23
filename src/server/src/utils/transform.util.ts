@@ -23,9 +23,10 @@ export function transformDbToEntity<T extends Record<string, any>>(
  * @throws {Error} 유효하지 않은 날짜 형식이거나 과거 시간인 경우
  */
 export function convertToSysdate(dateString: string): string {
-  // 날짜 문자열 파싱
   const targetDate = new Date(dateString);
+
   const currentDate = new Date();
+  currentDate.setHours(currentDate.getHours() + 9);
 
   // 유효성 검사
   if (isNaN(targetDate.getTime())) {
