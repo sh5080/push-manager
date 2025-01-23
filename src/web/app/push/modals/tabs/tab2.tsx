@@ -38,6 +38,7 @@ export function PushConditionTab({
               { id: "TEST", label: "통테용", value: AppIdEnum.TEST },
               { id: "PROD", label: "운영", value: AppIdEnum.PROD },
             ].map(({ id, label, value }) => {
+              const isDisabled = id === "FREED";
               return (
                 <div key={id} className="flex items-center">
                   <input
@@ -52,9 +53,22 @@ export function PushConditionTab({
                         AppIdEnum[e.target.value as keyof typeof AppIdEnum]
                       );
                     }}
-                    className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    disabled={isDisabled}
+                    className={`h-4 w-4 border-gray-300 focus:ring-blue-500 
+                      ${
+                        isDisabled
+                          ? "opacity-50 cursor-not-allowed bg-gray-200"
+                          : "text-blue-600"
+                      }`}
                   />
-                  <label htmlFor={id} className="ml-2 text-sm text-gray-700">
+                  <label
+                    htmlFor={id}
+                    className={`ml-2 text-sm ${
+                      isDisabled
+                        ? "text-gray-400 cursor-not-allowed"
+                        : "text-gray-700"
+                    }`}
+                  >
                     {label}
                   </label>
                 </div>
