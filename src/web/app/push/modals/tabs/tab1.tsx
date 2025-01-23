@@ -6,6 +6,8 @@ import { Modal } from "app/common/components/modal.component";
 import { TestIdentifies } from "app/push/identify/components/testIdentifies.component";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
 import { Button } from "app/common/components/button.component";
+import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { ExcelGuideContent } from "app/push/components/excelGuide.component";
 
 interface TargetUploadTabProps {
   targetFile: File | null;
@@ -316,9 +318,16 @@ export function TargetUploadTab({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          타겟 대상 업로드
-        </label>
+        <div className="flex items-center gap-2 mb-2">
+          <label className="block text-sm font-medium text-gray-700">
+            타겟 대상 업로드
+          </label>
+          <InfoTooltip
+            content={<ExcelGuideContent />}
+            position="right"
+            width="w-[400px]"
+          />
+        </div>
         <div className="space-y-3">
           <FileUpload
             onFileUpload={onFileUpload}
