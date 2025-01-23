@@ -1,13 +1,20 @@
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
 
 export function getStatusStyle(
-  step?: (typeof StepEnum)[keyof typeof StepEnum]
+  step?: (typeof StepEnum)[keyof typeof StepEnum],
+  fpstep?: (typeof StepEnum)[keyof typeof StepEnum]
 ) {
+  if (step === StepEnum.COMPLETED && fpstep === StepEnum.FAILED) {
+    return "bg-red-50 text-red-700";
+  }
+
   switch (step) {
     case StepEnum.COMPLETED:
       return "bg-green-50 text-green-700";
     case StepEnum.FAILED:
       return "bg-red-50 text-red-700";
+    case StepEnum.TRANSACTION:
+      return "bg-blue-50 text-blue-700";
     default:
       return "bg-gray-50 text-gray-700";
   }
@@ -35,14 +42,14 @@ export function getMasterStatusText(
   }
 
   if (step === StepEnum.COMPLETED && fpstep === StepEnum.SENDING) {
-    return "예약 확정 완료";
+    return "발송 요청 완료";
   }
 
   switch (step) {
     case StepEnum.FAILED:
       return "실패";
     case StepEnum.TRANSACTION:
-      return "예약 확정중";
+      return "발송 요청중";
     case StepEnum.PENDING:
       return "예약 대기중";
     default:
@@ -61,7 +68,7 @@ export function getMessageStatusText(
     case StepEnum.TRANSACTION:
       return "발송 준비중";
     case StepEnum.PENDING:
-      return "예약 확정 완료";
+      return "발송 요청 완료";
     case StepEnum.SENDING:
       return "발송 준비중";
     default:

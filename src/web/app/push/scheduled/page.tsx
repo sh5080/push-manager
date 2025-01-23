@@ -93,7 +93,7 @@ export default function ScheduledPushPage() {
                   <span
                     className={`
                     inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                    ${getStatusStyle(push.step)}
+                    ${getStatusStyle(push.step, push.fpstep)}
                   `}
                   >
                     {getMasterStatusText(push.step, push.fpstep)}
