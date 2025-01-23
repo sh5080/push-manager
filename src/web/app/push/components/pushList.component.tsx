@@ -1,10 +1,6 @@
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { formatDateToString } from "../../utils/push.util";
-import {
-  getStatusStyle,
-  getMasterStatusText,
-  getStatusDotStyle,
-} from "../../utils/chip.util";
+
 import {
   HiOutlineUser,
   HiOutlineClock,
@@ -13,6 +9,7 @@ import {
   HiOutlineFilter,
   HiOutlineCalendar,
 } from "react-icons/hi";
+import { StatusChip } from "app/common/components/statusChip.component";
 
 interface PushListProps {
   pushes: IPushStsMsg[];
@@ -106,19 +103,7 @@ export function PushList({ pushes, onPushSelect }: PushListProps) {
 
             {/* 상태 */}
             <div className="col-span-2 flex items-center">
-              <span
-                className={`
-                inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                ${getStatusStyle(push.step)}
-              `}
-              >
-                <span
-                  className={`w-1.5 h-1.5 mr-1.5 rounded-full ${getStatusDotStyle(
-                    push.step
-                  )}`}
-                ></span>
-                {getMasterStatusText(push.step!)}
-              </span>
+              <StatusChip type="master" step={push.step!} />
             </div>
 
             {/* 더보기 아이콘 */}
