@@ -186,7 +186,7 @@ export class GetRecentPushesDto {
 
 export class GetScheduledPushesDto extends PaginationDto {}
 
-export class UpdatePushStatusDto {
+export class ConfirmPushQueueDto {
   @IsNotEmpty({ message: "캠페인 코드는 필수입니다." })
   campaignCode!: number;
 
