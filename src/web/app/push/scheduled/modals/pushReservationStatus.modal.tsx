@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { Pagination } from "app/common/components/pagination.component";
 import { pushApi } from "app/apis/push.api";
 import { Toast } from "app/utils/toast.util";
-import { getStatusStyle, getMasterStatusText } from "app/utils/chip.util";
 import { ExcelComparison } from "../components/excelComparison.component";
 import { IPushQueue, Rnum } from "@push-manager/shared";
+import { StatusChip } from "app/common/components/statusChip.component";
 
 interface PushReservationStatusModalProps {
   isOpen: boolean;
@@ -104,14 +104,7 @@ export function PushReservationStatusModal({
                           {queue.identify}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <span
-                            className={`
-                    inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                    ${getStatusStyle(queue.step)}
-                  `}
-                          >
-                            {getMasterStatusText(queue.step!)}
-                          </span>
+                          <StatusChip type="master" step={queue.step!} />
                         </td>
                       </tr>
                     ))

@@ -4,11 +4,15 @@ import { useEffect, useState } from "react";
 import { pushApi } from "../../apis/push.api";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
-import { getStatusStyle, getMasterStatusText } from "../../utils/chip.util";
+
 import { ScheduledPushDetailModal } from "./modals/scheduledPushDetail.modal";
 import { Pagination } from "../../common/components/pagination.component";
 import { GetScheduledPushesDto } from "@push-manager/shared";
 import { toast } from "react-toastify";
+import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { StatusGuideContent } from "app/push/components/statusGuide.component";
+import { StatusChip } from "app/common/components/statusChip.component";
+import { StatusChipType } from "app/types/prop.type";
 
 export default function ScheduledPushPage() {
   const [scheduledPushes, setScheduledPushes] = useState<IPushMasterWithMsg[]>(
@@ -63,12 +67,18 @@ export default function ScheduledPushPage() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 제목
               </th>
-
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 발송 예정 시각
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex items-center gap-2">
                 상태
+                <InfoTooltip
+                  content={
+                    <StatusGuideContent type={"master" as StatusChipType} />
+                  }
+                  width="w-[420px]"
+                  position="left"
+                />
               </th>
             </tr>
           </thead>
@@ -85,19 +95,15 @@ export default function ScheduledPushPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {push.title}
                 </td>
-
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {formatDate(push.rstartDate)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`
-                    inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                    ${getStatusStyle(push.step, push.fpstep)}
-                  `}
-                  >
-                    {getMasterStatusText(push.step, push.fpstep)}
-                  </span>
+                  <StatusChip
+                    type="master"
+                    step={push.step}
+                    fpstep={push.fpstep}
+                  />
                 </td>
               </tr>
             ))}

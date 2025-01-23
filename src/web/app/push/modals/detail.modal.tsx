@@ -9,7 +9,10 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { formatDateToString } from "../../utils/push.util";
-import { getStatusStyle, getMessageStatusText } from "../../utils/chip.util";
+import {
+  getMessageStatusStyle,
+  getMessageStatusText,
+} from "../../utils/chip.util";
 import { PushStats } from "../components/PushStats.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushStsMsg } from "@push-manager/shared";
@@ -84,7 +87,7 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                       <span
                         className={`
                         mt-1 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                        ${getStatusStyle(push.step)}
+                        ${getMessageStatusStyle(push.step)}
                       `}
                       >
                         {getMessageStatusText(push.step)}
