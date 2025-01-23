@@ -93,7 +93,7 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
     pageSize: number = 10
   ): Promise<PaginatedResponse<IPushMasterWithMsg>> {
     const innerQuery = `
-      SELECT 
+      SELECT DISTINCT
         m.CMPNCODE as "cmpncode",
         m.MSGIDX as "msgidx",
         m.PMODE as "pmode",
