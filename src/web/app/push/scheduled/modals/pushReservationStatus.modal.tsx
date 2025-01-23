@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Pagination } from "app/common/components/pagination.component";
 import { pushApi } from "app/apis/push.api";
 import { Toast } from "app/utils/toast.util";
-import { getStatusStyle, getStatusText } from "app/utils/chip.util";
+import { getStatusStyle, getMasterStatusText } from "app/utils/chip.util";
 import { ExcelComparison } from "../components/excelComparison.component";
 import { IPushQueue, Rnum } from "@push-manager/shared";
 
@@ -110,7 +110,7 @@ export function PushReservationStatusModal({
                     ${getStatusStyle(queue.step)}
                   `}
                           >
-                            {getStatusText(queue.step)}
+                            {getMasterStatusText(queue.step!)}
                           </span>
                         </td>
                       </tr>

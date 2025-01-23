@@ -16,10 +16,11 @@ const pushController = new PushController(pushService);
 router.post("/", pushController.createPushes);
 router.get("/recent", pushController.getRecentPushes);
 router.get("/scheduled", pushController.getScheduledPushes);
+
 router.get("/detail/:idx", pushController.getPushStsMsgDetail);
-router.patch("/:campaignCode/status", pushController.updatePushStatus);
 router.get("/queue/:cmpncode", pushController.getPushQueues);
 router.post("/queue/:cmpncode", pushController.addToQueue);
+router.patch("/queue/confirm", pushController.confirmPushQueue);
 // router.get("/stats", pushController.getPushStats);
 // router.get("/:campaignCode", pushController.getPushDetail);
 

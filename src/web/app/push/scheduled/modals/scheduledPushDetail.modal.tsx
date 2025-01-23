@@ -7,6 +7,10 @@ import { formatDate } from "@push-manager/shared/utils/date.util";
 import { Toast } from "app/utils/toast.util";
 import { useState } from "react";
 import { PushReservationStatusModal } from "./pushReservationStatus.modal";
+import { pushApi } from "app/apis/push.api";
+
+import { ConfirmPushQueueDto } from "@push-manager/shared/dtos/push.dto";
+import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
 
 interface ScheduledPushDetailModalProps {
   isOpen: boolean;
@@ -25,9 +29,15 @@ export function ScheduledPushDetailModal({
     const toastId = Toast.loading("푸시 예약 확정 처리중...");
 
     try {
-      // TODO 예약 확정 업데이트 추가
-      // await pushApi.confirmScheduledPush(push.cmpncode);
-      Toast.update(toastId, "푸시 예약이 확정되었습니다.", "success");
+      const dto: ConfirmPushQueueDto = {
+        campaignCode: Number(push.cmpncode),
+        step: StepEnum.TRANSACTION,
+      };
+
+      const data = await pushApi.confirmScheduledPush(dto);
+      if (data.step === StepEnum.TRANSACTION) {
+        Toast.update(toastId, "푸시 예약이 확정되었습니다.", "success");
+      }
       onClose();
     } catch (error) {
       console.error("푸시 예약 확정 실패:", error);

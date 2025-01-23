@@ -14,6 +14,14 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
     super(TblFpMaster);
   }
 
+  async getOnePushMaster(cmpncode: number): Promise<TblFpMaster> {
+    const result = await TblFpMaster.findOne({
+      where: { cmpncode },
+    });
+
+    return result!;
+  }
+
   async getLastCampaignCode(transaction: Transaction): Promise<TblFpMaster[]> {
     const [result] = await TblFpMaster.findAll({
       attributes: ["cmpncode"],
@@ -78,7 +86,7 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
     });
   }
 
-  async getPushMasterWithMsg(
+  async getOnePushMasterWithMsg(
     page: number = 1,
     pageSize: number = 10
   ): Promise<PaginatedResponse<IPushMasterWithMsg>> {
