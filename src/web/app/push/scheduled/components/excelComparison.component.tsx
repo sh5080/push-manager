@@ -5,6 +5,7 @@ import { ComparisonResultModal } from "../modals/comparisonResult.modal";
 import { Toast } from "app/utils/toast.util";
 import { pushApi } from "app/apis/push.api";
 import { AddToQueueDto, IPushQueue, Rnum } from "@push-manager/shared";
+import { Button } from "app/common/components/button.component";
 
 interface ExcelComparisonProps {
   queues: (IPushQueue & Rnum)[];
@@ -77,17 +78,13 @@ export function ExcelComparison({ queues }: ExcelComparisonProps) {
           }}
         />
         <div className="flex justify-end">
-          <button
+          <Button
+            variant={compareFile ? "square-green" : "square-line"}
             onClick={handleCompareWithExcel}
             disabled={!compareFile}
-            className={`px-4 py-2 text-sm rounded-md ${
-              compareFile
-                ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
-                : "text-gray-400 bg-gray-50 cursor-not-allowed"
-            }`}
           >
             비교하기
-          </button>
+          </Button>
         </div>
       </div>
 

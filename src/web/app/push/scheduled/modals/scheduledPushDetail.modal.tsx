@@ -8,6 +8,7 @@ import { Toast } from "app/utils/toast.util";
 import { useState } from "react";
 import { PushReservationStatusModal } from "./pushReservationStatus.modal";
 import { pushApi } from "app/apis/push.api";
+import { Button } from "app/common/components/button.component";
 
 import { ConfirmPushQueueDto } from "@push-manager/shared/dtos/push.dto";
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
@@ -100,30 +101,21 @@ export function ScheduledPushDetailModal({
 
               {push.step !== StepEnum.COMPLETED && (
                 <div className="flex justify-end">
-                  <button
-                    onClick={handleCheckStatus}
-                    className="px-4 py-2 text-sm text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
-                  >
+                  <Button onClick={handleCheckStatus} variant="square-green">
                     예약 상태 확인
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
 
             <div className="flex justify-end gap-3 p-6 border-t bg-gray-50">
-              <button
-                onClick={onClose}
-                className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-              >
+              <Button onClick={onClose} variant="square-line">
                 닫기
-              </button>
+              </Button>
               {push.step === "R" && (
-                <button
-                  onClick={handleConfirmSchedule}
-                  className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700"
-                >
+                <Button onClick={handleConfirmSchedule} variant="square-solid">
                   발송 요청하기
-                </button>
+                </Button>
               )}
             </div>
           </DialogPanel>
