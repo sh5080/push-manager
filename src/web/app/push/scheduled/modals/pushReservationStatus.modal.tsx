@@ -7,6 +7,8 @@ import { Toast } from "app/utils/toast.util";
 import { ExcelComparison } from "../components/excelComparison.component";
 import { IPushQueue, Rnum } from "@push-manager/shared";
 import { StatusChip } from "app/common/components/statusChip.component";
+import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { ExcelGuideContent } from "app/push/components/guides/excelGuide.component";
 
 interface PushReservationStatusModalProps {
   isOpen: boolean;
@@ -63,6 +65,7 @@ export function PushReservationStatusModal({
             <DialogTitle className="text-lg font-semibold">
               예약 상태 확인
             </DialogTitle>
+
             <div className="flex items-center gap-2">
               <button
                 onClick={onClose}
@@ -74,7 +77,16 @@ export function PushReservationStatusModal({
           </div>
 
           <div className="p-6 space-y-6">
-            {/* 엑셀 비교 컴포넌트 */}
+            <div className="flex items-center gap-2 mb-2">
+              <label className="block text-sm font-medium text-gray-700">
+                비교할 엑셀 업로드
+              </label>
+              <InfoTooltip
+                content={<ExcelGuideContent />}
+                position="right"
+                width="w-[400px]"
+              />
+            </div>
             <ExcelComparison queues={queues} />
 
             {/* 식별자 목록 테이블 */}
