@@ -1,5 +1,5 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { HiX } from "react-icons/hi";
+import { HiX, HiRefresh } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { Pagination } from "app/common/components/pagination.component";
 import { pushApi } from "app/apis/push.api";
@@ -50,6 +50,10 @@ export function PushReservationStatusModal({
     }
   };
 
+  const handleRefresh = () => {
+    fetchQueues();
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -59,12 +63,14 @@ export function PushReservationStatusModal({
             <DialogTitle className="text-lg font-semibold">
               예약 상태 확인
             </DialogTitle>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-500"
-            >
-              <HiX className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-500 p-1 rounded-full hover:bg-gray-100"
+              >
+                <HiX className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           <div className="p-6 space-y-6">
@@ -82,8 +88,19 @@ export function PushReservationStatusModal({
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       식별자
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-8 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       상태
+                    </th>
+                    <th>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleRefresh}
+                          className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200 transition-colors"
+                          title="새로고침"
+                        >
+                          <HiRefresh className="w-4 h-4" />
+                        </button>
+                      </div>
                     </th>
                   </tr>
                 </thead>
