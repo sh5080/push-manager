@@ -7,7 +7,7 @@ import { TestIdentifies } from "app/push/identify/components/testIdentifies.comp
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
 import { Button } from "app/common/components/button.component";
 import { InfoTooltip } from "app/common/components/infoTooltip.component";
-import { ExcelGuideContent } from "app/push/components/excelGuide.component";
+import { ExcelGuideContent } from "app/push/components/guides/excelGuide.component";
 
 interface TargetUploadTabProps {
   targetFile: File | null;

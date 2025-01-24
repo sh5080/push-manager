@@ -3,6 +3,7 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
+import { Button } from "app/common/components/button.component";
 import { Pagination } from "app/common/components/pagination.component";
 import { Search } from "app/common/components/search.component";
 import { HiChevronDown } from "react-icons/hi";
@@ -77,20 +78,14 @@ export function IdentifierList({
                 />
                 <div className="flex gap-2">
                   {showMoveAllButton && filteredCount > 0 && (
-                    <button
-                      onClick={onMoveAll}
-                      className="px-3 py-1 text-sm text-blue-600 hover:text-blue-700 border border-blue-600 rounded-md hover:bg-blue-50"
-                    >
+                    <Button onClick={onMoveAll} variant="square-green">
                       검색결과 전체 추가
-                    </button>
+                    </Button>
                   )}
                   {showResetButton && (
-                    <button
-                      onClick={onReset}
-                      className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50"
-                    >
+                    <Button onClick={onReset} variant="square-line">
                       초기화
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>

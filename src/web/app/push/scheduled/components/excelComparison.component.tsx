@@ -5,6 +5,9 @@ import { ComparisonResultModal } from "../modals/comparisonResult.modal";
 import { Toast } from "app/utils/toast.util";
 import { pushApi } from "app/apis/push.api";
 import { AddToQueueDto, IPushQueue, Rnum } from "@push-manager/shared";
+import { Button } from "app/common/components/button.component";
+import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { ExcelComparisonGuideContent } from "app/push/components/guides/excelComparisionGuide.component";
 
 interface ExcelComparisonProps {
   queues: (IPushQueue & Rnum)[];
@@ -48,7 +51,6 @@ export function ExcelComparison({ queues }: ExcelComparisonProps) {
   const handleSubmitQueue = async (identifies: string[]) => {
     try {
       if (!queues[0].cmpncode) {
-        console.log(queues[0]);
         throw new Error("오류가 발생했습니다. 다시 시도해주세요.");
       }
       const dto: AddToQueueDto = {
@@ -77,17 +79,13 @@ export function ExcelComparison({ queues }: ExcelComparisonProps) {
           }}
         />
         <div className="flex justify-end">
-          <button
+          <Button
+            variant={compareFile ? "square-green" : "square-line"}
             onClick={handleCompareWithExcel}
             disabled={!compareFile}
-            className={`px-4 py-2 text-sm rounded-md ${
-              compareFile
-                ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
-                : "text-gray-400 bg-gray-50 cursor-not-allowed"
-            }`}
           >
             비교하기
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -95,7 +93,15 @@ export function ExcelComparison({ queues }: ExcelComparisonProps) {
       {comparisonResult && (
         <div className="p-4 bg-gray-50 rounded-lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-medium">비교 결과</h3>
+            <h3 className="font-medium">
+              비교 결과{" "}
+              <InfoTooltip
+                content={<ExcelComparisonGuideContent />}
+                width="w-[450px]"
+                position="right"
+              />
+            </h3>
+
             <button
               onClick={() => setIsComparisonModalOpen(true)}
               className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"

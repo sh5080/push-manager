@@ -10,9 +10,10 @@ import { Pagination } from "../../common/components/pagination.component";
 import { GetScheduledPushesDto } from "@push-manager/shared";
 import { toast } from "react-toastify";
 import { InfoTooltip } from "app/common/components/infoTooltip.component";
-import { StatusGuideContent } from "app/push/components/statusGuide.component";
+import { StatusGuideContent } from "app/push/components/guides/statusGuide.component";
 import { StatusChip } from "app/common/components/statusChip.component";
 import { StatusChipType } from "app/types/prop.type";
+import { HiRefresh } from "react-icons/hi";
 
 export default function ScheduledPushPage() {
   const [scheduledPushes, setScheduledPushes] = useState<IPushMasterWithMsg[]>(
@@ -26,22 +27,22 @@ export default function ScheduledPushPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
-  useEffect(() => {
-    const fetchScheduledPushes = async () => {
-      try {
-        const dto: GetScheduledPushesDto = {
-          page: currentPage,
-          pageSize: pageSize,
-        };
-        const response = await pushApi.getScheduledPushes(dto);
-        setScheduledPushes(response.data);
-        setTotal(response.total);
-        setTotalPages(response.totalPages);
-      } catch (error) {
-        toast.error("예약된 푸시 조회 실패");
-      }
-    };
+  const fetchScheduledPushes = async () => {
+    try {
+      const dto: GetScheduledPushesDto = {
+        page: currentPage,
+        pageSize: pageSize,
+      };
+      const response = await pushApi.getScheduledPushes(dto);
+      setScheduledPushes(response.data);
+      setTotal(response.total);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      toast.error("예약된 푸시 조회 실패");
+    }
+  };
 
+  useEffect(() => {
     fetchScheduledPushes();
   }, [currentPage, pageSize]);
 
@@ -52,6 +53,10 @@ export default function ScheduledPushPage() {
   const handlePageSizeChange = (newSize: number) => {
     setPageSize(newSize);
     setCurrentPage(1);
+  };
+
+  const handleRefresh = () => {
+    fetchScheduledPushes();
   };
 
   return (
@@ -79,6 +84,13 @@ export default function ScheduledPushPage() {
                   width="w-[420px]"
                   position="left"
                 />
+                <button
+                  onClick={handleRefresh}
+                  className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200 transition-colors"
+                  title="새로고침"
+                >
+                  <HiRefresh className="w-4 h-4" />
+                </button>
               </th>
             </tr>
           </thead>
