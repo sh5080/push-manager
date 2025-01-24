@@ -98,14 +98,16 @@ export function ScheduledPushDetailModal({
                 <p>{formatDate(push.rstartDate)}</p>
               </div>
 
-              <div className="flex justify-end">
-                <button
-                  onClick={handleCheckStatus}
-                  className="px-4 py-2 text-sm text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
-                >
-                  예약 상태 확인
-                </button>
-              </div>
+              {push.step !== StepEnum.COMPLETED && (
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleCheckStatus}
+                    className="px-4 py-2 text-sm text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
+                  >
+                    예약 상태 확인
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end gap-3 p-6 border-t bg-gray-50">
