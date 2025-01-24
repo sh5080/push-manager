@@ -13,7 +13,7 @@ import {
 import { DetailModal } from "../modals/detail.modal";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { InfoTooltip } from "app/common/components/infoTooltip.component";
-import { StatusGuideContent } from "./statusGuide.component";
+import { StatusGuideContent } from "./guides/statusGuide.component";
 
 export function RecentPushes() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
