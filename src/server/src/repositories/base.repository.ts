@@ -231,50 +231,50 @@ export class BaseRepository<T extends Model> {
         return mappedValue;
       });
 
-      const placeholders = allValues
+      const unionClauses = allValues
         .map((record) => {
-          return `(${uniqueFields
+          const values = uniqueFields
             .map((field) => {
               const modelField = fieldMappings[field.toLowerCase()];
               const value = record[modelField];
-              return typeof value === "string" &&
+
+              if (
+                typeof value === "string" &&
                 value.toUpperCase().includes("SYSDATE")
-                ? value.toUpperCase()
-                : "?";
+              ) {
+                return value.toUpperCase();
+              }
+              return "?";
             })
-            .join(", ")})`;
+            .join(", ");
+
+          return `SELECT ${values} FROM DUAL`;
         })
-        .join(", ");
+        .join(" UNION ALL ");
 
       const query = `
         INSERT INTO ${tableName} ("${uniqueFields.join('", "')}") 
-        VALUES ${placeholders}
-      `;
-
-      const flatValues = allValues.flatMap((record) => {
-        return uniqueFields
-          .map((field) => {
-            const modelField = fieldMappings[field.toLowerCase()];
-            const value = record[modelField];
-
-            if (
-              typeof value === "string" &&
-              value.toUpperCase().includes("SYSDATE")
-            ) {
-              return undefined;
-            }
-            return value !== undefined ? value : null;
-          })
-          .filter((val) => val !== undefined);
-      });
-
-      console.log("Original Values:", allValues);
-      console.log("Flattened Values:", flatValues);
-      console.log("Field mappings:", fieldMappings);
+        ${unionClauses}
+      `.trim();
 
       return await this.model.sequelize.query(query, {
         type: QueryTypes.INSERT,
-        replacements: flatValues,
+        replacements: allValues.flatMap((record) => {
+          return uniqueFields
+            .map((field) => {
+              const modelField = fieldMappings[field.toLowerCase()];
+              const value = record[modelField];
+
+              if (
+                typeof value === "string" &&
+                value.toUpperCase().includes("SYSDATE")
+              ) {
+                return undefined;
+              }
+              return value !== undefined ? value : null;
+            })
+            .filter((val) => val !== undefined);
+        }),
         model: this.model,
         transaction,
         mapToModel: true,

@@ -1,7 +1,31 @@
 import oracledb from "oracledb";
 import { Sequelize } from "sequelize";
 import { envConfig } from "@push-manager/shared";
+import fs from "fs";
+import path from "path";
 
+const logDMLQuery = (query: string) => {
+  const isDMLQuery = /^(?!BEGIN|COMMIT).*\b(INSERT|UPDATE|DELETE)\b/i.test(
+    query.trim()
+  );
+
+  if (isDMLQuery) {
+    const now = new Date();
+    const kstDate = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    const dateStr = kstDate.toISOString().split("T")[0];
+
+    const logEntry = `[${kstDate.toISOString()}] 
+Query: ${query}
+----------------------------------------\n`;
+
+    const logDir = path.join(__dirname, "../../logs/dml");
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
+
+    fs.appendFileSync(path.join(logDir, `${dateStr}.log`), logEntry);
+  }
+};
 oracledb.initOracleClient({ libDir: envConfig.pushDB.clientDir });
 oracledb.fetchAsString = [oracledb.NUMBER];
 
@@ -17,6 +41,9 @@ export const sequelize = new Sequelize({
     oracleClient: { _oracledb: oracledb },
   },
   define: { timestamps: false, freezeTableName: true },
+  logging: (sql: string) => {
+    logDMLQuery(sql);
+  },
 });
 
 export const sequelizeAdmin = new Sequelize({
@@ -28,4 +55,7 @@ export const sequelizeAdmin = new Sequelize({
   database: envConfig.adminDB.database,
   dialectOptions: { pool_timeout: 0 },
   define: { timestamps: false, freezeTableName: true },
+  logging: (sql: string) => {
+    logDMLQuery(sql);
+  },
 });

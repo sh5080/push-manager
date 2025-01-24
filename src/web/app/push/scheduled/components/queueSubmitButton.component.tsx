@@ -1,3 +1,5 @@
+import { Button } from "app/common/components/button.component";
+
 interface QueueSubmitButtonProps {
   extraCount: number;
   onSubmit: () => void;
@@ -9,17 +11,13 @@ export function QueueSubmitButton({
 }: QueueSubmitButtonProps) {
   return (
     <div className="flex justify-end mt-6 pt-4 border-t">
-      <button
+      <Button
         onClick={onSubmit}
         disabled={extraCount === 0}
-        className={`px-4 py-2 rounded-md ${
-          extraCount > 0
-            ? "bg-blue-600 text-white hover:bg-blue-700"
-            : "bg-gray-200 text-gray-500 cursor-not-allowed"
-        }`}
+        variant={extraCount > 0 ? "square-solid" : "square-line"}
       >
         예약 대기열 전송 ({extraCount}건)
-      </button>
+      </Button>
     </div>
   );
 }
