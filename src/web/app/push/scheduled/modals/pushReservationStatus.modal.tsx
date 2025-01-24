@@ -77,7 +77,7 @@ export function PushReservationStatusModal({
           </div>
 
           <div className="p-6 space-y-6">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 -mb-4">
               <label className="block text-sm font-medium text-gray-700">
                 비교할 엑셀 업로드
               </label>
