@@ -16,6 +16,7 @@ import {
 import { PushStats } from "../components/PushStats.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushStsMsg } from "@push-manager/shared";
+import { Button } from "app/common/components/button.component";
 
 interface DetailModalProps {
   push: IPushStsMsg | null;
@@ -110,13 +111,9 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                 </div>
 
                 <div className="mt-6 flex justify-end">
-                  <button
-                    type="button"
-                    className="rounded-md bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-200"
-                    onClick={onClose}
-                  >
+                  <Button onClick={onClose} variant="square-line">
                     닫기
-                  </button>
+                  </Button>
                 </div>
               </DialogPanel>
             </TransitionChild>
