@@ -10,7 +10,7 @@ import { Pagination } from "../../common/components/pagination.component";
 import { GetScheduledPushesDto } from "@push-manager/shared";
 import { toast } from "react-toastify";
 import { InfoTooltip } from "app/common/components/infoTooltip.component";
-import { StatusGuideContent } from "app/push/components/statusGuide.component";
+import { StatusGuideContent } from "app/push/components/guides/statusGuide.component";
 import { StatusChip } from "app/common/components/statusChip.component";
 import { StatusChipType } from "app/types/prop.type";
 
