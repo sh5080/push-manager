@@ -1,3 +1,7 @@
+"use client";
+
+import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
+
 interface ErrorFallbackProps {
   error?: Error;
   resetErrorBoundary?: () => void;
@@ -24,5 +28,29 @@ export default function ErrorFallback({
         </button>
       )}
     </div>
+  );
+}
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+export function ErrorBoundary({ children }: ErrorBoundaryProps) {
+  const handleError = (error: Error) => {
+    // 에러 로깅이나 모니터링 서비스에 전송
+    console.error("Error caught by boundary:", error);
+  };
+
+  const handleReset = () => {
+    window.location.reload();
+  };
+
+  return (
+    <ReactErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onError={handleError}
+      onReset={handleReset}
+    >
+      {children}
+    </ReactErrorBoundary>
   );
 }
