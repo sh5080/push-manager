@@ -149,10 +149,10 @@ export class GetTargetPushesDto extends PaginationDto {
   targetMode?: (typeof AppIdEnum)[keyof typeof AppIdEnum];
 
   @IsNotEmpty()
-  startDate!: Date;
+  startDate!: string;
 
   @IsNotEmpty()
-  endDate!: Date;
+  endDate!: string;
 }
 
 export class GetScheduledPushesDto extends PaginationDto {}
