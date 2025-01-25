@@ -1,18 +1,17 @@
 import {
   CreatePushDto,
   GetRecentPushesDto,
-  PushResponse,
   GetScheduledPushesDto,
   GetPushQueuesDto,
   AddToQueueDto,
   ConfirmPushQueueDto,
+  GetTargetPushesDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "./base.api";
 import {
-  GetTargetPushesDto,
   IPushMaster,
   IPushQueue,
   PaginatedResponse,
@@ -57,8 +56,11 @@ export class PushAPI extends BaseAPI {
   async getTargetPushes(
     dto: GetTargetPushesDto
   ): Promise<PaginatedResponse<IPushStsMsg>> {
+    const validatedDto = await validateDto(GetTargetPushesDto, dto);
+    const { page, pageSize, targetMode, startDate, endDate } = validatedDto;
+
     return this.customFetch<PaginatedResponse<IPushStsMsg>>(
-      `/api/push?page=${dto.page}&pageSize=${dto.pageSize}&targetMode=${dto.targetMode}`
+      `/api/push?page=${page}&pageSize=${pageSize}&targetMode=${targetMode}&startDate=${startDate}&endDate=${endDate}`
     );
   }
 
