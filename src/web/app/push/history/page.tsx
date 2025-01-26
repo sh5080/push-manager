@@ -3,16 +3,39 @@
 import { useEffect, useState } from "react";
 import { PushList } from "../components/pushList.component";
 import { PushDetail } from "../components/pushDetail.component";
-import {
-  PageHeader,
-  ExportButton,
-  CreateButton,
-} from "../../common/components/pageHeader.component";
+import { PageHeader } from "../../common/components/pageHeader.component";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
+import { pushApi } from "app/apis/push.api";
+import { Search } from "app/common/components/search.component";
+import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
+import { DatePicker } from "app/common/components/datePicker.component";
+import { Button } from "app/common/components/button.component";
+import { formatDate } from "@push-manager/shared/utils/date.util";
+import { Toast } from "app/utils/toast.util";
+import { Dropdown } from "app/common/components/dropdown.component";
 
 export default function PushHistoryPage() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
   const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [status, setStatus] = useState("all");
+  const [period, setPeriod] = useState("7d");
+  const [startDate, setStartDate] = useState<string>(formatDate(new Date()));
+  const [endDate, setEndDate] = useState<string>(formatDate(new Date()));
+
+  const statusOptions = [
+    { value: 0, label: "모든 상태" },
+    { value: 1, label: "완료" },
+    { value: 2, label: "실패" },
+    { value: 3, label: "대기" },
+  ];
+
+  const periodOptions = [
+    { value: 7, label: "최근 7일" },
+    { value: 30, label: "최근 30일" },
+    { value: 90, label: "최근 90일" },
+    { value: -1, label: "직접 설정" },
+  ];
 
   useEffect(() => {
     fetchPushes();
@@ -20,12 +43,24 @@ export default function PushHistoryPage() {
 
   const fetchPushes = async () => {
     try {
-      const response = await fetch("/api/push");
-      const data = await response.json();
-      setPushes(data);
-    } catch (error) {
-      console.error("Failed to fetch pushes:", error);
+      const dto = {
+        page: 1,
+        pageSize: 5,
+        startDate: formatDate(startDate).slice(0, 10),
+        endDate: formatDate(endDate).slice(0, 10),
+        targetMode: AppIdEnum.PROD,
+      };
+
+      const data = await pushApi.getTargetPushes(dto);
+      setPushes(data.data);
+    } catch (error: any) {
+      Toast.error(error.message);
     }
+  };
+
+  const handleSearch = () => {
+    // TODO: API 호출 시 검색 조건 적용
+    fetchPushes();
   };
 
   return (
@@ -39,155 +74,71 @@ export default function PushHistoryPage() {
               전체푸시는 기존 핑거푸시 콘솔을 사용해주세요.
             </span>
           }
-          actions={
-            <>
-              <ExportButton
-                onClick={() => {
-                  /* 내보내기 핸들러 */
-                }}
-              />
-              <CreateButton
-                text="타겟 푸시 발송"
-                onClick={() => {
-                  /* 새 푸시 생성 핸들러 */
-                }}
-              />
-            </>
-          }
         />
 
         <div className="mb-6 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
           <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
+              <DatePicker
+                type="date"
+                value={startDate}
+                onChange={setStartDate}
+              />
+              <span className="text-gray-300 font-light">~</span>
+              <DatePicker type="date" value={endDate} onChange={setEndDate} />
+            </div>
+
             <div className="flex-1">
-              <input
-                type="text"
+              <Search
+                value={searchQuery}
+                onChange={setSearchQuery}
                 placeholder="제목 또는 발송자로 검색"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                size="38"
               />
             </div>
+
             <div className="flex gap-3">
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <option>모든 상태</option>
-                <option>완료</option>
-                <option>실패</option>
-                <option>대기</option>
-              </select>
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <option>최근 7일</option>
-                <option>최근 30일</option>
-                <option>최근 90일</option>
-                <option>직접 설정</option>
-              </select>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                검색
-              </button>
+              <Dropdown
+                options={statusOptions}
+                value={parseInt(status) || 0}
+                onChange={(value) => setStatus(value.toString())}
+                buttonLabel={(value) =>
+                  statusOptions.find((opt) => opt.value === value)?.label ||
+                  "상태 선택"
+                }
+                itemLabel={(value) =>
+                  statusOptions.find((opt) => opt.value === value)?.label || ""
+                }
+                size="38"
+              />
+              <Dropdown
+                options={periodOptions}
+                value={parseInt(period) || 7}
+                onChange={(value) => setPeriod(value.toString())}
+                buttonLabel={(value) =>
+                  periodOptions.find((opt) => opt.value === value)?.label ||
+                  "기간 선택"
+                }
+                itemLabel={(value) =>
+                  periodOptions.find((opt) => opt.value === value)?.label || ""
+                }
+                size="38"
+              />
+              <Button variant="solid" size="38" onClick={handleSearch}>
+                조회하기
+              </Button>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-6 mb-6">
-          <StatCard
-            title="전체 발송"
-            value="1,234"
-            trend="+12.5%"
-            trendUp={true}
-          />
-          <StatCard
-            title="발송 완료"
-            value="1,180"
-            trend="+15.2%"
-            trendUp={true}
-            color="green"
-          />
-          <StatCard
-            title="발송 실패"
-            value="54"
-            trend="-2.3%"
-            trendUp={false}
-            color="red"
-          />
-          <StatCard
-            title="평균 발송 시간"
-            value="1.2초"
-            trend="-0.1초"
-            trendUp={false}
-            color="blue"
-          />
+        <div className="bg-white rounded-lg shadow-sm">
+          {/* <PushList pushes={pushes} onPushSelect={setSelectedPush} /> */}
         </div>
-
-        <PushList pushes={pushes} onPushSelect={setSelectedPush} />
       </div>
 
       {selectedPush && (
         <PushDetail push={selectedPush} onClose={() => setSelectedPush(null)} />
       )}
-    </div>
-  );
-}
-
-interface StatCardProps {
-  title: string;
-  value: string;
-  trend: string;
-  trendUp: boolean;
-  color?: "blue" | "green" | "red";
-}
-
-function StatCard({
-  title,
-  value,
-  trend,
-  trendUp,
-  color = "blue",
-}: StatCardProps) {
-  const colorClasses = {
-    blue: "text-blue-600",
-    green: "text-green-600",
-    red: "text-red-600",
-  };
-
-  return (
-    <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-      <h3 className="text-sm font-medium text-gray-500 mb-2">{title}</h3>
-      <div className="flex items-end gap-2">
-        <span className="text-2xl font-bold text-gray-900">{value}</span>
-        <span
-          className={`text-sm flex items-center ${
-            trendUp ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          {trendUp ? (
-            <svg
-              className="w-4 h-4 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="w-4 h-4 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"
-              />
-            </svg>
-          )}
-          {trend}
-        </span>
-      </div>
     </div>
   );
 }
