@@ -19,28 +19,6 @@ interface PushListProps {
 export function PushList({ pushes, onPushSelect }: PushListProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      {/* 검색 필터 영역 */}
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex gap-3">
-          <div className="flex-1 relative">
-            <HiOutlineSearch className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="제목 또는 발송자로 검색"
-              className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button className="px-3 py-2 border border-gray-300 rounded-lg flex items-center gap-2 hover:bg-gray-50">
-            <HiOutlineFilter className="w-4 h-4" />
-            필터
-          </button>
-          <button className="px-3 py-2 border border-gray-300 rounded-lg flex items-center gap-2 hover:bg-gray-50">
-            <HiOutlineCalendar className="w-4 h-4" />
-            기간
-          </button>
-        </div>
-      </div>
-
       {/* 테이블 헤더 */}
       <div className="border-b border-gray-200">
         <div className="grid grid-cols-12 px-6 py-4 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -136,5 +114,3 @@ export function PushList({ pushes, onPushSelect }: PushListProps) {
     </div>
   );
 }
-
-// 헬퍼 함수들은 pushHelpers.ts에서 import
