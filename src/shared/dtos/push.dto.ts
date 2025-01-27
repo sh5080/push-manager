@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { AppIdEnum } from "../types/constants/common.const";
 import { IPushQueue } from "../types/entities/pushQueue.entity";
 import {
@@ -153,6 +153,19 @@ export class GetTargetPushesDto extends PaginationDto {
 
   @IsNotEmpty()
   endDate!: string;
+
+  @IsString()
+  @IsOptional()
+  title?: string;
+
+  @IsEnum(StepEnum, {
+    message: "유효하지 않은 상태값입니다.",
+  })
+  @Transform(({ value }) => {
+    return value === "undefined" ? undefined : value;
+  })
+  @IsOptional()
+  step?: (typeof StepEnum)[keyof typeof StepEnum];
 }
 
 export class GetScheduledPushesDto extends PaginationDto {}
