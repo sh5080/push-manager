@@ -5,6 +5,8 @@ import { StatusGuideContent } from "app/push/components/guides/statusGuide.compo
 import { StatusChipType } from "app/types/prop.type";
 import { HiRefresh } from "react-icons/hi";
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
+import { Pagination } from "app/common/components/pagination.component";
+
 interface PushTableProps {
   type: StatusChipType;
   cmpncode?: string;
@@ -13,16 +15,28 @@ interface PushTableProps {
   step: (typeof StepEnum)[keyof typeof StepEnum];
   fpstep?: (typeof StepEnum)[keyof typeof StepEnum];
 }
+
+interface PaginationProps {
+  total: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
+}
+
 interface PushResultTableProps {
   pushes: PushTableProps[];
   onPushSelect: (push: any) => void;
   onRefresh: () => void;
+  pagination?: PaginationProps;
 }
 
 export function PushResultTable({
   pushes,
   onPushSelect,
   onRefresh,
+  pagination,
 }: PushResultTableProps) {
   return (
     <div className="bg-white rounded-lg shadow">
@@ -37,7 +51,7 @@ export function PushResultTable({
               제목
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              발송 예정 시각
+              발송(예정) 시각
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex items-center gap-2">
               상태
@@ -86,6 +100,17 @@ export function PushResultTable({
           ))}
         </tbody>
       </table>
+
+      {pagination && (
+        <Pagination
+          total={pagination.total}
+          currentPage={pagination.currentPage}
+          pageSize={pagination.pageSize}
+          totalPages={pagination.totalPages}
+          onPageChange={pagination.onPageChange}
+          onPageSizeChange={pagination.onPageSizeChange}
+        />
+      )}
     </div>
   );
 }
