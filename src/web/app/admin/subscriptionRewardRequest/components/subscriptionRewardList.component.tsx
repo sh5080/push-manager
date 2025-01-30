@@ -1,5 +1,6 @@
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { ISubscriptionRewardRequest } from "@push-manager/shared/types/entities/admin/subscriptionRewardRequest.entity";
+import { EmptyState } from "app/common/components/emptyState.component";
 
 export function SubscriptionRewardList({
   rewards,
@@ -36,16 +37,7 @@ export function SubscriptionRewardList({
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-100">
-          {rewards.length === 0 ? (
-            <tr>
-              <td
-                colSpan={headers.length}
-                className="px-6 py-16 text-center text-gray-400"
-              >
-                조회된 데이터가 없습니다
-              </td>
-            </tr>
-          ) : (
+          {rewards.length > 0 ? (
             rewards.map((reward) => (
               <tr
                 key={reward.id}
@@ -61,6 +53,8 @@ export function SubscriptionRewardList({
                 ))}
               </tr>
             ))
+          ) : (
+            <EmptyState colSpan={4} />
           )}
         </tbody>
       </table>

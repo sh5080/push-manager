@@ -65,13 +65,6 @@ export function RecentPushes() {
         onPushSelect={handlePushClick}
         onRefresh={fetchPushes}
       />
-      {pushes.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-sm">
-            최근 발송된 푸시 알림이 없습니다.
-          </p>
-        </div>
-      )}
 
       <DetailModal
         push={selectedPush}
