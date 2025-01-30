@@ -18,7 +18,7 @@ export const parseDateTime = (dateTimeStr: string): Date => {
 
 export const formatDate = (
   date: Date | string,
-  timezone: TimeZone = "KST"
+  offset: string = "+09:00" // 기본값은 KST
 ): string => {
   if (!date) return "";
 
@@ -30,25 +30,21 @@ export const formatDate = (
     return "";
   }
 
-  /*
-  KST인 경우 9시간 전으로 돌려야함
-  push DB 시간은 KST 기준
-  admin DB 시간은 UTC 기준
-  new Date()는 각자의 시간대 반영하고 있어 강제로 9시간을 더하고 있으므로 
-  push DB에 저장된 시간을 출력할 경우 -9 해줘야함
-  */
+  // offset 파싱 (예: "+09:00" -> 9, "-05:00" -> -5)
+  const hours = parseInt(offset.slice(0, 3));
+  const offsetMs = hours * 60 * 60 * 1000;
 
-  if (timezone === "KST") {
-    dateObj = new Date(dateObj.getTime() - 9 * 60 * 60 * 1000);
-  }
+  // offset 적용
+  dateObj = new Date(dateObj.getTime() - offsetMs);
+
   // YYYY-MM-DD HH:mm 형식으로 변환
   const year = dateObj.getFullYear();
   const month = String(dateObj.getMonth() + 1).padStart(2, "0");
   const day = String(dateObj.getDate()).padStart(2, "0");
-  const hours = String(dateObj.getHours()).padStart(2, "0");
+  const hours24 = String(dateObj.getHours()).padStart(2, "0");
   const minutes = String(dateObj.getMinutes()).padStart(2, "0");
 
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
+  return `${year}-${month}-${day} ${hours24}:${minutes}`;
 };
 /**
  * 날짜를 엑셀 형식(yyyy.mm.dd h:mm:ss AM/PM)으로 변환
