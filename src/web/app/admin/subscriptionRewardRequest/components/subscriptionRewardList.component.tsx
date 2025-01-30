@@ -15,7 +15,7 @@ export function SubscriptionRewardList({
 
   const formatValue = (value: any, key: keyof ISubscriptionRewardRequest) => {
     if (key === "createdAt") {
-      return formatDate(value);
+      return formatDate(value, "+00:00");
     }
     return String(value);
   };
