@@ -43,7 +43,7 @@ export default function PushHistoryPage() {
         startDate: formatDate(startDate).slice(0, 10),
         endDate: formatDate(endDate).slice(0, 10),
         targetMode: AppIdEnum.PROD,
-        title: searchQuery || undefined,
+        title: searchQuery,
         step: convertValueToStepEnum(selectedStep),
       };
 
@@ -86,7 +86,7 @@ export default function PushHistoryPage() {
               <Search
                 value={searchQuery}
                 onChange={setSearchQuery}
-                placeholder="제목 또는 발송자로 검색"
+                placeholder="제목 검색"
                 size="38"
               />
             </div>
