@@ -20,3 +20,25 @@ export const convertValueToStepEnum = (
       return undefined;
   }
 };
+
+export const convertValueToAppId = (value: number): string => {
+  switch (value) {
+    case 1:
+      return "테스트";
+    case 2:
+      return "운영";
+    default:
+      return "테스트 / 운영";
+  }
+};
+
+export const convertValueToTeamId = (value: number): string => {
+  switch (value) {
+    case 1:
+      return "FREED";
+    case 2:
+      return "LG";
+    default:
+      return "-";
+  }
+};
