@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { identifyApi } from "app/apis/identify.api";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
 import { Button } from "../../../common/components/button.component";
+import {
+  convertValueToAppId,
+  convertValueToTeamId,
+} from "app/utils/convertEnum.util";
 
 interface TestIdentifiesProps {
   onIdentifiersLoad: (identifies: ITestIdentify[]) => void;
@@ -113,11 +117,10 @@ export function TestIdentifies({
                   </span>
                   <div className="flex items-center">
                     <span className="text-xs text-gray-700 mr-4">
-                      {identify.teamid === 1
-                        ? "FREED"
-                        : identify.teamid === 2
-                        ? "LG"
-                        : "-"}
+                      {convertValueToTeamId(identify.teamid)}
+                    </span>
+                    <span className="text-sm text-gray-500 w-28 text-right">
+                      {convertValueToAppId(identify.appid)}
                     </span>
                     <span className="text-sm text-gray-500 w-28 text-right">
                       {identify.identify}
