@@ -24,7 +24,7 @@ export function StatusGuideContent({ type }: { type: StatusChipType }) {
             <StatusChip
               type={type}
               step={type === "master" ? StepEnum.COMPLETED : StepEnum.PENDING}
-              fpstep={type === "master" ? StepEnum.SENDING : undefined}
+              fpStep={type === "master" ? StepEnum.SENDING : undefined}
             />
           </div>
           <span className="text-gray-200 ml-2">
@@ -36,7 +36,7 @@ export function StatusGuideContent({ type }: { type: StatusChipType }) {
             <StatusChip
               type={type}
               step={StepEnum.COMPLETED}
-              fpstep={StepEnum.COMPLETED}
+              fpStep={StepEnum.COMPLETED}
             />
           </div>
           <span className="text-gray-200 ml-2">발송 완료</span>
@@ -46,7 +46,7 @@ export function StatusGuideContent({ type }: { type: StatusChipType }) {
             <StatusChip
               type={type}
               step={StepEnum.FAILED}
-              fpstep={StepEnum.FAILED}
+              fpStep={StepEnum.FAILED}
             />
           </div>
           <span className="text-gray-200 ml-2">실패 / 오류</span>
@@ -56,7 +56,7 @@ export function StatusGuideContent({ type }: { type: StatusChipType }) {
             <StatusChip
               type={type}
               step={StepEnum.SENDING}
-              fpstep={StepEnum.SENDING}
+              fpStep={StepEnum.SENDING}
             />
           </div>
           <span className="text-gray-200 ml-2">기타 과정</span>

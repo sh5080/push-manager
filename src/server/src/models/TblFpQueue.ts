@@ -5,10 +5,10 @@ export interface TblFpQueueAttributes {
   androidBadge: any;
   androidSound: string;
   andPriority?: string;
-  appkey?: string;
-  appsecret?: string;
+  appKey?: string;
+  appSecret?: string;
   beschmode?: string;
-  bgcolor?: string;
+  bgColor?: string;
   cmpncode?: any;
   customKey1?: string;
   customKey2?: string;
@@ -21,14 +21,14 @@ export interface TblFpQueueAttributes {
   extra1?: any;
   extra2?: string;
   extra3?: string;
-  failtochannel?: any;
-  feedbackdate?: Date;
-  fname?: string;
-  fontcolor?: string;
+  failToChannel?: any;
+  feedbackDate?: Date;
+  fName?: string;
+  fontColor?: string;
   identify?: string;
   iosBadge: any;
   iosSound: string;
-  isetiquette?: string;
+  isEtiquette?: string;
   kKkoBtnInfo?: string;
   kKkoBtnType?: string;
   kKkoFailover?: any;
@@ -38,32 +38,32 @@ export interface TblFpQueueAttributes {
   lngtMessage2?: string;
   lngtMessage3?: string;
   lngtMessage4?: string;
-  msgcontents: string;
-  msgtitle?: string;
+  msgContents: string;
+  msgTitle?: string;
   ofbTime?: string;
-  optagree?: string;
-  plink?: string;
-  pmode: string;
-  ptag?: string;
-  queueidx: any;
-  resultdate?: Date;
+  optAgree?: string;
+  pLink?: string;
+  pMode: string;
+  pTag?: string;
+  queueIdx: any;
+  resultDate?: Date;
   rno?: string;
-  senddate?: Date | string;
+  sendDate?: Date | string;
   sendStat: string;
   sno?: string;
   step: string;
-  txtMsgcontents?: string;
-  txtMsgtitle?: string;
-  udate: Date | string;
-  wdate: Date | string;
+  txtMsgContents?: string;
+  txtMsgTitle?: string;
+  uDate: Date | string;
+  wDate: Date | string;
 }
 
 export type TblFpQueueOptionalAttributes =
   | "andPriority"
-  | "appkey"
-  | "appsecret"
+  | "appKey"
+  | "appSecret"
   | "beschmode"
-  | "bgcolor"
+  | "bgColor"
   | "cmpncode"
   | "customKey1"
   | "customKey2"
@@ -76,12 +76,12 @@ export type TblFpQueueOptionalAttributes =
   | "extra1"
   | "extra2"
   | "extra3"
-  | "failtochannel"
-  | "feedbackdate"
-  | "fname"
-  | "fontcolor"
+  | "failToChannel"
+  | "feedbackDate"
+  | "fName"
+  | "fontColor"
   | "identify"
-  | "isetiquette"
+  | "isEtiquette"
   | "kKkoBtnInfo"
   | "kKkoBtnType"
   | "kKkoFailover"
@@ -91,17 +91,17 @@ export type TblFpQueueOptionalAttributes =
   | "lngtMessage2"
   | "lngtMessage3"
   | "lngtMessage4"
-  | "msgtitle"
+  | "msgTitle"
   | "ofbTime"
-  | "optagree"
-  | "plink"
-  | "ptag"
-  | "resultdate"
+  | "optAgree"
+  | "pLink"
+  | "pTag"
+  | "resultDate"
   | "rno"
-  | "senddate"
+  | "sendDate"
   | "sno"
-  | "txtMsgcontents"
-  | "txtMsgtitle";
+  | "txtMsgContents"
+  | "txtMsgTitle";
 export type TblFpQueueCreationAttributes = Optional<
   TblFpQueueAttributes,
   TblFpQueueOptionalAttributes
@@ -114,10 +114,10 @@ export class TblFpQueue
   androidBadge!: any;
   androidSound!: string;
   andPriority?: string;
-  appkey?: string;
-  appsecret?: string;
+  appKey?: string;
+  appSecret?: string;
   beschmode?: string;
-  bgcolor?: string;
+  bgColor?: string;
   cmpncode?: any;
   customKey1?: string;
   customKey2?: string;
@@ -130,14 +130,14 @@ export class TblFpQueue
   extra1?: any;
   extra2?: string;
   extra3?: string;
-  failtochannel?: any;
-  feedbackdate?: Date;
-  fname?: string;
-  fontcolor?: string;
+  failToChannel?: any;
+  feedbackDate?: Date;
+  fName?: string;
+  fontColor?: string;
   identify?: string;
   iosBadge!: any;
   iosSound!: string;
-  isetiquette?: string;
+  isEtiquette?: string;
   kKkoBtnInfo?: string;
   kKkoBtnType?: string;
   kKkoFailover?: any;
@@ -147,24 +147,24 @@ export class TblFpQueue
   lngtMessage2?: string;
   lngtMessage3?: string;
   lngtMessage4?: string;
-  msgcontents!: string;
-  msgtitle?: string;
+  msgContents!: string;
+  msgTitle?: string;
   ofbTime?: string;
-  optagree?: string;
-  plink?: string;
-  pmode!: string;
-  ptag?: string;
-  queueidx!: any;
-  resultdate?: Date;
+  optAgree?: string;
+  pLink?: string;
+  pMode!: string;
+  pTag?: string;
+  queueIdx!: any;
+  resultDate?: Date;
   rno?: string;
-  senddate?: Date;
+  sendDate?: Date;
   sendStat!: string;
   sno?: string;
   step!: string;
-  txtMsgcontents?: string;
-  txtMsgtitle?: string;
-  udate!: Date;
-  wdate!: Date;
+  txtMsgContents?: string;
+  txtMsgTitle?: string;
+  uDate!: Date;
+  wDate!: Date;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof TblFpQueue {
     return TblFpQueue.init(
@@ -184,12 +184,12 @@ export class TblFpQueue
           allowNull: true,
           field: "AND_PRIORITY",
         },
-        appkey: {
+        appKey: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "APPKEY",
         },
-        appsecret: {
+        appSecret: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "APPSECRET",
@@ -199,7 +199,7 @@ export class TblFpQueue
           allowNull: true,
           field: "BESCHMODE",
         },
-        bgcolor: {
+        bgColor: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "BGCOLOR",
@@ -264,22 +264,22 @@ export class TblFpQueue
           allowNull: true,
           field: "EXTRA3",
         },
-        failtochannel: {
+        failToChannel: {
           type: "NUMBER",
           allowNull: true,
           field: "FAILTOCHANNEL",
         },
-        feedbackdate: {
+        feedbackDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "FEEDBACKDATE",
         },
-        fname: {
+        fName: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "FNAME",
         },
-        fontcolor: {
+        fontColor: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "FONTCOLOR",
@@ -299,7 +299,7 @@ export class TblFpQueue
           allowNull: false,
           field: "IOS_SOUND",
         },
-        isetiquette: {
+        isEtiquette: {
           type: DataTypes.CHAR,
           allowNull: true,
           field: "ISETIQUETTE",
@@ -349,12 +349,12 @@ export class TblFpQueue
           allowNull: true,
           field: "LNGT_MESSAGE4",
         },
-        msgcontents: {
+        msgContents: {
           type: DataTypes.STRING,
           allowNull: false,
           field: "MSGCONTENTS",
         },
-        msgtitle: {
+        msgTitle: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "MSGTITLE",
@@ -364,33 +364,33 @@ export class TblFpQueue
           allowNull: true,
           field: "OFB_TIME",
         },
-        optagree: {
+        optAgree: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "OPTAGREE",
         },
-        plink: {
+        pLink: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "PLINK",
         },
-        pmode: {
+        pMode: {
           type: DataTypes.CHAR,
           allowNull: false,
           field: "PMODE",
         },
-        ptag: {
+        pTag: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "PTAG",
         },
-        queueidx: {
+        queueIdx: {
           type: "NUMBER",
           allowNull: false,
           field: "QUEUEIDX",
           primaryKey: true,
         },
-        resultdate: {
+        resultDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "RESULTDATE",
@@ -400,7 +400,7 @@ export class TblFpQueue
           allowNull: true,
           field: "RNO",
         },
-        senddate: {
+        sendDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "SENDDATE",
@@ -420,22 +420,22 @@ export class TblFpQueue
           allowNull: false,
           field: "STEP",
         },
-        txtMsgcontents: {
+        txtMsgContents: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "TXT_MSGCONTENTS",
         },
-        txtMsgtitle: {
+        txtMsgTitle: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "TXT_MSGTITLE",
         },
-        udate: {
+        uDate: {
           type: DataTypes.DATE(6),
           allowNull: false,
           field: "UDATE",
         },
-        wdate: {
+        wDate: {
           type: DataTypes.DATE(6),
           allowNull: false,
           field: "WDATE",

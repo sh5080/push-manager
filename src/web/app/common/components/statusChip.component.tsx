@@ -12,19 +12,19 @@ import {
 interface StatusChipProps {
   type: StatusChipType;
   step: (typeof StepEnum)[keyof typeof StepEnum];
-  fpstep?: (typeof StepEnum)[keyof typeof StepEnum];
+  fpStep?: (typeof StepEnum)[keyof typeof StepEnum];
 }
 
-export function StatusChip({ type, step, fpstep }: StatusChipProps) {
+export function StatusChip({ type, step, fpStep }: StatusChipProps) {
   const getChipStyle = () => {
     return type === "master"
-      ? getMasterStatusStyle(step, fpstep)
+      ? getMasterStatusStyle(step, fpStep)
       : getMessageStatusStyle(step);
   };
 
   const getStatusText = () => {
     return type === "master"
-      ? getMasterStatusText(step, fpstep)
+      ? getMasterStatusText(step, fpStep)
       : getMessageStatusText(step);
   };
 

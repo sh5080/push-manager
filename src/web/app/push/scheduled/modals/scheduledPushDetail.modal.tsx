@@ -80,10 +80,10 @@ export function ScheduledPushDetailModal({
                 <p className="mt-1">{push.title}</p>
               </div>
 
-              {push.msgidx && (
+              {push.msgIdx && (
                 <div>
                   <p className="text-sm text-gray-500 mt-1">
-                    메시지 IDX: {push.msgidx}
+                    메시지 IDX: {push.msgIdx}
                   </p>
                 </div>
               )}
@@ -96,7 +96,7 @@ export function ScheduledPushDetailModal({
                 <h3 className="text-sm font-medium text-gray-500 w-24">
                   발송 예정 시각
                 </h3>
-                <p>{formatDate(push.rstartDate)}</p>
+                <p>{formatDate(push.rStartDate)}</p>
               </div>
 
               {push.step !== StepEnum.COMPLETED && (

@@ -17,7 +17,7 @@ export function initializeRelations() {
   });
 
   TblFpMaster.belongsTo(TblPushstsmsg, {
-    foreignKey: "msgidx",
+    foreignKey: "msgIdx",
     targetKey: "idx",
   });
 

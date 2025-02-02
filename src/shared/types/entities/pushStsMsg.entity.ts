@@ -15,14 +15,14 @@ import {
 export interface IPushStsMsg {
   idx: string;
   userId?: string;
-  appid?: string;
-  senddate?: Date;
-  crondate?: Date;
+  appId?: string;
+  sendDate?: Date;
+  cronDate?: Date;
   cronComplatedate?: Date;
-  wdate: Date;
-  udate: Date;
+  wDate: Date;
+  uDate: Date;
   step?: (typeof StepEnum)[keyof typeof StepEnum];
-  resultdate?: Date;
+  resultDate?: Date;
   androidSound?: string;
   androidBadge?: number;
   iosBadge?: number;
@@ -33,34 +33,34 @@ export interface IPushStsMsg {
   customValue2?: string;
   customKey3?: string;
   customValue3?: string;
-  iosErrormessage?: string;
-  fname?: string;
-  isandroid?: string;
-  isios?: string;
-  andErrormessage?: string;
-  errormessage?: string;
+  iosErrorMessage?: string;
+  fName?: string;
+  isAndroid?: string;
+  isIos?: string;
+  andErrorMessage?: string;
+  errorMessage?: string;
   tmpMessage?: string;
   oMode?: (typeof PModeEnum)[keyof typeof PModeEnum];
   retry?: number;
   link?: string;
   idlistFlag?: string;
-  isbulk?: string;
+  isBulk?: string;
   labelCode?: string;
   title?: string;
-  bgcolor?: string;
-  fontcolor?: string;
+  bgColor?: string;
+  fontColor?: string;
   sendspeed?: number;
-  isetiquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
+  isEtiquette?: (typeof IsEtiquetteEnum)[keyof typeof IsEtiquetteEnum];
   etiquetteStime?: number;
   etiquetteEtime?: number;
   ofbTime?: (typeof OfbTimeEnum)[keyof typeof OfbTimeEnum];
   andPriority?: (typeof AndPriorityEnum)[keyof typeof AndPriorityEnum];
   andSendCount?: number;
   iosSendCount?: number;
-  optagree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
+  optAgree?: (typeof OptAgreeEnum)[keyof typeof OptAgreeEnum];
   sendStat?: (typeof SendStatEnum)[keyof typeof SendStatEnum];
   targetFilter?: string;
-  cronidx?: number;
+  cronIdx?: number;
 }
 
 export interface IPushStsMsgWithDetail extends IPushStsMsg {

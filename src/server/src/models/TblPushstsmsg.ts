@@ -4,13 +4,13 @@ import { DataTypes, Model, Optional } from "sequelize";
 export interface TblPushstsmsgAttributes {
   androidBadge?: any;
   androidSound?: string;
-  andErrormessage?: string;
+  andErrorMessage?: string;
   andPriority?: string;
   andSendCount?: any;
-  appid?: string;
-  bgcolor?: string;
-  crondate?: string;
-  cronidx?: any;
+  appId?: string;
+  bgColor?: string;
+  cronDate?: string;
+  cronIdx?: any;
   cronComplatedate?: string;
   customKey1?: string;
   customKey2?: string;
@@ -18,38 +18,38 @@ export interface TblPushstsmsgAttributes {
   customValue1?: string;
   customValue2?: string;
   customValue3?: string;
-  errormessage?: string;
+  errorMessage?: string;
   etiquetteEtime?: any;
   etiquetteStime?: any;
-  fname?: string;
-  fontcolor?: string;
+  fName?: string;
+  fontColor?: string;
   idlistFlag?: string;
   idx: any;
   iosBadge?: any;
-  iosErrormessage?: string;
+  iosErrorMessage?: string;
   iosSendCount?: any;
   iosSound?: string;
-  isandroid?: string;
-  isbulk?: string;
-  isetiquette?: string;
-  isios?: string;
+  isAndroid?: string;
+  isBulk?: string;
+  isEtiquette?: string;
+  isIos?: string;
   labelCode?: string;
   link?: string;
   ofbTime?: string;
-  optagree?: string;
+  optAgree?: string;
   oMode?: string;
-  resultdate?: string;
+  resultDate?: string;
   retry?: any;
-  senddate?: string;
+  sendDate?: string;
   sendspeed?: any;
   sendStat?: string;
   step?: string;
   targetFilter?: string;
   title?: string;
   tmpMessage?: string;
-  udate: string;
+  uDate: string;
   userId?: string;
-  wdate: string;
+  wDate: string;
 }
 
 export type TblPushstsmsgPk = "idx";
@@ -57,13 +57,13 @@ export type TblPushstsmsgId = TblPushstsmsg[TblPushstsmsgPk];
 export type TblPushstsmsgOptionalAttributes =
   | "androidBadge"
   | "androidSound"
-  | "andErrormessage"
+  | "andErrorMessage"
   | "andPriority"
   | "andSendCount"
-  | "appid"
-  | "bgcolor"
-  | "crondate"
-  | "cronidx"
+  | "appId"
+  | "bgColor"
+  | "cronDate"
+  | "cronIdx"
   | "cronComplatedate"
   | "customKey1"
   | "customKey2"
@@ -71,28 +71,28 @@ export type TblPushstsmsgOptionalAttributes =
   | "customValue1"
   | "customValue2"
   | "customValue3"
-  | "errormessage"
+  | "errorMessage"
   | "etiquetteEtime"
   | "etiquetteStime"
-  | "fname"
-  | "fontcolor"
+  | "fName"
+  | "fontColor"
   | "idlistFlag"
   | "iosBadge"
-  | "iosErrormessage"
+  | "iosErrorMessage"
   | "iosSendCount"
   | "iosSound"
-  | "isandroid"
-  | "isbulk"
-  | "isetiquette"
-  | "isios"
+  | "isAndroid"
+  | "isBulk"
+  | "isEtiquette"
+  | "isIos"
   | "labelCode"
   | "link"
   | "ofbTime"
-  | "optagree"
+  | "optAgree"
   | "oMode"
-  | "resultdate"
+  | "resultDate"
   | "retry"
-  | "senddate"
+  | "sendDate"
   | "sendspeed"
   | "sendStat"
   | "step"
@@ -111,13 +111,13 @@ export class TblPushstsmsg
 {
   androidBadge?: any;
   androidSound?: string;
-  andErrormessage?: string;
+  andErrorMessage?: string;
   andPriority?: string;
   andSendCount?: any;
-  appid?: string;
-  bgcolor?: string;
-  crondate?: string;
-  cronidx?: any;
+  appId?: string;
+  bgColor?: string;
+  cronDate?: string;
+  cronIdx?: any;
   cronComplatedate?: string;
   customKey1?: string;
   customKey2?: string;
@@ -125,38 +125,38 @@ export class TblPushstsmsg
   customValue1?: string;
   customValue2?: string;
   customValue3?: string;
-  errormessage?: string;
+  errorMessage?: string;
   etiquetteEtime?: any;
   etiquetteStime?: any;
-  fname?: string;
-  fontcolor?: string;
+  fName?: string;
+  fontColor?: string;
   idlistFlag?: string;
   idx!: any;
   iosBadge?: any;
-  iosErrormessage?: string;
+  iosErrorMessage?: string;
   iosSendCount?: any;
   iosSound?: string;
-  isandroid?: string;
-  isbulk?: string;
-  isetiquette?: string;
-  isios?: string;
+  isAndroid?: string;
+  isBulk?: string;
+  isEtiquette?: string;
+  isIos?: string;
   labelCode?: string;
   link?: string;
   ofbTime?: string;
-  optagree?: string;
+  optAgree?: string;
   oMode?: string;
-  resultdate?: string;
+  resultDate?: string;
   retry?: any;
-  senddate?: string;
+  sendDate?: string;
   sendspeed?: any;
   sendStat?: string;
   step?: string;
   targetFilter?: string;
   title?: string;
   tmpMessage?: string;
-  udate!: string;
+  uDate!: string;
   userId?: string;
-  wdate!: string;
+  wDate!: string;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof TblPushstsmsg {
     return TblPushstsmsg.init(
@@ -171,7 +171,7 @@ export class TblPushstsmsg
           allowNull: true,
           field: "ANDROID_SOUND",
         },
-        andErrormessage: {
+        andErrorMessage: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "AND_ERRORMESSAGE",
@@ -186,22 +186,22 @@ export class TblPushstsmsg
           allowNull: true,
           field: "AND_SEND_COUNT",
         },
-        appid: {
+        appId: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "APPID",
         },
-        bgcolor: {
+        bgColor: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "BGCOLOR",
         },
-        crondate: {
+        cronDate: {
           type: DataTypes.DATEONLY,
           allowNull: true,
           field: "CRONDATE",
         },
-        cronidx: {
+        cronIdx: {
           type: "NUMBER",
           allowNull: true,
           field: "CRONIDX",
@@ -241,7 +241,7 @@ export class TblPushstsmsg
           allowNull: true,
           field: "CUSTOM_VALUE_3",
         },
-        errormessage: {
+        errorMessage: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "ERRORMESSAGE",
@@ -256,12 +256,12 @@ export class TblPushstsmsg
           allowNull: true,
           field: "ETIQUETTE_STIME",
         },
-        fname: {
+        fName: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "FNAME",
         },
-        fontcolor: {
+        fontColor: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "FONTCOLOR",
@@ -282,7 +282,7 @@ export class TblPushstsmsg
           allowNull: true,
           field: "IOS_BADGE",
         },
-        iosErrormessage: {
+        iosErrorMessage: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "IOS_ERRORMESSAGE",
@@ -297,22 +297,22 @@ export class TblPushstsmsg
           allowNull: true,
           field: "IOS_SOUND",
         },
-        isandroid: {
+        isAndroid: {
           type: DataTypes.CHAR,
           allowNull: true,
           field: "ISANDROID",
         },
-        isbulk: {
+        isBulk: {
           type: DataTypes.CHAR,
           allowNull: true,
           field: "ISBULK",
         },
-        isetiquette: {
+        isEtiquette: {
           type: DataTypes.CHAR,
           allowNull: true,
           field: "ISETIQUETTE",
         },
-        isios: {
+        isIos: {
           type: DataTypes.CHAR,
           allowNull: true,
           field: "ISIOS",
@@ -332,7 +332,7 @@ export class TblPushstsmsg
           allowNull: true,
           field: "OFB_TIME",
         },
-        optagree: {
+        optAgree: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "OPTAGREE",
@@ -342,7 +342,7 @@ export class TblPushstsmsg
           allowNull: true,
           field: "O_MODE",
         },
-        resultdate: {
+        resultDate: {
           type: DataTypes.DATEONLY,
           allowNull: true,
           field: "RESULTDATE",
@@ -352,7 +352,7 @@ export class TblPushstsmsg
           allowNull: true,
           field: "RETRY",
         },
-        senddate: {
+        sendDate: {
           type: DataTypes.DATEONLY,
           allowNull: true,
           field: "SENDDATE",
@@ -387,7 +387,7 @@ export class TblPushstsmsg
           allowNull: true,
           field: "TMP_MESSAGE",
         },
-        udate: {
+        uDate: {
           type: DataTypes.DATEONLY,
           allowNull: false,
           field: "UDATE",
@@ -397,7 +397,7 @@ export class TblPushstsmsg
           allowNull: true,
           field: "USER_ID",
         },
-        wdate: {
+        wDate: {
           type: DataTypes.DATEONLY,
           allowNull: false,
           field: "WDATE",

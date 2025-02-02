@@ -12,9 +12,9 @@ interface PushTableProps {
   type: StatusChipType;
   cmpncode?: string;
   title: string;
-  rstartDate: Date | string;
+  rStartDate: Date | string;
   step: (typeof StepEnum)[keyof typeof StepEnum];
-  fpstep?: (typeof StepEnum)[keyof typeof StepEnum];
+  fpStep?: (typeof StepEnum)[keyof typeof StepEnum];
 }
 
 interface PaginationProps {
@@ -76,7 +76,7 @@ export function PushResultTable({
           {pushes.length > 0 ? (
             pushes.map((push, index) => (
               <tr
-                key={`${push.title}-${push.rstartDate}-${index}`}
+                key={`${push.title}-${push.rStartDate}-${index}`}
                 onClick={() => onPushSelect(push)}
                 className="cursor-pointer hover:bg-gray-50"
               >
@@ -87,13 +87,13 @@ export function PushResultTable({
                   {push.title}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(push.rstartDate)}
+                  {formatDate(push.rStartDate)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusChip
                     type={push.type}
                     step={push.step}
-                    fpstep={push.fpstep}
+                    fpStep={push.fpStep}
                   />
                 </td>
               </tr>
