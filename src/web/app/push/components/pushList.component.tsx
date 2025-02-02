@@ -54,7 +54,7 @@ export function PushList({ pushes, onPushSelect }: PushListProps) {
                 </div>
                 <div className="flex items-center gap-1">
                   <HiOutlineClock className="w-3 h-3" />
-                  {formatDateToString(push.senddate)}
+                  {formatDateToString(push.sendDate)}
                 </div>
               </div>
             </div>
@@ -75,7 +75,7 @@ export function PushList({ pushes, onPushSelect }: PushListProps) {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span>{formatDateToString(push.senddate)}</span>
+                <span>{formatDateToString(push.sendDate)}</span>
               </div>
             </div>
 

@@ -38,7 +38,7 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
     transaction: Transaction,
     dto: {
       campaignCode: number;
-      pmode: string;
+      pMode: string;
       step: (typeof StepEnum)[keyof typeof StepEnum];
       startDate: string;
     }
@@ -47,13 +47,13 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
         INSERT INTO COKR_MBR_APP.TBL_FP_MASTER 
         (CMPNCODE, PMODE, STEP, RSTART_DATE) 
         VALUES 
-        (:cmpncode, :pmode, :step, ${dto.startDate})
+        (:cmpncode, :pMode, :step, ${dto.startDate})
       `;
 
     const result = await sequelize.query(query, {
       replacements: {
         cmpncode: dto.campaignCode,
-        pmode: dto.pmode,
+        pMode: dto.pMode,
         step: dto.step,
       },
       type: QueryTypes.INSERT,
@@ -95,12 +95,12 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
     const innerQuery = `
       SELECT DISTINCT
         m.CMPNCODE as "cmpncode",
-        m.MSGIDX as "msgidx",
-        m.PMODE as "pmode",
+        m.MSGIDX as "msgIdx",
+        m.PMODE as "pMode",
         m.STEP as "step",
-        m.FPSTEP as "fpstep",
-        m.RSTART_DATE as "rstartDate",
-        m.REND_DATE as "rendDate",
+        m.FPSTEP as "fpStep",
+        m.RSTART_DATE as "rStartDate",
+        m.REND_DATE as "rEndDate",
         CASE 
           WHEN m.MSGIDX IS NOT NULL THEN p.TITLE 
           ELSE q.MSGTITLE 

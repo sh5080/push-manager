@@ -11,7 +11,7 @@ export interface IPushStsMsgResult {
   msgIdx: string;
   result: string;
   resultMsg: string;
-  senddate: string;
+  sendDate: string;
   opened: number;
   deviceType: string;
   tokenIdx: string;

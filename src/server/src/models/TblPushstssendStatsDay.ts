@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 
 export interface TblPushstssendStatsDayAttributes {
   appdel: any;
-  appid: string;
+  appId: string;
   deviceType: string;
   failed: any;
   msgIdx: any;
@@ -13,7 +13,7 @@ export interface TblPushstssendStatsDayAttributes {
   sent: any;
   sms: any;
   startd: string;
-  udate: string;
+  uDate: string;
   userId: string;
 }
 
@@ -28,7 +28,7 @@ export class TblPushstssendStatsDay
   implements TblPushstssendStatsDayAttributes
 {
   appdel!: any;
-  appid!: string;
+  appId!: string;
   deviceType!: string;
   failed!: any;
   msgIdx!: any;
@@ -38,7 +38,7 @@ export class TblPushstssendStatsDay
   sent!: any;
   sms!: any;
   startd!: string;
-  udate!: string;
+  uDate!: string;
   userId!: string;
 
   static initModel(
@@ -51,7 +51,7 @@ export class TblPushstssendStatsDay
           allowNull: false,
           field: "APPDEL",
         },
-        appid: {
+        appId: {
           type: DataTypes.STRING,
           allowNull: false,
           field: "APPID",
@@ -101,7 +101,7 @@ export class TblPushstssendStatsDay
           allowNull: false,
           field: "STARTD",
         },
-        udate: {
+        uDate: {
           type: DataTypes.DATEONLY,
           allowNull: false,
           field: "UDATE",

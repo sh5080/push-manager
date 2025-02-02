@@ -125,7 +125,7 @@ export function PushReservationStatusModal({
                     </tr>
                   ) : (
                     queues.map((queue, index) => (
-                      <tr key={queue.queueidx}>
+                      <tr key={queue.queueIdx}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {(currentPage - 1) * pageSize + index + 1}
                         </td>

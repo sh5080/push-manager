@@ -62,9 +62,9 @@ export default function ScheduledPushPage() {
           type: "master",
           cmpncode: push.cmpncode,
           title: push.title,
-          rstartDate: push.rstartDate,
+          rStartDate: push.rStartDate,
           step: push.step,
-          fpstep: push.fpstep,
+          fpStep: push.fpStep,
         }))}
         onPushSelect={setSelectedPush}
         onRefresh={handleRefresh}

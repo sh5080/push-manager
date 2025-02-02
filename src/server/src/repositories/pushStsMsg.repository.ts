@@ -44,7 +44,7 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
           "msgIdx",
           "result",
           "resultMsg",
-          "senddate",
+          "sendDate",
           "opened",
           "deviceType",
           "tokenIdx",
@@ -75,7 +75,7 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
         limit,
         appIds: this.appIds,
       },
-      order: [["senddate", "DESC"]],
+      order: [["sendDate", "DESC"]],
       raw: true,
     });
   }

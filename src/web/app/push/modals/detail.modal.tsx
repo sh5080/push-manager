@@ -81,7 +81,7 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                           발송일
                         </p>
                         <p className="mt-1">
-                          {formatDate(formatDateToString(push.senddate))}
+                          {formatDate(formatDateToString(push.sendDate))}
                         </p>
                       </div>
                       <div>

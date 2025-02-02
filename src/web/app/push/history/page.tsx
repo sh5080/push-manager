@@ -130,7 +130,7 @@ export default function PushHistoryPage() {
             pushes={pushes.map((push) => ({
               type: "message",
               title: push.title!,
-              rstartDate: push.senddate!,
+              rStartDate: push.sendDate!,
               step: push.step!,
               ...push,
             }))}
