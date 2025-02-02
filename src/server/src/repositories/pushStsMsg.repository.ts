@@ -1,10 +1,14 @@
 import { BaseRepository, paginationQuery } from "./base.repository";
 import { APP_CONFIG } from "../configs/app.config";
-import { TblPushstsmsg, TblPushstssendStatsDay } from "../models/init-models";
+import {
+  TblPushstsmsg,
+  TblPushstssend,
+  TblPushstssendStatsDay,
+} from "../models/init-models";
 import { Sequelize } from "sequelize";
 import {
   GetTargetPushesDto,
-  IPushStsMsg,
+  IPushStsMsgWithDetail,
   PaginatedResponse,
 } from "@push-manager/shared";
 import { sequelize } from "../configs/db.config";
@@ -22,8 +26,8 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
     ];
   }
 
-  async getPushStsMsgDetail(idx: string): Promise<IPushStsMsg> {
-    const [pushMsg, statsDetails] = await Promise.all([
+  async getPushStsMsgDetail(idx: string): Promise<IPushStsMsgWithDetail> {
+    const [pushMsg, statsDetails, sendResults] = await Promise.all([
       TblPushstsmsg.findOne({
         where: { idx },
         raw: true,
@@ -33,9 +37,27 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
         attributes: ["deviceType", "sent", "failed", "opened", "appdel", "sms"],
         raw: true,
       }),
+      TblPushstssend.findAll({
+        where: { msgIdx: idx },
+        attributes: [
+          "idx",
+          "msgIdx",
+          "result",
+          "resultMsg",
+          "senddate",
+          "opened",
+          "deviceType",
+          "tokenIdx",
+        ],
+        raw: true,
+      }),
     ]);
 
-    return { ...pushMsg, detail: statsDetails } as unknown as IPushStsMsg;
+    return {
+      ...pushMsg,
+      detail: statsDetails,
+      result: sendResults,
+    } as unknown as IPushStsMsgWithDetail;
   }
 
   async getRecentTargetPushes(limit: number = 10): Promise<TblPushstsmsg[]> {

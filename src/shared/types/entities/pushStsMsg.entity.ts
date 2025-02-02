@@ -7,7 +7,10 @@ import {
   OptAgreeEnum,
   PModeEnum,
 } from "../constants/pushQueue.const";
-import { IPushStsMsgDetail } from "./pushStsMsgDetail.entity";
+import {
+  IPushStsMsgDetail,
+  IPushStsMsgResult,
+} from "./pushStsMsgDetail.entity";
 
 export interface IPushStsMsg {
   idx: string;
@@ -62,4 +65,5 @@ export interface IPushStsMsg {
 
 export interface IPushStsMsgWithDetail extends IPushStsMsg {
   detail: IPushStsMsgDetail[];
+  result: IPushStsMsgResult[];
 }
