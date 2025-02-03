@@ -30,7 +30,7 @@ export default function SubscriptionRewardRequestPage() {
 
       const endDateTime = new Date(endDate);
       endDateTime.setUTCHours(15, 0, 0, 0);
-      endDateTime.setUTCDate(endDateTime.getUTCDate() - 1);
+      endDateTime.setUTCDate(endDateTime.getUTCDate());
 
       const response = await subscriptionApi.getSubscriptionRewardRequests({
         startAt: startDateTime,

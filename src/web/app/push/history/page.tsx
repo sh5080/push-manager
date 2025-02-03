@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PushList } from "../components/pushList.component";
 import { PushDetail } from "../components/pushDetail.component";
-import { PageHeader } from "../../common/components/pageHeader.component";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { pushApi } from "app/apis/push.api";
 import { Search } from "app/common/components/search.component";
@@ -13,68 +11,63 @@ import { Button } from "app/common/components/button.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { Toast } from "app/utils/toast.util";
 import { Dropdown } from "app/common/components/dropdown.component";
+import { PushResultTable } from "../components/pushResultTable.component";
+import { convertValueToStepEnum } from "app/utils/convertEnum.util";
 
 export default function PushHistoryPage() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
   const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [status, setStatus] = useState("all");
-  const [period, setPeriod] = useState("7d");
+  const [selectedStep, setSelectedStep] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
+
   const [startDate, setStartDate] = useState<string>(formatDate(new Date()));
   const [endDate, setEndDate] = useState<string>(formatDate(new Date()));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const statusOptions = [
+  const STEP_OPTIONS = [
     { value: 0, label: "모든 상태" },
-    { value: 1, label: "완료" },
-    { value: 2, label: "실패" },
-    { value: 3, label: "대기" },
+    { value: 1, label: "발송 대기" },
+    { value: 2, label: "발송 중" },
+    { value: 3, label: "발송 완료" },
+    { value: 4, label: "발송 실패" },
   ];
-
-  const periodOptions = [
-    { value: 7, label: "최근 7일" },
-    { value: 30, label: "최근 30일" },
-    { value: 90, label: "최근 90일" },
-    { value: -1, label: "직접 설정" },
-  ];
-
-  useEffect(() => {
-    fetchPushes();
-  }, []);
 
   const fetchPushes = async () => {
     try {
       const dto = {
-        page: 1,
-        pageSize: 5,
+        page: currentPage,
+        pageSize: pageSize,
         startDate: formatDate(startDate).slice(0, 10),
         endDate: formatDate(endDate).slice(0, 10),
         targetMode: AppIdEnum.PROD,
+        title: searchQuery || undefined,
+        step: convertValueToStepEnum(selectedStep),
       };
 
       const data = await pushApi.getTargetPushes(dto);
+
       setPushes(data.data);
+      setTotalPages(data.totalPages);
     } catch (error: any) {
       Toast.error(error.message);
     }
   };
 
+  useEffect(() => {
+    fetchPushes();
+  }, [currentPage, pageSize]);
+
   const handleSearch = () => {
-    // TODO: API 호출 시 검색 조건 적용
+    setCurrentPage(1);
     fetchPushes();
   };
 
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
-        <PageHeader
-          title="푸시 알림 관리"
-          description={
-            <span className="whitespace-pre-line">
-              타겟 푸시 알림을 생성하고 발송 현황을 관리할 수 있습니다.{"\n"}
-              전체푸시는 기존 핑거푸시 콘솔을 사용해주세요.
-            </span>
-          }
-        />
+        <h1 className="text-2xl font-bold mb-6">타겟 푸시 내역 조회</h1>
 
         <div className="mb-6 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
           <div className="flex items-center gap-4">
@@ -99,31 +92,21 @@ export default function PushHistoryPage() {
 
             <div className="flex gap-3">
               <Dropdown
-                options={statusOptions}
-                value={parseInt(status) || 0}
-                onChange={(value) => setStatus(value.toString())}
+                options={STEP_OPTIONS}
+                value={selectedStep}
+                onChange={(value) =>
+                  setSelectedStep(value as 0 | 1 | 2 | 3 | 4 | 5)
+                }
                 buttonLabel={(value) =>
-                  statusOptions.find((opt) => opt.value === value)?.label ||
+                  STEP_OPTIONS.find((opt) => opt.value === value)?.label ||
                   "상태 선택"
                 }
                 itemLabel={(value) =>
-                  statusOptions.find((opt) => opt.value === value)?.label || ""
+                  STEP_OPTIONS.find((opt) => opt.value === value)?.label || ""
                 }
                 size="38"
               />
-              <Dropdown
-                options={periodOptions}
-                value={parseInt(period) || 7}
-                onChange={(value) => setPeriod(value.toString())}
-                buttonLabel={(value) =>
-                  periodOptions.find((opt) => opt.value === value)?.label ||
-                  "기간 선택"
-                }
-                itemLabel={(value) =>
-                  periodOptions.find((opt) => opt.value === value)?.label || ""
-                }
-                size="38"
-              />
+
               <Button variant="solid" size="38" onClick={handleSearch}>
                 조회하기
               </Button>
@@ -132,7 +115,32 @@ export default function PushHistoryPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow-sm">
-          {/* <PushList pushes={pushes} onPushSelect={setSelectedPush} /> */}
+          <PushResultTable
+            pushes={pushes.map((push) => ({
+              type: "message",
+              title: push.title!,
+              rstartDate: push.senddate!,
+              step: push.step!,
+              ...push,
+            }))}
+            onPushSelect={setSelectedPush}
+            onRefresh={fetchPushes}
+            pagination={{
+              total: totalPages,
+              currentPage: currentPage,
+              pageSize: pageSize,
+              totalPages: totalPages,
+              onPageChange: setCurrentPage,
+              onPageSizeChange: setPageSize,
+            }}
+          />
+          {pushes.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-sm">
+                조회된 푸시 내역이 없습니다.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
