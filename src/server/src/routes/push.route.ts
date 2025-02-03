@@ -14,6 +14,7 @@ const pushService = new PushService(
 const pushController = new PushController(pushService);
 
 router.post("/", pushController.createPushes);
+router.get("/", pushController.getTargetPushes);
 router.get("/recent", pushController.getRecentPushes);
 router.get("/scheduled", pushController.getScheduledPushes);
 

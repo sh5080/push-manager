@@ -8,6 +8,7 @@ import {
   GetScheduledPushesDto,
   ConfirmPushQueueDto,
   validateDto,
+  GetTargetPushesDto,
 } from "@push-manager/shared";
 
 export class PushController {
@@ -32,6 +33,24 @@ export class PushController {
       });
 
       const pushes = await this.pushService.getRecentPushes(dto);
+      res.success(pushes);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getTargetPushes = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { page, pageSize, targetMode, startDate, endDate } = req.query;
+      const dto = await validateDto(GetTargetPushesDto, {
+        page: Number(page) || 1,
+        pageSize: Number(pageSize) || 10,
+        targetMode: Number(targetMode),
+        startDate: startDate,
+        endDate: endDate,
+      });
+
+      const pushes = await this.pushService.getTargetPushes(dto);
       res.success(pushes);
     } catch (error) {
       next(error);

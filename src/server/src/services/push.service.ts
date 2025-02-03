@@ -10,6 +10,7 @@ import {
   IPushStsMsg,
   PaginatedResponse,
   ConfirmPushQueueDto,
+  GetTargetPushesDto,
 } from "@push-manager/shared";
 
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
@@ -27,6 +28,7 @@ import {
 } from "../models/init-models";
 import { sequelize } from "../configs/db.config";
 import { Optional, Transaction } from "sequelize";
+import { APP_CONFIG } from "../configs/app.config";
 
 export class PushService implements IPushService {
   constructor(
@@ -107,6 +109,17 @@ export class PushService implements IPushService {
 
   async getRecentPushes(dto: GetRecentPushesDto): Promise<TblPushstsmsg[]> {
     return this.pushStsMsgRepository.getRecentTargetPushes(dto.limit);
+  }
+
+  async getTargetPushes(
+    dto: GetTargetPushesDto
+  ): Promise<PaginatedResponse<TblPushstsmsg>> {
+    const { targetMode } = dto;
+    if (targetMode) {
+      const { appId } = APP_CONFIG[targetMode];
+      return this.pushStsMsgRepository.getTargetPushes(dto, [appId]);
+    }
+    return this.pushStsMsgRepository.getTargetPushes(dto);
   }
 
   async getScheduledPushes(
