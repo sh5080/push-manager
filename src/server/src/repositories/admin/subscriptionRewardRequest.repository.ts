@@ -12,7 +12,7 @@ export class SubscriptionRewardRequestRepository extends BaseRepository<Subscrip
       where: {
         createdAt: {
           [Op.gte]: startAt,
-          [Op.lte]: endAt,
+          [Op.lt]: endAt,
         },
       },
       attributes: [
