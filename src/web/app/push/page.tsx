@@ -27,7 +27,7 @@ export default function PushPage() {
                 size="38"
                 onClick={() => setIsModalOpen(true)}
               >
-                타겟 푸시 발송
+                타겟 푸시 예약
               </Button>
             </>
           }
