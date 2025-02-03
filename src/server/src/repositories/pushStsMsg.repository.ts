@@ -62,7 +62,7 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
     dto: GetTargetPushesDto,
     appIds?: string[]
   ): Promise<PaginatedResponse<TblPushstsmsg & PushMsgStats>> {
-    const { page, pageSize, startDate, endDate } = dto;
+    const { page, pageSize, startDate, endDate, step } = dto;
 
     const innerQuery = `
       SELECT m.*,
@@ -82,6 +82,7 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
       AND TO_CHAR(m.SENDDATE, 'YYYY-MM-DD') 
         BETWEEN TO_CHAR(TO_DATE(:startDate, 'YYYY-MM-DD'), 'YYYY-MM-DD')
         AND TO_CHAR(TO_DATE(:endDate, 'YYYY-MM-DD'), 'YYYY-MM-DD')
+      ${step ? "AND m.STEP = :step" : ""}
     `;
 
     const result = await paginationQuery<TblPushstsmsg & PushMsgStats>(
@@ -96,6 +97,7 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
           appIds: appIds ? appIds : this.appIds,
           startDate,
           endDate,
+          ...(step ? { step } : {}),
         },
       },
       innerQuery

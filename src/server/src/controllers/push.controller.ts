@@ -41,13 +41,16 @@ export class PushController {
 
   getTargetPushes = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { page, pageSize, targetMode, startDate, endDate } = req.query;
+      const { page, pageSize, targetMode, startDate, endDate, step } =
+        req.query;
+
       const dto = await validateDto(GetTargetPushesDto, {
         page: Number(page) || 1,
         pageSize: Number(pageSize) || 10,
         targetMode: Number(targetMode),
-        startDate: startDate,
-        endDate: endDate,
+        startDate,
+        endDate,
+        step,
       });
 
       const pushes = await this.pushService.getTargetPushes(dto);
