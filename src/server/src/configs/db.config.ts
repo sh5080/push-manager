@@ -42,6 +42,7 @@ export const sequelize = new Sequelize({
   },
   define: { timestamps: false, freezeTableName: true },
   logging: (sql: string) => {
+    console.log(sql);
     logDMLQuery(sql);
   },
 });
@@ -56,6 +57,7 @@ export const sequelizeAdmin = new Sequelize({
   dialectOptions: { pool_timeout: 0 },
   define: { timestamps: false, freezeTableName: true },
   logging: (sql: string) => {
+    console.log(sql);
     logDMLQuery(sql);
   },
 });
