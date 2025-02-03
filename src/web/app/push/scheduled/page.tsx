@@ -2,18 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { pushApi } from "../../apis/push.api";
-import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
-
 import { ScheduledPushDetailModal } from "./modals/scheduledPushDetail.modal";
 import { Pagination } from "../../common/components/pagination.component";
 import { GetScheduledPushesDto } from "@push-manager/shared";
 import { toast } from "react-toastify";
-import { InfoTooltip } from "app/common/components/infoTooltip.component";
-import { StatusGuideContent } from "app/push/components/guides/statusGuide.component";
-import { StatusChip } from "app/common/components/statusChip.component";
-import { StatusChipType } from "app/types/prop.type";
-import { HiRefresh } from "react-icons/hi";
+import { PushResultTable } from "../components/pushResultTable.component";
 
 export default function ScheduledPushPage() {
   const [scheduledPushes, setScheduledPushes] = useState<IPushMasterWithMsg[]>(
@@ -61,76 +55,29 @@ export default function ScheduledPushPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">푸시 예약 조회</h1>
-      <div className="bg-white rounded-lg shadow">
-        <table className="min-w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                캠페인 코드
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                제목
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                발송 예정 시각
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex items-center gap-2">
-                상태
-                <InfoTooltip
-                  content={
-                    <StatusGuideContent type={"master" as StatusChipType} />
-                  }
-                  width="w-[420px]"
-                  position="left"
-                />
-                <button
-                  onClick={handleRefresh}
-                  className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200 transition-colors"
-                  title="새로고침"
-                >
-                  <HiRefresh className="w-4 h-4" />
-                </button>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {scheduledPushes.map((push) => (
-              <tr
-                key={push.cmpncode}
-                onClick={() => setSelectedPush(push)}
-                className="cursor-pointer hover:bg-gray-50"
-              >
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {push.cmpncode}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {push.title}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(push.rstartDate)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <StatusChip
-                    type="master"
-                    step={push.step}
-                    fpstep={push.fpstep}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h1 className="text-2xl font-bold mb-6">타겟 푸시 발송 현황</h1>
 
-        <Pagination
-          total={total}
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-        />
-      </div>
+      <PushResultTable
+        pushes={scheduledPushes.map((push) => ({
+          type: "master",
+          cmpncode: push.cmpncode,
+          title: push.title,
+          rstartDate: push.rstartDate,
+          step: push.step,
+          fpstep: push.fpstep,
+        }))}
+        onPushSelect={setSelectedPush}
+        onRefresh={handleRefresh}
+      />
+
+      <Pagination
+        total={total}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+      />
 
       {selectedPush && (
         <ScheduledPushDetailModal
