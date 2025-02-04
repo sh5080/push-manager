@@ -8,7 +8,7 @@ import { Toast } from "app/utils/toast.util";
 import { DatePicker } from "../../common/components/datePicker.component";
 import { ISubscriptionRewardRequest } from "@push-manager/shared/types/entities/admin/subscriptionRewardRequest.entity";
 import { ExcelHandler } from "@push-manager/shared/utils/excel.util";
-import { formatDateForExcel } from "@push-manager/shared/utils/date.util";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 import Image from "next/image";
 import { Button } from "../../common/components/button.component";
 
@@ -50,8 +50,8 @@ export default function SubscriptionRewardRequestPage() {
       }
       const formattedRewards = rewards.map((reward) => ({
         ...reward,
-        createdAt: formatDateForExcel(reward.createdAt, "KST"),
-        gradeStDate: formatDateForExcel(reward.gradeStDate, "KST"),
+        createdAt: formatDate(reward.createdAt, "+00:00"),
+        gradeStDate: formatDate(reward.gradeStDate, "+00:00"),
       }));
       ExcelHandler.convertDataToExcel(formattedRewards);
     } catch (error: any) {

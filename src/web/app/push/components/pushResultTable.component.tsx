@@ -6,6 +6,7 @@ import { StatusChipType } from "app/types/prop.type";
 import { HiRefresh } from "react-icons/hi";
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
 import { Pagination } from "app/common/components/pagination.component";
+import { EmptyState } from "app/common/components/emptyState.component";
 
 interface PushTableProps {
   type: StatusChipType;
@@ -46,7 +47,6 @@ export function PushResultTable({
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               {pushes.length && pushes[0].cmpncode ? "캠페인 코드" : ""}
             </th>
-
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               제목
             </th>
@@ -73,44 +73,37 @@ export function PushResultTable({
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {pushes.map((push, index) => (
-            <tr
-              key={`${push.title}-${push.rstartDate}-${index}`}
-              onClick={() => onPushSelect(push)}
-              className="cursor-pointer hover:bg-gray-50"
-            >
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {push.cmpncode ? push.cmpncode : index + 1}
-              </td>
-
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {push.title}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatDate(push.rstartDate)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <StatusChip
-                  type={push.type}
-                  step={push.step}
-                  fpstep={push.fpstep}
-                />
-              </td>
-            </tr>
-          ))}
+          {pushes.length > 0 ? (
+            pushes.map((push, index) => (
+              <tr
+                key={`${push.title}-${push.rstartDate}-${index}`}
+                onClick={() => onPushSelect(push)}
+                className="cursor-pointer hover:bg-gray-50"
+              >
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {push.cmpncode ? push.cmpncode : index + 1}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {push.title}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatDate(push.rstartDate)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <StatusChip
+                    type={push.type}
+                    step={push.step}
+                    fpstep={push.fpstep}
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <EmptyState colSpan={4} />
+          )}
         </tbody>
       </table>
-
-      {pagination && (
-        <Pagination
-          total={pagination.total}
-          currentPage={pagination.currentPage}
-          pageSize={pagination.pageSize}
-          totalPages={pagination.totalPages}
-          onPageChange={pagination.onPageChange}
-          onPageSizeChange={pagination.onPageSizeChange}
-        />
-      )}
+      {pagination && <Pagination {...pagination} />}
     </div>
   );
 }
