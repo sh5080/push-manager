@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PushDetail } from "../components/pushDetail.component";
+import { PushDetail } from "../detail/pushDetail.component";
 import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { pushApi } from "app/apis/push.api";
 import { Search } from "app/common/components/search.component";
