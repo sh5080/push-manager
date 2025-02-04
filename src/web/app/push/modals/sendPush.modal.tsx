@@ -58,7 +58,6 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isParsingFile, setIsParsingFile] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleFileUpload = (file: File | null) => {
     setFormData((prev) => ({
@@ -66,18 +65,16 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       targetFile: file,
       identifyArray: [],
     }));
-    setError(null);
   };
 
   const handleLoadIdentifiers = async () => {
     if (!pushData.targetFile) {
-      setError("업로드된 파일이 없습니다.");
+      Toast.error("업로드된 파일이 없습니다.");
       return;
     }
 
     try {
       setIsParsingFile(true);
-      setError(null);
 
       const fileExt = pushData.targetFile.name.split(".").pop()?.toLowerCase();
       let identifyArray: string[] = [];
@@ -102,7 +99,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       }));
     } catch (error) {
       console.error("식별자 파싱 에러:", error);
-      setError(
+      Toast.error(
         error instanceof Error
           ? error.message
           : "파일 처리 중 오류가 발생했습니다."
@@ -126,7 +123,6 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
 
     try {
       setIsLoading(true);
-      setError(null);
 
       if (pushData.identifyArray.length === 0) {
         throw new Error("타겟 대상을 입력하거나 파일을 업로드해주세요.");
@@ -163,7 +159,6 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
           ? error.message
           : "알 수 없는 에러가 발생했습니다.";
       Toast.update(toastId, errorMessage, "error");
-      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -284,14 +279,6 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
               </TabPanel>
             </TabPanels>
           </TabGroup>
-
-          {error && (
-            <div className="px-6 mb-4">
-              <div className="p-4 text-sm text-red-600 bg-red-50 rounded-xl border border-red-100">
-                {error}
-              </div>
-            </div>
-          )}
 
           <div className="flex justify-end gap-3 p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
             <div className="flex-1">
