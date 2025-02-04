@@ -24,11 +24,11 @@ export const convertValueToStepEnum = (
 export const convertValueToAppId = (value: number): string => {
   switch (value) {
     case 1:
-      return "테스트";
+      return "프리디앱";
     case 2:
       return "운영";
     default:
-      return "테스트 / 운영";
+      return "프리디앱 / 운영";
   }
 };
 

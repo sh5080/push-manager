@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { pushApi } from "app/apis/push.api";
-import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
+import {
+  IPushStsMsg,
+  IPushStsMsgWithDetail,
+} from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
 import { DetailModal } from "../modals/detail.modal";
 import { PushResultTable } from "./pushResultTable.component";
@@ -10,7 +13,8 @@ import { Toast } from "app/utils/toast.util";
 
 export function RecentPushes() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
-  const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
+  const [selectedPush, setSelectedPush] =
+    useState<IPushStsMsgWithDetail | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchPushes = async () => {
@@ -30,8 +34,8 @@ export function RecentPushes() {
       const detailData = await pushApi.getPushDetail(push.idx);
       setSelectedPush(detailData);
       setIsModalOpen(true);
-    } catch (e) {
-      console.error("Failed to fetch push detail:", e);
+    } catch (error: any) {
+      Toast.error(error.message);
     }
   };
 

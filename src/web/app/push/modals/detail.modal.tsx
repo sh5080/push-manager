@@ -13,17 +13,20 @@ import { getMessageStatusStyle } from "app/utils/chip/pushResult/style.util";
 import { getMessageStatusText } from "app/utils/chip/pushResult/text.util";
 import { PushStats } from "../components/PushStats.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
-import { IPushStsMsg } from "@push-manager/shared";
+import { IPushStsMsgWithDetail } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { Button } from "app/common/components/button.component";
+import { Section } from "app/common/components/detail/section.component";
+import { ContentViewer } from "app/common/components/detail/contentViewer.component";
 
 interface DetailModalProps {
-  push: IPushStsMsg | null;
+  push: IPushStsMsgWithDetail | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
   if (!push) return null;
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -64,50 +67,60 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                     </p>
                   </div>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        발송자
-                      </p>
-                      <p className="mt-1">{push.userId}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        발송일
-                      </p>
-                      <p className="mt-1">
-                        {formatDate(formatDateToString(push.senddate))}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">상태</p>
-                      <span
-                        className={`
+                <Section title="기본 정보">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">
+                          발송자
+                        </p>
+                        <p className="mt-1">{push.userId}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">
+                          발송일
+                        </p>
+                        <p className="mt-1">
+                          {formatDate(formatDateToString(push.senddate))}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">
+                          상태
+                        </p>
+                        <span
+                          className={`
                         mt-1 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
                         ${getMessageStatusStyle(push.step)}
                       `}
-                      >
-                        {getMessageStatusText(push.step)}
-                      </span>
+                        >
+                          {getMessageStatusText(push.step)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">제목</p>
+                      <p className="mt-1">{push.title}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">내용</p>
+                      <ContentViewer
+                        buttonText="더보기"
+                        title="내용 전체보기"
+                        content={push.tmpMessage!}
+                        maxLength={200}
+                      />
                     </div>
                   </div>
+                </Section>
 
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">제목</p>
-                    <p className="mt-1">{push.title}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">내용</p>
-                    <p className="mt-1 whitespace-pre-wrap">
-                      {push.tmpMessage}
-                    </p>
-                  </div>
-                  {push.detail && <PushStats detail={push.detail} />}
-                </div>
-
+                {push.detail && (
+                  <Section title="발송 결과">
+                    <PushStats detail={push.detail} />
+                  </Section>
+                )}
                 <div className="mt-6 flex justify-end">
                   <Button onClick={onClose} variant="square-line">
                     닫기
