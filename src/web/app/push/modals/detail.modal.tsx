@@ -9,10 +9,8 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { formatDateToString } from "../../utils/push.util";
-import {
-  getMessageStatusStyle,
-  getMessageStatusText,
-} from "../../utils/chip.util";
+import { getMessageStatusStyle } from "app/utils/chip/pushResult/style.util";
+import { getMessageStatusText } from "app/utils/chip/pushResult/text.util";
 import { PushStats } from "../components/PushStats.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushStsMsg } from "@push-manager/shared";

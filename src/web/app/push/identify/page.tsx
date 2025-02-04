@@ -7,6 +7,10 @@ import { AddIdentifyModal } from "./modals/addIdentify.modal";
 import { EditIdentifyModal } from "./modals/editIdentify.modal";
 import { GetIdentifiesDto } from "@push-manager/shared";
 import { Button } from "../../common/components/button.component";
+import {
+  convertValueToAppId,
+  convertValueToTeamId,
+} from "app/utils/convertEnum.util";
 
 const TABLE_HEADERS = [
   { key: "name", label: "이름", align: "left" },
@@ -107,18 +111,10 @@ export default function IdentifyManagementPage() {
                   {identify.identify}
                 </td>
                 <td className={`${CELL_BASE_STYLE} text-gray-500`}>
-                  {identify.teamid === 1
-                    ? "FREED"
-                    : identify.teamid === 2
-                    ? "LG"
-                    : "-"}
+                  {convertValueToTeamId(identify.teamid)}
                 </td>
                 <td className={`${CELL_BASE_STYLE} text-gray-500`}>
-                  {identify.appid === 1
-                    ? "테스트"
-                    : identify.appid === 2
-                    ? "운영"
-                    : "테스트 / 운영"}
+                  {convertValueToAppId(identify.appid)}
                 </td>
                 <td className={`${CELL_BASE_STYLE} text-right font-medium`}>
                   <Button

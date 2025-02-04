@@ -13,11 +13,11 @@ import {
 } from "@headlessui/react";
 import { HiX } from "react-icons/hi";
 import { pushApi } from "app/apis/push.api";
-import { IdentifyReader } from "../../utils/excelCsv.util";
+import { IdentifyReader } from "../../utils/excel/csv.util";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
-import { TargetUploadTab } from "./tabs/tab1";
-import { PushConditionTab } from "./tabs/tab2";
-import { PushContentTab } from "./tabs/tab3";
+import { TargetUploadTab } from "./tabs/tab1.modal";
+import { PushConditionTab } from "./tabs/tab2.modal";
+import { PushContentTab } from "./tabs/tab3.modal";
 import { Toast } from "app/utils/toast.util";
 import { useRouter } from "next/navigation";
 import { Button } from "app/common/components/button.component";
