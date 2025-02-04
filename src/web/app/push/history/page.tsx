@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PushDetail } from "../detail/pushDetail.component";
-import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
+import {
+  IPushStsMsg,
+  IPushStsMsgWithDetail,
+} from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { pushApi } from "app/apis/push.api";
 import { Search } from "app/common/components/search.component";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
@@ -14,13 +16,15 @@ import { Dropdown } from "app/common/components/dropdown.component";
 import { PushResultTable } from "../components/pushResultTable.component";
 import { convertValueToStepEnum } from "app/utils/convertEnum.util";
 import { StepEnumType } from "app/types/prop.type";
+import { DetailModal } from "../modals/detail.modal";
 
 export default function PushHistoryPage() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
-  const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
+  const [selectedPush, setSelectedPush] =
+    useState<IPushStsMsgWithDetail | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStep, setSelectedStep] = useState<StepEnumType>(0);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [startDate, setStartDate] = useState<string>(formatDate(new Date()));
   const [endDate, setEndDate] = useState<string>(formatDate(new Date()));
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,7 +68,15 @@ export default function PushHistoryPage() {
     setCurrentPage(1);
     fetchPushes();
   };
-
+  const handlePushClick = async (push: IPushStsMsg) => {
+    try {
+      const pushDetail = await pushApi.getPushDetail(push.idx);
+      setSelectedPush(pushDetail);
+      setIsModalOpen(true);
+    } catch (error: any) {
+      Toast.error(error.message);
+    }
+  };
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
@@ -122,7 +134,7 @@ export default function PushHistoryPage() {
               step: push.step!,
               ...push,
             }))}
-            onPushSelect={setSelectedPush}
+            onPushSelect={handlePushClick}
             onRefresh={fetchPushes}
             pagination={{
               total: totalPages,
@@ -136,9 +148,14 @@ export default function PushHistoryPage() {
         </div>
       </div>
 
-      {selectedPush && (
-        <PushDetail push={selectedPush} onClose={() => setSelectedPush(null)} />
-      )}
+      <DetailModal
+        push={selectedPush}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedPush(null);
+        }}
+      />
     </div>
   );
 }
