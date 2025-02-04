@@ -58,5 +58,8 @@ export interface IPushStsMsg {
   sendStat?: (typeof SendStatEnum)[keyof typeof SendStatEnum];
   targetFilter?: string;
   cronidx?: number;
-  detail?: IPushStsMsgDetail[];
+}
+
+export interface IPushStsMsgWithDetail extends IPushStsMsg {
+  detail: IPushStsMsgDetail[];
 }

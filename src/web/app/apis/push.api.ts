@@ -8,7 +8,10 @@ import {
   GetTargetPushesDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
-import { IPushStsMsg } from "@push-manager/shared/types/entities/pushStsMsg.entity";
+import {
+  IPushStsMsg,
+  IPushStsMsgWithDetail,
+} from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "./base.api";
 import {
@@ -65,8 +68,8 @@ export class PushAPI extends BaseAPI {
     );
   }
 
-  async getPushDetail(idx: string): Promise<IPushStsMsg> {
-    return this.customFetch<IPushStsMsg>(`/api/push/detail/${idx}`);
+  async getPushDetail(idx: string): Promise<IPushStsMsgWithDetail> {
+    return this.customFetch<IPushStsMsgWithDetail>(`/api/push/detail/${idx}`);
   }
 
   async sendPush(dto: CreatePushDto): Promise<SendPushResponse> {
