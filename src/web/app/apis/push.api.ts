@@ -57,10 +57,11 @@ export class PushAPI extends BaseAPI {
     dto: GetTargetPushesDto
   ): Promise<PaginatedResponse<IPushStsMsg>> {
     const validatedDto = await validateDto(GetTargetPushesDto, dto);
-    const { page, pageSize, targetMode, startDate, endDate, step } =
+    const { page, pageSize, targetMode, startDate, endDate, step, title } =
       validatedDto;
+
     return this.customFetch<PaginatedResponse<IPushStsMsg>>(
-      `/api/push?page=${page}&pageSize=${pageSize}&targetMode=${targetMode}&startDate=${startDate}&endDate=${endDate}&step=${step}`
+      `/api/push?page=${page}&pageSize=${pageSize}&targetMode=${targetMode}&startDate=${startDate}&endDate=${endDate}&step=${step}&title=${title}`
     );
   }
 
