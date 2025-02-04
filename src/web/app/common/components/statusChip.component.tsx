@@ -3,8 +3,11 @@ import { StatusChipType } from "app/types/prop.type";
 import {
   getMasterStatusStyle,
   getMessageStatusStyle,
-} from "app/utils/chip.util";
-import { getMasterStatusText, getMessageStatusText } from "app/utils/chip.util";
+} from "app/utils/chip/pushResult/style.util";
+import {
+  getMasterStatusText,
+  getMessageStatusText,
+} from "app/utils/chip/pushResult/text.util";
 
 interface StatusChipProps {
   type: StatusChipType;

@@ -1,5 +1,5 @@
-import { Toast } from "./toast.util";
-import { IdentifyReader } from "./excelCsv.util";
+import { Toast } from "../toast.util";
+import { IdentifyReader } from "./csv.util";
 
 interface ComparisonResult {
   missing: string[];

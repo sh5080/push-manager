@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { FileUpload } from "app/common/components/fileUpload.component";
-import { ExcelCompareUtil } from "app/utils/excelCompare.util";
 import { ComparisonResultModal } from "../modals/comparisonResult.modal";
 import { Toast } from "app/utils/toast.util";
 import { pushApi } from "app/apis/push.api";
@@ -8,6 +7,7 @@ import { AddToQueueDto, IPushQueue, Rnum } from "@push-manager/shared";
 import { Button } from "app/common/components/button.component";
 import { InfoTooltip } from "app/common/components/infoTooltip.component";
 import { ExcelComparisonGuideContent } from "app/push/components/guides/excelComparisionGuide.component";
+import { ExcelCompareUtil } from "app/utils/excel/compare.util";
 
 interface ExcelComparisonProps {
   queues: (IPushQueue & Rnum)[];
