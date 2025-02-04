@@ -1,7 +1,8 @@
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
+import { StepEnumType } from "app/types/prop.type";
 
 export const convertValueToStepEnum = (
-  value: 0 | 1 | 2 | 3 | 4 | 5
+  value: StepEnumType
 ): (typeof StepEnum)[keyof typeof StepEnum] | undefined => {
   switch (value) {
     case 1:

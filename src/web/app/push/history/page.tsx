@@ -13,12 +13,13 @@ import { Toast } from "app/utils/toast.util";
 import { Dropdown } from "app/common/components/dropdown.component";
 import { PushResultTable } from "../components/pushResultTable.component";
 import { convertValueToStepEnum } from "app/utils/convertEnum.util";
+import { StepEnumType } from "app/types/prop.type";
 
 export default function PushHistoryPage() {
   const [pushes, setPushes] = useState<IPushStsMsg[]>([]);
   const [selectedPush, setSelectedPush] = useState<IPushStsMsg | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStep, setSelectedStep] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
+  const [selectedStep, setSelectedStep] = useState<StepEnumType>(0);
 
   const [startDate, setStartDate] = useState<string>(formatDate(new Date()));
   const [endDate, setEndDate] = useState<string>(formatDate(new Date()));
@@ -94,9 +95,7 @@ export default function PushHistoryPage() {
               <Dropdown
                 options={STEP_OPTIONS}
                 value={selectedStep}
-                onChange={(value) =>
-                  setSelectedStep(value as 0 | 1 | 2 | 3 | 4 | 5)
-                }
+                onChange={(value) => setSelectedStep(value as StepEnumType)}
                 buttonLabel={(value) =>
                   STEP_OPTIONS.find((opt) => opt.value === value)?.label ||
                   "상태 선택"
@@ -134,13 +133,6 @@ export default function PushHistoryPage() {
               onPageSizeChange: setPageSize,
             }}
           />
-          {pushes.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-sm">
-                조회된 푸시 내역이 없습니다.
-              </p>
-            </div>
-          )}
         </div>
       </div>
 
