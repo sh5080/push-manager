@@ -47,6 +47,6 @@ export function initializeRelations() {
   TblPushstssend.belongsTo(TblDeviceTokenOption, {
     foreignKey: "tokenIdx",
     targetKey: "tokenIdx",
-    as: "option",
+    as: "tokenOption",
   });
 }
