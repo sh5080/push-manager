@@ -23,15 +23,15 @@ export class PushQueueRepository extends BaseRepository<TblFpQueue> {
 
   async insertPushBatch(
     transaction: Transaction,
-    pushBatch: Optional<TblFpQueueCreationAttributes, "queueidx">[]
+    pushBatch: Optional<TblFpQueueCreationAttributes, "queueIdx">[]
   ) {
     try {
       return await this.bulkCreateWithSeq({
         values: pushBatch,
         fields: Object.keys(TblFpQueue.getAttributes()).filter(
-          (attr) => attr.toLowerCase() !== "queueidx"
+          (attr) => attr.toLowerCase() !== "queueIdx"
         ),
-        pkField: "queueidx",
+        pkField: "queueIdx",
         sequenceName: "SEQ_FP_QUEUE",
         transaction,
       });
@@ -77,7 +77,7 @@ export class PushQueueRepository extends BaseRepository<TblFpQueue> {
   }
 
   async addToQueue(identifies: string[], queueData: TblFpQueue): Promise<void> {
-    const { queueidx, ...queueDataWithoutId } = queueData;
+    const { queueIdx, ...queueDataWithoutId } = queueData;
 
     const values = identifies.map((identify: string) => ({
       ...queueDataWithoutId,

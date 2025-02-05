@@ -6,8 +6,8 @@ import { HiQuestionMarkCircle } from "react-icons/hi2";
 interface PushConditionTabProps {
   appId: (typeof AppIdEnum)[keyof typeof AppIdEnum];
   sendDateString: string;
-  fname: string;
-  plink: string;
+  fName: string;
+  pLink: string;
   onChange: (
     field: string,
     value: string | (typeof AppIdEnum)[keyof typeof AppIdEnum] | boolean
@@ -19,8 +19,8 @@ interface PushConditionTabProps {
 export function PushConditionTab({
   appId,
   sendDateString,
-  fname,
-  plink,
+  fName,
+  pLink,
   onChange,
   imageEnabled,
   linkEnabled,
@@ -137,8 +137,8 @@ export function PushConditionTab({
             focus:border-blue-500 focus:ring-blue-500
             ${!imageEnabled && "bg-gray-100 cursor-not-allowed"}`}
           placeholder="https://"
-          value={fname}
-          onChange={(e) => onChange("fname", e.target.value)}
+          value={fName}
+          onChange={(e) => onChange("fName", e.target.value)}
           disabled={!imageEnabled}
         />
       </div>
@@ -177,8 +177,8 @@ export function PushConditionTab({
             focus:border-blue-500 focus:ring-blue-500
             ${!linkEnabled && "bg-gray-100 cursor-not-allowed"}`}
           placeholder="https://"
-          value={plink}
-          onChange={(e) => onChange("plink", e.target.value)}
+          value={pLink}
+          onChange={(e) => onChange("pLink", e.target.value)}
           disabled={!linkEnabled}
         />
       </div>

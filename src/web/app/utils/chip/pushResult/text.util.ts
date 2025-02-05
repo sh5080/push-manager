@@ -2,13 +2,13 @@ import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
 
 export function getMasterStatusText(
   step: (typeof StepEnum)[keyof typeof StepEnum],
-  fpstep?: (typeof StepEnum)[keyof typeof StepEnum]
+  fpStep?: (typeof StepEnum)[keyof typeof StepEnum]
 ) {
-  if (step === StepEnum.COMPLETED && fpstep === StepEnum.COMPLETED) {
+  if (step === StepEnum.COMPLETED && fpStep === StepEnum.COMPLETED) {
     return "발송 완료";
   }
 
-  if (step === StepEnum.COMPLETED && fpstep === StepEnum.SENDING) {
+  if (step === StepEnum.COMPLETED && fpStep === StepEnum.SENDING) {
     return "발송 요청 완료";
   }
 

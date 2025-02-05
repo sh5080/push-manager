@@ -2,12 +2,12 @@ import { StepEnum } from "../constants/pushQueue.const";
 
 export interface IPushMaster {
   cmpncode: string;
-  msgidx: string;
-  pmode: string;
+  msgIdx: string;
+  pMode: string;
   step: (typeof StepEnum)[keyof typeof StepEnum];
-  fpstep: (typeof StepEnum)[keyof typeof StepEnum];
-  rstartDate: string;
-  rendDate: string;
+  fpStep: (typeof StepEnum)[keyof typeof StepEnum];
+  rStartDate: string;
+  rEndDate: string;
 }
 
 export interface IPushMasterWithMsg extends IPushMaster {

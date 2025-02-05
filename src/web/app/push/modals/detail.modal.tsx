@@ -11,7 +11,7 @@ import {
 import { formatDateToString } from "../../utils/push.util";
 import { getMessageStatusStyle } from "app/utils/chip/pushResult/style.util";
 import { getMessageStatusText } from "app/utils/chip/pushResult/text.util";
-import { PushStats } from "../components/PushStats.component";
+import { PushStats } from "../detail/pushStats.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushStsMsgWithDetail } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { Button } from "app/common/components/button.component";
@@ -81,7 +81,7 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                           발송일
                         </p>
                         <p className="mt-1">
-                          {formatDate(formatDateToString(push.senddate))}
+                          {formatDate(formatDateToString(push.sendDate))}
                         </p>
                       </div>
                       <div>
@@ -116,11 +116,16 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                   </div>
                 </Section>
 
-                {push.detail && (
+                {push.detail && push.result ? (
                   <Section title="발송 결과">
-                    <PushStats detail={push.detail} />
+                    <PushStats detail={push.detail} result={push.result} />
+                  </Section>
+                ) : (
+                  <Section title="오류">
+                    <p>데이터 불러오기에 실패했습니다. 다시 시도해주세요.</p>
                   </Section>
                 )}
+
                 <div className="mt-6 flex justify-end">
                   <Button onClick={onClose} variant="square-line">
                     닫기

@@ -120,7 +120,7 @@ export function TestIdentifies({
                       {convertValueToTeamId(identify.teamid)}
                     </span>
                     <span className="text-sm text-gray-500 w-28 text-right">
-                      {convertValueToAppId(identify.appid)}
+                      {convertValueToAppId(identify.appId)}
                     </span>
                     <span className="text-sm text-gray-500 w-28 text-right">
                       {identify.identify}

@@ -55,7 +55,7 @@ export class PushService implements IPushService {
       // 마스터 레코드 생성
       await this.pushMasterRepository.createMasterRecord(transaction, {
         campaignCode,
-        pmode: PModeEnum.CAMP,
+        pMode: PModeEnum.CAMP,
         step: StepEnum.PENDING,
         startDate: SENDDATE,
       });
@@ -234,8 +234,8 @@ export class PushService implements IPushService {
   private async createPushBatch(
     identifies: string[],
     startQueueIdx: number,
-    baseData: Optional<TblFpQueueCreationAttributes, "queueidx">
-  ): Promise<Optional<TblFpQueueCreationAttributes, "queueidx">[]> {
+    baseData: Optional<TblFpQueueCreationAttributes, "queueIdx">
+  ): Promise<Optional<TblFpQueueCreationAttributes, "queueIdx">[]> {
     return identifies.map((identify, index) => ({
       ...baseData,
       queueIdx: startQueueIdx + index,
