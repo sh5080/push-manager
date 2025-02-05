@@ -2,17 +2,17 @@ import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
 
 export function getMasterStatusStyle(
   step?: (typeof StepEnum)[keyof typeof StepEnum],
-  fpstep?: (typeof StepEnum)[keyof typeof StepEnum]
+  fpStep?: (typeof StepEnum)[keyof typeof StepEnum]
 ) {
-  if (step === StepEnum.COMPLETED && fpstep === StepEnum.FAILED) {
+  if (step === StepEnum.COMPLETED && fpStep === StepEnum.FAILED) {
     return "bg-red-50 text-red-700";
   }
 
-  if (step === StepEnum.COMPLETED && fpstep === StepEnum.SENDING) {
+  if (step === StepEnum.COMPLETED && fpStep === StepEnum.SENDING) {
     return "bg-blue-50 text-blue-700";
   }
 
-  if (step === StepEnum.PENDING && !fpstep) {
+  if (step === StepEnum.PENDING && !fpStep) {
     return "bg-yellow-50 text-yellow-700";
   }
 
@@ -30,13 +30,13 @@ export function getMasterStatusStyle(
 }
 export function getMessageStatusStyle(
   step?: (typeof StepEnum)[keyof typeof StepEnum],
-  fpstep?: (typeof StepEnum)[keyof typeof StepEnum]
+  fpStep?: (typeof StepEnum)[keyof typeof StepEnum]
 ) {
-  if (step === StepEnum.COMPLETED && fpstep === StepEnum.FAILED) {
+  if (step === StepEnum.COMPLETED && fpStep === StepEnum.FAILED) {
     return "bg-red-50 text-red-700";
   }
 
-  if (step === StepEnum.PENDING && !fpstep) {
+  if (step === StepEnum.PENDING && !fpStep) {
     return "bg-blue-50 text-blue-700";
   }
 

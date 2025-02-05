@@ -55,11 +55,11 @@ export class CreatePushDto {
 
   @IsOptional()
   @IsUrl({}, { message: "유효한 이미지 URL을 입력해주세요." })
-  fname?: string;
+  fName?: string;
 
   @IsOptional()
   @IsUrl({}, { message: "유효한 URL을 입력해주세요." })
-  plink?: string;
+  pLink?: string;
 
   @IsEnum(AppIdEnum, {
     message: "유효하지 않은 appId입니다. (FREED: 0, TEST: 1, PROD: 2)",
@@ -118,7 +118,7 @@ export class CreatePushDto {
 
   @IsOptional()
   @IsString()
-  ptag?: string;
+  pTag?: string;
 
   @IsOptional()
   @IsString()

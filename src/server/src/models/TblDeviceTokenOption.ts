@@ -1,113 +1,126 @@
-import * as Sequelize from 'sequelize';
-import { DataTypes, Model, Optional } from 'sequelize';
+import * as Sequelize from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 
 export interface TblDeviceTokenOptionAttributes {
-  appintversion?: any;
-  appversion?: string;
+  appIntVersion?: any;
+  appVersion?: string;
   country?: string;
   identify: string;
-  osversion?: string;
-  sdkversion?: any;
+  osVersion?: string;
+  sdkVersion?: any;
   timezone?: any;
   tokenIdx: any;
-  udate: string;
-  wdate: string;
+  uDate: string;
+  wDate: string;
 }
 
-export type TblDeviceTokenOptionOptionalAttributes = "appintversion" | "appversion" | "country" | "osversion" | "sdkversion" | "timezone";
-export type TblDeviceTokenOptionCreationAttributes = Optional<TblDeviceTokenOptionAttributes, TblDeviceTokenOptionOptionalAttributes>;
+export type TblDeviceTokenOptionOptionalAttributes =
+  | "appIntVersion"
+  | "appVersion"
+  | "country"
+  | "osVersion"
+  | "sdkVersion"
+  | "timezone";
+export type TblDeviceTokenOptionCreationAttributes = Optional<
+  TblDeviceTokenOptionAttributes,
+  TblDeviceTokenOptionOptionalAttributes
+>;
 
-export class TblDeviceTokenOption extends Model<TblDeviceTokenOptionAttributes, TblDeviceTokenOptionCreationAttributes> implements TblDeviceTokenOptionAttributes {
-  appintversion?: any;
-  appversion?: string;
+export class TblDeviceTokenOption
+  extends Model<
+    TblDeviceTokenOptionAttributes,
+    TblDeviceTokenOptionCreationAttributes
+  >
+  implements TblDeviceTokenOptionAttributes
+{
+  appIntVersion?: any;
+  appVersion?: string;
   country?: string;
   identify!: string;
-  osversion?: string;
-  sdkversion?: any;
+  osVersion?: string;
+  sdkVersion?: any;
   timezone?: any;
   tokenIdx!: any;
-  udate!: string;
-  wdate!: string;
+  uDate!: string;
+  wDate!: string;
 
-
-  static initModel(sequelize: Sequelize.Sequelize): typeof TblDeviceTokenOption {
-    return TblDeviceTokenOption.init({
-    appintversion: {
-      type: "NUMBER",
-      allowNull: true,
-      field: 'APPINTVERSION'
-    },
-    appversion: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      field: 'APPVERSION'
-    },
-    country: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      field: 'COUNTRY'
-    },
-    identify: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      field: 'IDENTIFY'
-    },
-    osversion: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      field: 'OSVERSION'
-    },
-    sdkversion: {
-      type: "NUMBER",
-      allowNull: true,
-      field: 'SDKVERSION'
-    },
-    timezone: {
-      type: "NUMBER",
-      allowNull: true,
-      field: 'TIMEZONE'
-    },
-    tokenIdx: {
-      type: "NUMBER",
-      allowNull: false,
-      field: 'TOKEN_IDX'
-    },
-    udate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-      field: 'UDATE'
-    },
-    wdate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-      field: 'WDATE'
-    }
-  }, {
-    sequelize,
-    tableName: 'TBL_DEVICE_TOKEN_OPTION',
-    schema: 'COKR_MBR_APP',
-    timestamps: false,
-    indexes: [
+  static initModel(
+    sequelize: Sequelize.Sequelize
+  ): typeof TblDeviceTokenOption {
+    return TblDeviceTokenOption.init(
       {
-        name: "idx_tbl_device_token_option_i",
-        fields: [
-          { name: "IDENTIFY" },
-        ]
+        appIntVersion: {
+          type: "NUMBER",
+          allowNull: true,
+          field: "APPINTVERSION",
+        },
+        appVersion: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          field: "APPVERSION",
+        },
+        country: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          field: "COUNTRY",
+        },
+        identify: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          field: "IDENTIFY",
+        },
+        osVersion: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          field: "OSVERSION",
+        },
+        sdkVersion: {
+          type: "NUMBER",
+          allowNull: true,
+          field: "SDKVERSION",
+        },
+        timezone: {
+          type: "NUMBER",
+          allowNull: true,
+          field: "TIMEZONE",
+        },
+        tokenIdx: {
+          type: "NUMBER",
+          allowNull: false,
+          field: "TOKEN_IDX",
+        },
+        uDate: {
+          type: DataTypes.DATEONLY,
+          allowNull: false,
+          field: "UDATE",
+        },
+        wDate: {
+          type: DataTypes.DATEONLY,
+          allowNull: false,
+          field: "WDATE",
+        },
       },
       {
-        name: "idx_tbl_device_token_opt_aiv",
-        fields: [
-          { name: "APPINTVERSION" },
-        ]
-      },
-      {
-        name: "pk_tbl_device_token_option",
-        unique: true,
-        fields: [
-          { name: "TOKEN_IDX" },
-        ]
-      },
-    ]
-  });
+        sequelize,
+        tableName: "TBL_DEVICE_TOKEN_OPTION",
+        schema: "COKR_MBR_APP",
+        timestamps: false,
+        indexes: [
+          {
+            name: "idx_tbl_device_token_option_i",
+            fields: [{ name: "IDENTIFY" }],
+          },
+          {
+            name: "idx_tbl_device_token_opt_aiv",
+            fields: [{ name: "APPINTVERSION" }],
+          },
+          {
+            name: "pk_tbl_device_token_option",
+            unique: true,
+            fields: [{ name: "TOKEN_IDX" }],
+          },
+        ],
+      }
+    );
   }
 }

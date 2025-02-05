@@ -10,13 +10,13 @@ export class IdentifyRepository extends BaseRepository<TestIdentify> {
   async findOne(idx: number) {
     return await this.findOneWithRownum<TestIdentify>({
       where: { idx },
-      attributes: ["idx", "identify", "name", "teamid", "appid"],
+      attributes: ["idx", "identify", "name", "teamid", "appId"],
     });
   }
   async findOneByIdentify(identify: string) {
     return await this.findOneWithRownum<TestIdentify>({
       where: { identify },
-      attributes: ["idx", "identify", "name", "teamid", "appid"],
+      attributes: ["idx", "identify", "name", "teamid", "appId"],
     });
   }
   async findAll(teamIds?: number[], appIds?: number[]) {
@@ -41,7 +41,7 @@ export class IdentifyRepository extends BaseRepository<TestIdentify> {
     return await TestIdentify.findAll({
       where: whereConditions.length > 0 ? { [Op.and]: whereConditions } : {},
       order: [["idx", "ASC"]],
-      attributes: ["idx", "identify", "name", "teamid", "appid"],
+      attributes: ["idx", "identify", "name", "teamid", "appId"],
     });
   }
   async create(dto: CreateIdentifyDto) {
@@ -50,16 +50,16 @@ export class IdentifyRepository extends BaseRepository<TestIdentify> {
         identify: dto.identify,
         name: dto.name,
         teamid: dto.teamId,
-        appid: dto.appId,
+        appId: dto.appId,
       },
-      fields: ["idx", "identify", "name", "teamid", "appid"],
+      fields: ["idx", "identify", "name", "teamid", "appId"],
     });
   }
 
   async update(dto: UpdateIdentifyDto) {
     const { idx, identify, name, teamId, appId } = dto;
     await TestIdentify.update(
-      { identify, name, teamid: teamId, appid: appId },
+      { identify, name, teamid: teamId, appId: appId },
       { where: { idx } }
     );
     return;

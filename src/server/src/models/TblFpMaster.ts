@@ -2,49 +2,49 @@ import * as Sequelize from "sequelize";
 import { DataTypes, literal, Model, Optional } from "sequelize";
 
 export interface TblFpMasterAttributes {
-  appkey?: string;
-  appsecret?: string;
+  appKey?: string;
+  appSecret?: string;
   cmpncode: any;
   feedbackEnddate?: Date;
   feedbackStartdate?: Date;
   feedbackStep?: string;
-  fpstep?: string;
-  isandroid?: string;
-  isios?: string;
-  msgidx?: any;
-  msgidxRcvDate?: Date;
-  pmode?: string;
-  rendDate: Date | string;
-  rstartDate: Date | string;
+  fpStep?: string;
+  isAndroid?: string;
+  isIos?: string;
+  msgIdx?: any;
+  msgIdxRcvDate?: Date;
+  pMode?: string;
+  rEndDate: Date | string;
+  rStartDate: Date | string;
 
-  senddate?: Date;
+  sendDate?: Date;
   step?: string;
-  tendDate?: Date;
-  tstartDate?: Date;
-  vmsgidx?: string;
-  wdate?: Date;
+  tEndDate?: Date;
+  tStartDate?: Date;
+  vMsgIdx?: string;
+  wDate?: Date;
 }
 
 export type TblFpMasterOptionalAttributes =
-  | "appkey"
-  | "appsecret"
+  | "appKey"
+  | "appSecret"
   | "feedbackEnddate"
   | "feedbackStartdate"
   | "feedbackStep"
-  | "fpstep"
-  | "isandroid"
-  | "isios"
-  | "msgidx"
-  | "msgidxRcvDate"
-  | "pmode"
-  | "rendDate"
-  | "rstartDate"
-  | "senddate"
+  | "fpStep"
+  | "isAndroid"
+  | "isIos"
+  | "msgIdx"
+  | "msgIdxRcvDate"
+  | "pMode"
+  | "rEndDate"
+  | "rStartDate"
+  | "sendDate"
   | "step"
-  | "tendDate"
-  | "tstartDate"
-  | "vmsgidx"
-  | "wdate";
+  | "tEndDate"
+  | "tStartDate"
+  | "vMsgIdx"
+  | "wDate";
 export type TblFpMasterCreationAttributes = Optional<
   TblFpMasterAttributes,
   TblFpMasterOptionalAttributes
@@ -54,36 +54,36 @@ export class TblFpMaster
   extends Model<TblFpMasterAttributes, TblFpMasterCreationAttributes>
   implements TblFpMasterAttributes
 {
-  appkey?: string;
-  appsecret?: string;
+  appKey?: string;
+  appSecret?: string;
   cmpncode!: any;
   feedbackEnddate?: Date;
   feedbackStartdate?: Date;
   feedbackStep?: string;
-  fpstep?: string;
-  isandroid?: string;
-  isios?: string;
-  msgidx?: any;
-  msgidxRcvDate?: Date;
-  pmode?: string;
-  rendDate!: Date;
-  rstartDate!: Date;
-  senddate?: Date;
+  fpStep?: string;
+  isAndroid?: string;
+  isIos?: string;
+  msgIdx?: any;
+  msgIdxRcvDate?: Date;
+  pMode?: string;
+  rEndDate!: Date;
+  rStartDate!: Date;
+  sendDate?: Date;
   step?: string;
-  tendDate?: Date;
-  tstartDate?: Date;
-  vmsgidx?: string;
-  wdate?: Date;
+  tEndDate?: Date;
+  tStartDate?: Date;
+  vMsgIdx?: string;
+  wDate?: Date;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof TblFpMaster {
     return TblFpMaster.init(
       {
-        appkey: {
+        appKey: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "APPKEY",
         },
-        appsecret: {
+        appSecret: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "APPSECRET",
@@ -109,47 +109,47 @@ export class TblFpMaster
           allowNull: true,
           field: "FEEDBACK_STEP",
         },
-        fpstep: {
+        fpStep: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "FPSTEP",
         },
-        isandroid: {
+        isAndroid: {
           type: DataTypes.CHAR,
           allowNull: true,
           field: "ISANDROID",
         },
-        isios: {
+        isIos: {
           type: DataTypes.CHAR,
           allowNull: true,
           field: "ISIOS",
         },
-        msgidx: {
+        msgIdx: {
           type: DataTypes.BIGINT,
           allowNull: true,
           field: "MSGIDX",
         },
-        msgidxRcvDate: {
+        msgIdxRcvDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "MSGIDX_RCV_DATE",
         },
-        pmode: {
+        pMode: {
           type: DataTypes.CHAR,
           allowNull: true,
           field: "PMODE",
         },
-        rendDate: {
+        rEndDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "REND_DATE",
         },
-        rstartDate: {
+        rStartDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "RSTART_DATE",
         },
-        senddate: {
+        sendDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "SENDDATE",
@@ -159,22 +159,22 @@ export class TblFpMaster
           allowNull: true,
           field: "STEP",
         },
-        tendDate: {
+        tEndDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "TEND_DATE",
         },
-        tstartDate: {
+        tStartDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "TSTART_DATE",
         },
-        vmsgidx: {
+        vMsgIdx: {
           type: DataTypes.STRING,
           allowNull: true,
           field: "VMSGIDX",
         },
-        wdate: {
+        wDate: {
           type: DataTypes.DATE(6),
           allowNull: true,
           field: "WDATE",

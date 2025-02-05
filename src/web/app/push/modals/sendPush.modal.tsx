@@ -30,8 +30,8 @@ interface SendPushModalProps {
 interface PushFormData {
   targetFile: File | null;
   identifyArray: string[];
-  fname: string;
-  plink: string;
+  fName: string;
+  pLink: string;
   sendDateString: string;
   title: string;
   content: string;
@@ -46,8 +46,8 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
   const [pushData, setFormData] = useState<PushFormData>({
     targetFile: null,
     identifyArray: [],
-    fname: "",
-    plink: "",
+    fName: "",
+    pLink: "",
     sendDateString: "",
     title: "",
     content: "",
@@ -139,8 +139,8 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
 
       const response = await pushApi.sendPush({
         identifyArray: pushData.identifyArray,
-        ...(pushData.imageEnabled && { fname: pushData.fname }),
-        ...(pushData.linkEnabled && { plink: pushData.plink }),
+        ...(pushData.imageEnabled && { fName: pushData.fName }),
+        ...(pushData.linkEnabled && { pLink: pushData.pLink }),
         sendDateString: pushData.sendDateString,
         title: pushData.title,
         content: pushData.content,
@@ -175,10 +175,10 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       };
 
       if (field === "imageEnabled" && !value) {
-        newState.fname = "";
+        newState.fName = "";
       }
       if (field === "linkEnabled" && !value) {
-        newState.plink = "";
+        newState.pLink = "";
       }
 
       return newState;
@@ -261,8 +261,8 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
                 <PushConditionTab
                   appId={pushData.appId}
                   sendDateString={pushData.sendDateString}
-                  fname={pushData.fname}
-                  plink={pushData.plink}
+                  fName={pushData.fName}
+                  pLink={pushData.pLink}
                   onChange={handleChange}
                   imageEnabled={pushData.imageEnabled}
                   linkEnabled={pushData.linkEnabled}

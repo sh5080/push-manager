@@ -114,7 +114,7 @@ export default function IdentifyManagementPage() {
                   {convertValueToTeamId(identify.teamid)}
                 </td>
                 <td className={`${CELL_BASE_STYLE} text-gray-500`}>
-                  {convertValueToAppId(identify.appid)}
+                  {convertValueToAppId(identify.appId)}
                 </td>
                 <td className={`${CELL_BASE_STYLE} text-right font-medium`}>
                   <Button

@@ -10,8 +10,9 @@ import { Fragment, useState } from "react";
 interface ContentViewerProps {
   buttonText: string;
   title: string;
-  content: string;
+  content: string | React.ReactNode;
   maxLength?: number;
+  isComponent?: boolean;
 }
 
 export function ContentViewer({
@@ -19,28 +20,41 @@ export function ContentViewer({
   title,
   content,
   maxLength = 200,
+  isComponent = false,
 }: ContentViewerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const shouldTruncate = content.length > maxLength;
+
+  // 컴포넌트인 경우 truncate 로직 스킵
+  const shouldTruncate =
+    !isComponent && typeof content === "string" && content.length > maxLength;
   const truncatedContent = shouldTruncate
-    ? `${content.slice(0, maxLength)}...`
+    ? `${(content as string).slice(0, maxLength)}...`
     : content;
 
   return (
     <>
-      <div className="mt-1">
-        <p className="whitespace-pre-wrap">
-          {truncatedContent}
-          {shouldTruncate && (
-            <button
-              onClick={() => setIsOpen(true)}
-              className="ml-2 text-green-600 hover:text-green-700 hover:underline"
-            >
-              {buttonText}
-            </button>
-          )}
-        </p>
-      </div>
+      {isComponent ? (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="text-green-600 hover:text-green-700 hover:underline text-sm"
+        >
+          {buttonText}
+        </button>
+      ) : (
+        <div className="mt-1">
+          <p className="whitespace-pre-wrap">
+            {truncatedContent}
+            {shouldTruncate && (
+              <button
+                onClick={() => setIsOpen(true)}
+                className="ml-2 text-green-600 hover:text-green-700 hover:underline"
+              >
+                {buttonText}
+              </button>
+            )}
+          </p>
+        </div>
+      )}
 
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
@@ -78,9 +92,13 @@ export function ContentViewer({
                     </DialogTitle>
                   </div>
                   <div className="mt-2">
-                    <p className="text-gray-700 whitespace-pre-wrap">
-                      {content}
-                    </p>
+                    {isComponent ? (
+                      content
+                    ) : (
+                      <p className="text-gray-700 whitespace-pre-wrap">
+                        {content}
+                      </p>
+                    )}
                   </div>
                 </DialogPanel>
               </TransitionChild>
