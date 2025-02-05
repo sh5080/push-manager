@@ -1,6 +1,8 @@
 import { BaseRepository, paginationQuery } from "./base.repository";
 import { APP_CONFIG } from "../configs/app.config";
 import {
+  TblDeviceToken,
+  TblDeviceTokenOption,
   TblPushstsmsg,
   TblPushstssend,
   TblPushstssendStatsDay,
@@ -49,7 +51,41 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
           "deviceType",
           "tokenIdx",
         ],
+        include: [
+          {
+            model: TblDeviceToken,
+            as: "deviceToken",
+            required: false,
+            attributes: [
+              "idx",
+              "activity",
+              "activityProc",
+              "appId",
+              "deviceType",
+              "optAgree",
+              "token",
+              "uDate",
+              "wDate",
+            ],
+          },
+          {
+            model: TblDeviceTokenOption,
+            as: "option",
+            required: false,
+            attributes: [
+              "appVersion",
+              "osVersion",
+              "country",
+              "identify",
+              "appIntVersion",
+              "sdkVersion",
+              "timezone",
+            ],
+          },
+        ],
         raw: true,
+        nest: true,
+        mapToModel: true,
       }),
     ]);
 
