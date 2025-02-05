@@ -70,7 +70,7 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
           },
           {
             model: TblDeviceTokenOption,
-            as: "option",
+            as: "tokenOption",
             required: false,
             attributes: [
               "appVersion",

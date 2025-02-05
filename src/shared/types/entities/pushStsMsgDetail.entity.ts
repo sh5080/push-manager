@@ -19,5 +19,5 @@ export interface IPushStsMsgResult {
   deviceType: string;
   tokenIdx: string;
   deviceToken: IDeviceToken;
-  option: IDeviceTokenOption;
+  tokenOption: IDeviceTokenOption;
 }
