@@ -116,11 +116,16 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
                   </div>
                 </Section>
 
-                {push.detail && (
+                {push.detail && push.result ? (
                   <Section title="발송 결과">
-                    <PushStats detail={push.detail} />
+                    <PushStats detail={push.detail} result={push.result} />
+                  </Section>
+                ) : (
+                  <Section title="오류">
+                    <p>데이터 불러오기에 실패했습니다. 다시 시도해주세요.</p>
                   </Section>
                 )}
+
                 <div className="mt-6 flex justify-end">
                   <Button onClick={onClose} variant="square-line">
                     닫기
