@@ -16,7 +16,8 @@
     "express": "^4.21.2",
     "oracledb": "^6.7.1",
     "pg": "^8.13.1",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "spacetime": "^7.7.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
