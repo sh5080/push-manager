@@ -3715,6 +3715,11 @@ source-map@^0.6.0:
   resolved "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
+spacetime@^7.7.0:
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/spacetime/-/spacetime-7.7.0.tgz#36f27a749c3afa625b6ebc1a2fc29d8e0c8cff3e"
+  integrity sha512-m97vi+g9OdEZWmvpWFpoDjx9ApsUX8pcTw2VcTc39SCysg/pmPfTD7zhs+XSg5tfA1yr7SlRpzzprgAVFLUdeA==
+
 split2@^4.1.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/split2/-/split2-4.2.0.tgz#c9c5920904d148bab0b9f67145f245a86aadbfa4"

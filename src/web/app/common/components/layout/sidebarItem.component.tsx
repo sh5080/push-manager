@@ -3,12 +3,12 @@ import {
   HiOutlineHome,
   HiOutlineBell,
   HiOutlineClipboardList,
-  HiOutlineCog,
   HiOutlineCalendar,
   HiOutlineIdentification,
   HiOutlineShieldCheck,
   HiChevronDown,
   HiChevronUp,
+  HiOutlineUser,
 } from "react-icons/hi";
 
 export interface MenuItem {
@@ -112,30 +112,43 @@ export const menuItems: MenuItem[] = [
     icon: <HiOutlineHome />,
   },
   {
-    name: "타겟 푸시 예약",
-    path: "/push",
+    name: "타겟 푸시",
+    path: "/push/main",
     icon: <HiOutlineBell />,
+    children: [
+      {
+        name: "푸시 예약",
+        path: "/push",
+        icon: <HiOutlineBell />,
+      },
+      {
+        name: "푸시 발송",
+        path: "/push/scheduled",
+        icon: <HiOutlineCalendar />,
+      },
+      {
+        name: "발송 내역 조회",
+        path: "/push/history",
+        icon: <HiOutlineClipboardList />,
+      },
+      {
+        name: "식별자 관리",
+        path: "/push/identify",
+        icon: <HiOutlineIdentification />,
+      },
+    ],
   },
-  {
-    name: "타겟 푸시 발송",
-    path: "/push/scheduled",
-    icon: <HiOutlineCalendar />,
-  },
-  {
-    name: "타겟 푸시 내역",
-    path: "/push/history",
-    icon: <HiOutlineClipboardList />,
-  },
-  {
-    name: "식별자 관리",
-    path: "/push/identify",
-    icon: <HiOutlineIdentification />,
-  },
+
   {
     name: "어드민",
     path: "/admin",
     icon: <HiOutlineShieldCheck />,
     children: [
+      {
+        name: "회원 조회",
+        path: "/admin/member",
+        icon: <HiOutlineUser />,
+      },
       {
         name: "구독쿠폰 조회",
         path: "/admin/subscriptionRewardRequest",
