@@ -10,6 +10,7 @@
     "generate:models": "ts-node src/utils/generateModels.util.ts"
   },
   "dependencies": {
+    "@noble/ciphers": "^1.2.1",
     "@push-manager/shared": "1.0.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
