@@ -55,7 +55,7 @@ export default function ScheduledPushPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">타겟 푸시 발송 현황</h1>
+      <h1 className="text-2xl font-bold mb-6">푸시 발송 현황</h1>
 
       <PushResultTable
         pushes={scheduledPushes.map((push) => ({
