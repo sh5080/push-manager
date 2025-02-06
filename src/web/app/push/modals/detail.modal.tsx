@@ -14,9 +14,9 @@ import { getMessageStatusText } from "app/utils/chip/pushResult/text.util";
 import { PushStats } from "../detail/pushStats.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { IPushStsMsgWithDetail } from "@push-manager/shared/types/entities/pushStsMsg.entity";
-import { Button } from "app/common/components/button.component";
-import { Section } from "app/common/components/detail/section.component";
-import { ContentViewer } from "app/common/components/detail/contentViewer.component";
+import { Button } from "@commonComponents/inputs/button.component";
+import { Section } from "@commonComponents/dataDisplay/section.component";
+import { ContentViewer } from "@commonComponents/dataDisplay/contentViewer.component";
 
 interface DetailModalProps {
   push: IPushStsMsgWithDetail | null;

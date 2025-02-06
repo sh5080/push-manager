@@ -1,4 +1,4 @@
-import { Button } from "app/common/components/button.component";
+import { Button } from "@commonComponents/inputs/button.component";
 
 interface QueueSubmitButtonProps {
   extraCount: number;

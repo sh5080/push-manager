@@ -1,13 +1,13 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { HiX, HiRefresh } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import { Pagination } from "app/common/components/pagination.component";
+import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
 import { pushApi } from "app/apis/push.api";
 import { Toast } from "app/utils/toast.util";
 import { ExcelComparison } from "../components/excelComparison.component";
 import { IPushQueue, Rnum } from "@push-manager/shared";
-import { StatusChip } from "app/common/components/statusChip.component";
-import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { StatusChip } from "@commonComponents/dataDisplay/statusChip.component";
+import { InfoTooltip } from "@commonComponents/dataDisplay/infoTooltip.component";
 import { ExcelGuideContent } from "app/push/components/guides/excelGuide.component";
 
 interface PushReservationStatusModalProps {

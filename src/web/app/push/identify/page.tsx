@@ -6,7 +6,7 @@ import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.
 import { AddIdentifyModal } from "./modals/addIdentify.modal";
 import { EditIdentifyModal } from "./modals/editIdentify.modal";
 import { GetIdentifiesDto } from "@push-manager/shared";
-import { Button } from "../../common/components/button.component";
+import { Button } from "@commonComponents/inputs/button.component";
 import {
   convertValueToAppId,
   convertValueToTeamId,

@@ -1,12 +1,14 @@
 import { formatDate } from "@push-manager/shared/utils/date.util";
-import { StatusChip } from "app/common/components/statusChip.component";
-import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { StatusChip } from "@commonComponents/dataDisplay/statusChip.component";
+// import { StatusChip } from "app/common/components/dataDisplay/statusChip.component";
+import { InfoTooltip } from "@commonComponents/dataDisplay/infoTooltip.component";
+// import { InfoTooltip } from "app/common/components/dataDisplay/infoTooltip.component";
 import { StatusGuideContent } from "app/push/components/guides/statusGuide.component";
 import { StatusChipType } from "app/types/prop.type";
 import { HiRefresh } from "react-icons/hi";
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
-import { Pagination } from "app/common/components/pagination.component";
-import { EmptyState } from "app/common/components/emptyState.component";
+import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
+import { EmptyState } from "@commonComponents/feedback/emptyState.component";
 
 interface PushTableProps {
   type: StatusChipType;

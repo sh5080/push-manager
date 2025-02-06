@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { pushApi } from "../../apis/push.api";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import { ScheduledPushDetailModal } from "./modals/scheduledPushDetail.modal";
-import { Pagination } from "../../common/components/pagination.component";
+import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
 import { GetScheduledPushesDto } from "@push-manager/shared";
 import { toast } from "react-toastify";
 import { PushResultTable } from "../components/pushResultTable.component";

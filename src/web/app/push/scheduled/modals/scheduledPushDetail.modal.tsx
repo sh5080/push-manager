@@ -8,7 +8,7 @@ import { Toast } from "app/utils/toast.util";
 import { useState } from "react";
 import { PushReservationStatusModal } from "./pushReservationStatus.modal";
 import { pushApi } from "app/apis/push.api";
-import { Button } from "app/common/components/button.component";
+import { Button } from "@commonComponents/inputs/button.component";
 
 import { ConfirmPushQueueDto } from "@push-manager/shared/dtos/push.dto";
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
