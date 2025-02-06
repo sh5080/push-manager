@@ -1,6 +1,8 @@
-import { GetMemberByMemNoDto } from "@push-manager/shared";
-import { Member } from "../../models/admin/Member";
+import {
+  GetMemberByMemNoDto,
+  IMemberWithNewbestInfo,
+} from "@push-manager/shared";
 
 export interface IMemberService {
-  getMemberByMemNo(dto: GetMemberByMemNoDto): Promise<Member>;
+  getMemberByMemNo(dto: GetMemberByMemNoDto): Promise<IMemberWithNewbestInfo>;
 }
