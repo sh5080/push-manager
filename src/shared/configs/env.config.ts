@@ -6,6 +6,8 @@ import path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const envSchema = Joi.object({
+  JWT_HS256_SECRET: Joi.string().required(),
+
   PUSH_DB_HOST: Joi.string().required(),
   PUSH_DB_PORT: Joi.number().required(),
   PUSH_DB_USERNAME: Joi.string().required(),
@@ -73,5 +75,6 @@ export const envConfig: EnvConfig = {
   },
   server: {
     port: envVars.NEXT_PUBLIC_SERVER_PORT,
+    jwtSecret: envVars.JWT_HS256_SECRET,
   },
 };

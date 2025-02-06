@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { identifyApi } from "app/apis/identify.api";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
-import { Button } from "../../../common/components/button.component";
+import { Button } from "@commonComponents/inputs/button.component";
 import {
   convertValueToAppId,
   convertValueToTeamId,

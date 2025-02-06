@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import Header from "./common/components/header.component";
-import Sidebar from "./common/components/sidebar.component";
+import Header from "./common/components/layout/header.component";
+import Sidebar from "./common/components/layout/sidebar.component";
 import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import LoadingOverlay from "./common/components/loading.component";
-import { ErrorBoundary } from "./common/components/errorBoundary.component";
+import LoadingOverlay from "./common/components/feedback/loading.component";
+import { ErrorBoundary } from "./common/components/feedback/errorBoundary.component";
 
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],

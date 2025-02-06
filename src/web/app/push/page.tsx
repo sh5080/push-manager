@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { PageHeader } from "../common/components/pageHeader.component";
+import { PageHeader } from "@commonComponents/layout/pageHeader.component";
 import { RecentPushes } from "./components/recentPush.component";
 import { SendPushModal } from "./modals/sendPush.modal";
-import { Button } from "app/common/components/button.component";
+import { Button } from "@commonComponents/inputs/button.component";
 
 export default function PushPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);

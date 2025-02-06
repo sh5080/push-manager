@@ -3,9 +3,9 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
-import { Button } from "app/common/components/button.component";
-import { Pagination } from "app/common/components/pagination.component";
-import { Search } from "app/common/components/search.component";
+import { Button } from "@commonComponents/inputs/button.component";
+import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
+import { Search } from "@commonComponents/inputs/search.component";
 import { HiChevronDown } from "react-icons/hi";
 
 interface IdentifierListProps {

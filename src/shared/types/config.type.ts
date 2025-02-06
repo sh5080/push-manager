@@ -21,6 +21,7 @@ export interface PushConfig {
 
 export interface ServerConfig {
   port: number;
+  jwtSecret: string;
 }
 
 export interface WebConfig {

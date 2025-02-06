@@ -1,5 +1,5 @@
 import { StepEnum } from "@push-manager/shared/types/constants/pushQueue.const";
-import { StatusChip } from "app/common/components/statusChip.component";
+import { StatusChip } from "@commonComponents/dataDisplay/statusChip.component";
 import { StatusChipType } from "app/types/prop.type";
 
 export function StatusGuideContent({ type }: { type: StatusChipType }) {
