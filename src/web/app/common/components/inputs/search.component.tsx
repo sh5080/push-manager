@@ -3,6 +3,7 @@ import { HiSearch } from "react-icons/hi";
 interface SearchProps {
   value: string;
   onChange: (value: string) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   placeholder?: string;
   className?: string;
   size?: "32" | "38" | "46";
@@ -11,6 +12,7 @@ interface SearchProps {
 export function Search({
   value,
   onChange,
+  onKeyDown,
   placeholder = "검색어를 입력하세요",
   className = "",
   size = "38",
@@ -46,6 +48,7 @@ export function Search({
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
         placeholder={placeholder}
         className={inputStyle}
       />
