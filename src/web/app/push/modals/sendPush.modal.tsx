@@ -20,7 +20,7 @@ import { PushConditionTab } from "./tabs/tab2.modal";
 import { PushContentTab } from "./tabs/tab3.modal";
 import { Toast } from "app/utils/toast.util";
 import { useRouter } from "next/navigation";
-import { Button } from "app/common/components/button.component";
+import { Button } from "@commonComponents/inputs/button.component";
 
 interface SendPushModalProps {
   isOpen: boolean;

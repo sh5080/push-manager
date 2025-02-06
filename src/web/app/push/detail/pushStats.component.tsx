@@ -3,7 +3,7 @@ import {
   IPushStsMsgResult,
 } from "@push-manager/shared/types/entities/pushStsMsgDetail.entity";
 import { StatKey } from "app/types/prop.type";
-import { ContentViewer } from "app/common/components/detail/contentViewer.component";
+import { ContentViewer } from "@commonComponents/dataDisplay/contentViewer.component";
 import { PushStatsDetail } from "./pushStatsDetail.component";
 
 interface StatProps {
@@ -19,7 +19,7 @@ export const StatItem = ({ label, value }: StatProps) => (
 );
 
 const STAT_ITEMS = [
-  { key: "sent" as StatKey, label: "발송" },
+  { key: "sent" as StatKey, label: "성공" },
   { key: "failed" as StatKey, label: "실패" },
   { key: "opened" as StatKey, label: "오픈" },
   { key: "appdel" as StatKey, label: "앱 삭제" },
