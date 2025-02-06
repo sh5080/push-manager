@@ -60,6 +60,26 @@ export interface IRetrieveRestMbsCustRes {
   LGE_CUST_GRD_NM_DISP: string;
   CUST_GRD_ST_DATE: string;
   CUST_GRD_ED_DATE: string;
+  TEL_NO1?: string;
+  TEL_NO2?: string;
+  TEL_DDD?: string;
+  POST_CD?: string;
+  SMS_RCV_YN?: "Y" | "N";
+  ADDR1?: string;
+  ADDR2?: string;
+  ADDR3?: string;
+  SIGNATURE_MDL_PUR_CUST_YN?: "Y" | "N";
+  SEX?: "M" | "F";
+  EMAIL_RCV_YN?: "Y" | "N";
+  BIRTHDAY_DATE?: string;
+  REMAIN_POINT?: number;
+  DM_RCV_YN?: "Y" | "N";
+  EMAIL_ID?: string;
+  MOBILE_NO1?: string;
+  MOBILE_NO2?: string;
+  MOBILE_DDD?: string;
+  TM_RCV_YN?: "Y" | "N";
+  PI_MOTION_YN?: "Y" | "N";
 }
 
 export interface IRetrieveMoblCoupCustArrayNewRes {
