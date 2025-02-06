@@ -1,6 +1,6 @@
 import { Switch } from "@headlessui/react";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
-import { DatePicker } from "app/common/components/datePicker.component";
+import { DatePicker } from "@commonComponents/inputs/datePicker.component";
 import { HiQuestionMarkCircle } from "react-icons/hi2";
 
 interface PushConditionTabProps {

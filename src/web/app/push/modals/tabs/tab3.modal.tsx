@@ -1,5 +1,5 @@
 import { Switch } from "@headlessui/react";
-import { TextareaComponent } from "app/common/components/textarea.component";
+import { TextareaComponent } from "@commonComponents/inputs/textarea.component";
 import { HiQuestionMarkCircle } from "react-icons/hi";
 
 interface PushContentTabProps {

@@ -1,12 +1,12 @@
-import { FileUpload } from "app/common/components/fileUpload.component";
-import { TextareaComponent } from "app/common/components/textarea.component";
+import { FileUpload } from "@commonComponents/inputs/fileUpload.component";
+import { TextareaComponent } from "@commonComponents/inputs/textarea.component";
 import { useState, useEffect } from "react";
 
-import { Modal } from "app/common/components/modal.component";
+import { Modal } from "@commonComponents/inputs/modal.component";
 import { TestIdentifies } from "app/push/identify/components/testIdentifies.component";
 import { ITestIdentify } from "@push-manager/shared/types/entities/testIdentify.entity";
-import { Button } from "app/common/components/button.component";
-import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { Button } from "@commonComponents/inputs/button.component";
+import { InfoTooltip } from "@commonComponents/dataDisplay/infoTooltip.component";
 import { ExcelGuideContent } from "app/push/components/guides/excelGuide.component";
 
 interface TargetUploadTabProps {

@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { PageHeader } from "../../common/components/pageHeader.component";
+import { PageHeader } from "@commonComponents/layout/pageHeader.component";
 import { SubscriptionRewardList } from "./components/subscriptionRewardList.component";
 import { subscriptionApi } from "app/apis/admin/subscription.api";
 import { Toast } from "app/utils/toast.util";
-import { DatePicker } from "../../common/components/datePicker.component";
+import { DatePicker } from "@commonComponents/inputs/datePicker.component";
 import { ISubscriptionRewardRequest } from "@push-manager/shared/types/entities/admin/subscriptionRewardRequest.entity";
 import { ExcelHandler } from "@push-manager/shared/utils/excel.util";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import Image from "next/image";
-import { Button } from "../../common/components/button.component";
+import { Button } from "@commonComponents/inputs/button.component";
 
 export default function SubscriptionRewardRequestPage() {
   const [startDate, setStartDate] = useState<string>("");

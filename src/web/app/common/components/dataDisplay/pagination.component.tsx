@@ -1,4 +1,4 @@
-import { Dropdown } from "./dropdown.component";
+import { Dropdown } from "./inputs/dropdown.component";
 import {
   HiChevronDoubleLeft,
   HiChevronDoubleRight,

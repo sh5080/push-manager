@@ -1,6 +1,6 @@
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { ISubscriptionRewardRequest } from "@push-manager/shared/types/entities/admin/subscriptionRewardRequest.entity";
-import { EmptyState } from "app/common/components/emptyState.component";
+import { EmptyState } from "@commonComponents/feedback/emptyState.component";
 
 export function SubscriptionRewardList({
   rewards,

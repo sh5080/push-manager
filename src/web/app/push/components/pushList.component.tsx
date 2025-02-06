@@ -9,7 +9,7 @@ import {
   HiOutlineFilter,
   HiOutlineCalendar,
 } from "react-icons/hi";
-import { StatusChip } from "app/common/components/statusChip.component";
+import { StatusChip } from "@commonComponents/dataDisplay/statusChip.component";
 
 interface PushListProps {
   pushes: IPushStsMsg[];

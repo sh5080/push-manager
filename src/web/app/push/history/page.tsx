@@ -6,13 +6,13 @@ import {
   IPushStsMsgWithDetail,
 } from "@push-manager/shared/types/entities/pushStsMsg.entity";
 import { pushApi } from "app/apis/push.api";
-import { Search } from "app/common/components/search.component";
+import { Search } from "@commonComponents/inputs/search.component";
 import { AppIdEnum } from "@push-manager/shared/types/constants/common.const";
-import { DatePicker } from "app/common/components/datePicker.component";
-import { Button } from "app/common/components/button.component";
+import { DatePicker } from "@commonComponents/inputs/datePicker.component";
+import { Button } from "@commonComponents/inputs/button.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { Toast } from "app/utils/toast.util";
-import { Dropdown } from "app/common/components/dropdown.component";
+import { Dropdown } from "@commonComponents/inputs/dropdown.component";
 import { PushResultTable } from "../components/pushResultTable.component";
 import { convertValueToStepEnum } from "app/utils/convertEnum.util";
 import { StepEnumType } from "app/types/prop.type";

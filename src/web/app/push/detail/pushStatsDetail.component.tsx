@@ -3,10 +3,10 @@ import {
   IPushStsMsgDetail,
   IPushStsMsgResult,
 } from "@push-manager/shared/types/entities/pushStsMsgDetail.entity";
-import { Pagination } from "app/common/components/pagination.component";
+import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
 import { getMessageStatusStyle } from "app/utils/chip/pushResult/style.util";
 import { getMessageStatusText } from "app/utils/chip/pushResult/text.util";
-import { InfoTooltip } from "app/common/components/infoTooltip.component";
+import { InfoTooltip } from "@commonComponents/dataDisplay/infoTooltip.component";
 const TABLE_HEADERS = [
   { key: "identify", label: "식별자" },
   { key: "deviceType", label: "디바이스" },

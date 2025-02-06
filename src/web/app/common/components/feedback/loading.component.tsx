@@ -1,6 +1,6 @@
 "use client";
 
-import { useLoadingStore } from "../../store";
+import { useLoadingStore } from "../../../store";
 import LoadingSpinner from "./spinner.component";
 
 export default function LoadingOverlay() {
