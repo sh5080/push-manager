@@ -3,12 +3,10 @@ import {
   GetSubscriptionRewardRequestsDto,
   validateDto,
 } from "@push-manager/shared";
-import { ISubscriptionRewardRequestService } from "../../interfaces/admin/subscriptionRewardRequest.interface";
+import { ICouponService } from "../../interfaces/admin/coupon.interface";
 
-export class SubscriptionRewardRequestController {
-  constructor(
-    private readonly subscriptionRewardRequestService: ISubscriptionRewardRequestService
-  ) {}
+export class CouponController {
+  constructor(private readonly couponService: ICouponService) {}
 
   getSubscriptionRewardRequests = async (
     req: Request,
@@ -21,9 +19,7 @@ export class SubscriptionRewardRequestController {
         req.query
       );
       const subscriptionRewardRequests =
-        await this.subscriptionRewardRequestService.getSubscriptionRewardRequests(
-          dto
-        );
+        await this.couponService.getSubscriptionRewardRequests(dto);
       res.success(subscriptionRewardRequests);
     } catch (error) {
       next(error);

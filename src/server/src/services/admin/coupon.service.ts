@@ -1,17 +1,16 @@
-import {
-  BadRequestException,
-  GetSubscriptionRewardRequestsDto,
-  parseDateTime,
-} from "@push-manager/shared";
+import { GetSubscriptionRewardRequestsDto } from "@push-manager/shared";
 import { SubscriptionRewardRequestRepository } from "../../repositories/admin/subscriptionRewardRequest.repository";
-import { ISubscriptionRewardRequestService } from "../../interfaces/admin/subscriptionRewardRequest.interface";
+import { ICouponService } from "../../interfaces/admin/coupon.interface";
 
-export class SubscriptionRewardRequestService
-  implements ISubscriptionRewardRequestService
-{
+export class CouponService implements ICouponService {
   constructor(
     private readonly subscriptionRewardRequestRepository: SubscriptionRewardRequestRepository
   ) {}
+
+  // async getCouponsByMemNo(dto: GetCouponsByMemNoDto) {
+  //   return await this.couponRepository.findByMemNo(dto);
+  // }
+
   async getSubscriptionRewardRequests(dto: GetSubscriptionRewardRequestsDto) {
     return await this.subscriptionRewardRequestRepository.findByDate(
       dto.startAt,

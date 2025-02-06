@@ -22,7 +22,7 @@ class SubscriptionAPI extends BaseAPI {
     }
 
     return this.customFetch<ISubscriptionRewardRequest[]>(
-      `/api/admin/subscription?${queryParams.toString()}`
+      `/api/admin/coupon/subscription?${queryParams.toString()}`
     );
   }
 }
