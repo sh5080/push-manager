@@ -80,7 +80,7 @@ export default function PushHistoryPage() {
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
-        <h1 className="text-2xl font-bold mb-6">타겟 푸시 내역 조회</h1>
+        <h1 className="text-2xl font-bold mb-6">발송 내역 조회</h1>
 
         <div className="mb-6 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
           <div className="flex items-center gap-4">
