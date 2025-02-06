@@ -20,6 +20,10 @@ export * from "./types/entities/pushQueue.entity";
 export * from "./types/entities/pushStsMsg.entity";
 export * from "./types/entities/testIdentify.entity";
 
+export * from "./types/entities/admin/member.entity";
+export * from "./types/entities/admin/newbest.entity";
+export * from "./types/entities/admin/subscriptionRewardRequest.entity";
+
 export * from "./types/config.type";
 export * from "./types/error.type";
 export * from "./types/push.type";
