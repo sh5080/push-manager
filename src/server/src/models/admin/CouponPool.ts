@@ -36,10 +36,22 @@ export type CouponPoolCreationAttributes = Optional<
   CouponPoolOptionalAttributes
 >;
 
-export class CouponPool extends Model<
-  CouponPoolAttributes,
-  CouponPoolCreationAttributes
-> {
+export class CouponPool
+  extends Model<CouponPoolAttributes, CouponPoolCreationAttributes>
+  implements CouponPoolAttributes
+{
+  id!: string;
+  sn!: string;
+  status!: CouponPoolStatus;
+  issuedAt?: Date;
+  redeemedAt?: Date;
+  startDate!: Date;
+  endDate!: Date;
+  couponId!: string;
+  memberId?: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+
   static initModel(sequelize: Sequelize.Sequelize): typeof CouponPool {
     return CouponPool.init(
       {
@@ -58,19 +70,19 @@ export class CouponPool extends Model<
           allowNull: false,
         },
         issuedAt: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATE(3),
           allowNull: true,
         },
         redeemedAt: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATE(3),
           allowNull: true,
         },
         startDate: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATE(3),
           allowNull: false,
         },
         endDate: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATE(3),
           allowNull: false,
         },
         couponId: {
@@ -90,12 +102,12 @@ export class CouponPool extends Model<
           },
         },
         createdAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+          type: DataTypes.DATE(3),
           allowNull: false,
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         updatedAt: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATE(3),
           allowNull: false,
         },
       },
@@ -104,6 +116,12 @@ export class CouponPool extends Model<
         tableName: "couponPool",
         schema: "public",
         timestamps: true,
+        indexes: [
+          {
+            unique: true,
+            fields: ["sn"],
+          },
+        ],
       }
     );
   }
