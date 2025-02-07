@@ -1,8 +1,9 @@
 import {
   GetMemberCouponsDto,
   GetSubscriptionRewardRequestsDto,
-  IMemberCommonCoupons,
-  IMemberObsCoupons,
+  IMembershipAppCoupon,
+  INewbestCommonCoupons,
+  INewbestObsCoupons,
 } from "@push-manager/shared";
 import { SubscriptionRewardRequest } from "../../models/admin/SubscriptionRewardRequest";
 
@@ -12,5 +13,7 @@ export interface ICouponService {
   ): Promise<SubscriptionRewardRequest[]>;
   getMemberCoupons(
     dto: GetMemberCouponsDto
-  ): Promise<IMemberCommonCoupons | IMemberObsCoupons>;
+  ): Promise<
+    INewbestCommonCoupons | INewbestObsCoupons | IMembershipAppCoupon[]
+  >;
 }
