@@ -40,15 +40,15 @@ export interface ICoupon {
   updatedAt: Date;
 }
 
-export interface ICouponPoolWithCoupon extends ICouponPool {
-  coupon: ICoupon;
+export interface IMembershipAppCoupon extends ICouponPool {
+  Coupon: ICoupon;
 }
 
-export interface IMemberCommonCoupons {
-  parking: IRetrieveMoblCoupCustArrayNewRes;
-  free: IRetrieveMoblCoupCustArrayNewRes;
+export interface INewbestCommonCoupons {
+  parking: IRetrieveMoblCoupCustArrayNewRes[];
+  free: IRetrieveMoblCoupCustArrayNewRes[];
 }
 
-export interface IMemberObsCoupons {
+export interface INewbestObsCoupons {
   obs: IRetrieveObsUserMbsCouponListRes[];
 }

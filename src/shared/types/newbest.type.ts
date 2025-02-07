@@ -1,1 +1,1 @@
-export type CouponType = "common" | "obs";
+export type CouponType = "common" | "obs" | "app";
