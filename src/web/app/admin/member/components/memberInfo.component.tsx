@@ -40,11 +40,15 @@ export function MemberInfo({ member }: MemberInfoProps) {
             {member.newbestInfo.SEX === "M" ? "남성" : "여성"}
           </p>
         </div>
+
         <div>
           <p className="text-gray-500">휴대폰 번호</p>
           <p className="font-medium">{member.phoneNumber}</p>
         </div>
-
+        <div className="col-span-2">
+          <p className="text-gray-500">CI</p>
+          <p className="font-medium">{member.ci}</p>
+        </div>
         <div className="col-span-2">
           <p className="text-gray-500">주소</p>
           <p className="font-medium">
