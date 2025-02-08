@@ -1,18 +1,18 @@
-import { IMemberWithNewbestInfo } from "@push-manager/shared";
+import { IMemberWithNewbestInfo } from "@push-manager/shared/types/entities/admin/member.entity";
 import { getYNChipStyle } from "app/utils/chip/common/style.util";
 import { getYNChipText } from "app/utils/chip/common/text.util";
+import { formatDate } from "@push-manager/shared/utils/date.util";
+
+import { CouponModal } from "../modals/coupon.modal";
+import { useState } from "react";
+import { Button } from "@commonComponents/inputs/button.component";
 
 interface MemberInfoProps {
   member: IMemberWithNewbestInfo;
 }
 
 export function MemberInfo({ member }: MemberInfoProps) {
-  const formatDate = (dateStr: string) => {
-    return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(
-      6,
-      8
-    )}`;
-  };
+  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -40,7 +40,6 @@ export function MemberInfo({ member }: MemberInfoProps) {
             {member.newbestInfo.SEX === "M" ? "남성" : "여성"}
           </p>
         </div>
-
         <div>
           <p className="text-gray-500">휴대폰 번호</p>
           <p className="font-medium">{member.phoneNumber}</p>
@@ -62,9 +61,8 @@ export function MemberInfo({ member }: MemberInfoProps) {
         <div>
           <p className="text-gray-500">포인트</p>
           <p className="font-medium">
-            {member.newbestInfo.REMAIN_POINT
-              ? member.newbestInfo.REMAIN_POINT.toLocaleString()
-              : "확인되지 않음"}
+            {member.newbestInfo.REMAIN_POINT?.toLocaleString() ??
+              "확인되지 않음"}
             P
           </p>
         </div>
@@ -110,6 +108,22 @@ export function MemberInfo({ member }: MemberInfoProps) {
           </div>
         </div>
       </div>
+
+      <div className="mt-6 flex justify-end">
+        <Button
+          onClick={() => setIsCouponModalOpen(true)}
+          variant="solid"
+          size="32"
+        >
+          보유 쿠폰 조회
+        </Button>
+      </div>
+
+      <CouponModal
+        isOpen={isCouponModalOpen}
+        onClose={() => setIsCouponModalOpen(false)}
+        memNo={member.memNo}
+      />
     </div>
   );
 }
