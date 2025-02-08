@@ -4,7 +4,7 @@ import {
   getStatusChipStyle,
   getDiscountTypeChipStyle,
 } from "app/utils/chip/common/style.util";
-import { getStatusChipText } from "app/utils/chip/common/text.util";
+import { getCouponStatusChipText } from "app/utils/chip/common/text.util";
 import { CouponList } from "./couponList.component";
 import { usePagination } from "app/common/hooks/usePagination.hook";
 import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
@@ -48,7 +48,7 @@ export function AppCouponList({ coupons }: AppCouponListProps) {
                   coupon.status
                 )}`}
               >
-                {getStatusChipText(coupon.status)}
+                {getCouponStatusChipText(coupon.status)}
               </span>
             </td>
             <td className="px-4 py-4 whitespace-nowrap text-sm">
