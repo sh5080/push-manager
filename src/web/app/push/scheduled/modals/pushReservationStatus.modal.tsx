@@ -22,7 +22,6 @@ export function PushReservationStatusModal({
   cmpncode,
 }: PushReservationStatusModalProps) {
   const [queues, setQueues] = useState<(IPushQueue & Rnum)[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
@@ -35,7 +34,6 @@ export function PushReservationStatusModal({
   }, [isOpen, currentPage, pageSize]);
 
   const fetchQueues = async () => {
-    setIsLoading(true);
     try {
       const response = await pushApi.getPushQueues({
         cmpncode,
@@ -47,8 +45,6 @@ export function PushReservationStatusModal({
       setTotalPages(response.totalPages);
     } catch (error) {
       Toast.error("식별자 목록 조회 실패");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -117,27 +113,19 @@ export function PushReservationStatusModal({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {isLoading ? (
-                    <tr>
-                      <td colSpan={3} className="px-6 py-4 text-center">
-                        로딩 중...
+                  {queues.map((queue, index) => (
+                    <tr key={queue.queueIdx}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {(currentPage - 1) * pageSize + index + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {queue.identify}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <StatusChip type="master" step={queue.step!} />
                       </td>
                     </tr>
-                  ) : (
-                    queues.map((queue, index) => (
-                      <tr key={queue.queueIdx}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {(currentPage - 1) * pageSize + index + 1}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          {queue.identify}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <StatusChip type="master" step={queue.step!} />
-                        </td>
-                      </tr>
-                    ))
-                  )}
+                  ))}
                 </tbody>
               </table>
 
