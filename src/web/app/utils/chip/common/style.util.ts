@@ -1,25 +1,42 @@
-type ColorType = "green" | "red" | "blue" | "yellow" | "gray";
+import {
+  CouponPoolStatus,
+  CouponDiscountType,
+} from "@push-manager/shared/types/constants/coupon.const";
 
-interface ChipColorStyle {
-  background: string;
-  text: string;
-}
+type StatusType = (typeof CouponPoolStatus)[keyof typeof CouponPoolStatus];
+type DiscountType =
+  (typeof CouponDiscountType)[keyof typeof CouponDiscountType];
 
-export const getChipColorStyle = (color: ColorType): ChipColorStyle => {
-  const styles: Record<ColorType, ChipColorStyle> = {
-    green: { background: "bg-green-100", text: "text-green-800" },
-    red: { background: "bg-red-100", text: "text-red-800" },
-    blue: { background: "bg-blue-100", text: "text-blue-800" },
-    yellow: { background: "bg-yellow-100", text: "text-yellow-800" },
-    gray: { background: "bg-gray-100", text: "text-gray-800" },
-  };
+export const getStatusChipStyle = (status: StatusType) => {
+  switch (status) {
+    case CouponPoolStatus.PENDING:
+      return "bg-yellow-100 text-yellow-800";
+    case CouponPoolStatus.ISSUED:
+      return "bg-green-100 text-green-800";
+    case CouponPoolStatus.REDEEMED:
+      return "bg-blue-100 text-blue-800";
+    case CouponPoolStatus.CANCELLED:
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
 
-  return styles[color];
+export const getDiscountTypeChipStyle = (type: DiscountType) => {
+  switch (type) {
+    case CouponDiscountType.AMOUNT:
+      return "bg-indigo-100 text-indigo-800";
+    case CouponDiscountType.RATIO:
+      return "bg-purple-100 text-purple-800";
+    case CouponDiscountType.PASS:
+      return "bg-pink-100 text-pink-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
 };
 
 export const getYNChipStyle = (value?: "Y" | "N") => {
-  const { background, text } = getChipColorStyle(
-    value === "Y" ? "green" : "gray"
-  );
-  return `${background} ${text}`;
+  return value === "Y"
+    ? "bg-green-100 text-green-800"
+    : "bg-gray-100 text-gray-800";
 };

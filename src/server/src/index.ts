@@ -9,6 +9,7 @@ import { sequelize, sequelizeAdmin } from "./configs/db.config";
 import { initModels } from "./models/init-models";
 import { initializeRelations } from "./models/relations";
 import { initAdminModels } from "./models/admin/init-models";
+import { initializeAdminRelations } from "./models/admin/relations";
 
 const app = express();
 const port = envConfig.server.port;
@@ -38,6 +39,7 @@ sequelizeAdmin
   .then(() => {
     console.log("Sequelize Admin Database connected");
     initAdminModels(sequelizeAdmin);
+    initializeAdminRelations();
     console.log("Sequelize Admin Models and Relations initialized");
   })
   .catch(console.error);

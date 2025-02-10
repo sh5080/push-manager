@@ -16,6 +16,6 @@ export class MemberService implements IMemberService {
       throw new BadRequestException("Member not found");
     }
     const newbestInfo = await this.newbestService.getMemberInfo(member.ci);
-    return { ...member, newbestInfo };
+    return { ...member, newbestInfo: newbestInfo[0] };
   }
 }

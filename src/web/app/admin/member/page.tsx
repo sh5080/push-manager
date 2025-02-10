@@ -7,6 +7,7 @@ import { Toast } from "app/utils/toast.util";
 import { IMemberWithNewbestInfo } from "@push-manager/shared/types/entities/admin/member.entity";
 import { Search } from "@commonComponents/inputs/search.component";
 import { MemberInfo } from "./components/memberInfo.component";
+import { GetMemberByMemNoDto } from "@push-manager/shared";
 
 export default function MemberPage() {
   const [member, setMember] = useState<IMemberWithNewbestInfo | null>(null);
@@ -19,7 +20,8 @@ export default function MemberPage() {
     }
 
     try {
-      const memberData = await memberApi.getMemberByMemNo(searchValue);
+      const dto = { memNo: searchValue } as GetMemberByMemNoDto;
+      const memberData = await memberApi.getMemberByMemNo(dto);
       setMember(memberData);
     } catch (error: any) {
       Toast.error(error.message);
