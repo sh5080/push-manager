@@ -2,6 +2,8 @@ import { INewbestCommonCoupons } from "@push-manager/shared/types/entities/admin
 import { CouponList } from "./couponList.component";
 import { usePagination } from "app/common/hooks/usePagination.hook";
 import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
+import { getStatusChipStyle } from "app/utils/chip/common/style.util";
+import { formatDateString } from "@push-manager/shared/utils/date.util";
 
 interface CommonCouponListProps {
   coupons: INewbestCommonCoupons;
@@ -32,16 +34,25 @@ export function CommonCouponList({ coupons }: CommonCouponListProps) {
 
   return (
     <div>
-      <h3 className="text-lg font-medium mb-4">주차 쿠폰</h3>
-      <CouponList headers={headers}>
+      <CouponList title="주차 쿠폰" headers={headers}>
         {paginatedParkingItems.map((coupon) => (
           <tr key={coupon.COUPON_NO}>
-            <td className="px-6 py-4">{coupon.COUPON_NO}</td>
-            <td className="px-6 py-4">{coupon.COUPON_NM}</td>
+            <td className="px-6 py-4 text-sm">{coupon.COUPON_NO}</td>
+            <td className="px-6 py-4 text-sm">{coupon.COUPON_NM}</td>
             <td className="px-6 py-4">
-              {coupon.USE_YN === "Y" ? "사용완료" : "미사용"}
+              <span
+                className={`px-2 py-1 rounded-full text-xs ${getStatusChipStyle(
+                  coupon.USE_YN === "Y" ? "사용완료" : "미사용"
+                )}`}
+              >
+                {coupon.USE_YN === "Y" ? "사용완료" : "미사용"}
+              </span>
             </td>
-            <td className="px-6 py-4">{`${coupon.COUPON_ST_DT} ~ ${coupon.COUPON_ED_DT}`}</td>
+            <td className="px-6 py-4 text-sm">
+              {`${formatDateString(coupon.COUPON_ST_DT)} ~ ${formatDateString(
+                coupon.COUPON_ED_DT
+              )}`}
+            </td>
           </tr>
         ))}
       </CouponList>
@@ -54,16 +65,25 @@ export function CommonCouponList({ coupons }: CommonCouponListProps) {
         onPageSizeChange={handleParkingPageSizeChange}
       />
 
-      <h3 className="text-lg font-medium mb-4 mt-8">무상이전설치 쿠폰</h3>
-      <CouponList headers={headers}>
+      <CouponList title="무상이전설치 쿠폰" headers={headers}>
         {paginatedFreeItems.map((coupon) => (
           <tr key={coupon.COUPON_NO}>
-            <td className="px-6 py-4">{coupon.COUPON_NO}</td>
-            <td className="px-6 py-4">{coupon.COUPON_NM}</td>
+            <td className="px-6 py-4 text-sm">{coupon.COUPON_NO}</td>
+            <td className="px-6 py-4 text-sm">{coupon.COUPON_NM}</td>
             <td className="px-6 py-4">
-              {coupon.USE_YN === "Y" ? "사용완료" : "미사용"}
+              <span
+                className={`px-2 py-1 rounded-full text-xs ${getStatusChipStyle(
+                  coupon.USE_YN === "Y" ? "사용완료" : "미사용"
+                )}`}
+              >
+                {coupon.USE_YN === "Y" ? "사용완료" : "미사용"}
+              </span>
             </td>
-            <td className="px-6 py-4">{`${coupon.COUPON_ST_DT} ~ ${coupon.COUPON_ED_DT}`}</td>
+            <td className="px-6 py-4 text-sm">
+              {`${formatDateString(coupon.COUPON_ST_DT)} ~ ${formatDateString(
+                coupon.COUPON_ED_DT
+              )}`}
+            </td>
           </tr>
         ))}
       </CouponList>

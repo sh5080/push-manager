@@ -1,7 +1,7 @@
 import { IMembershipAppCoupon } from "@push-manager/shared/types/entities/admin/coupon.entity";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import {
-  getStatusChipStyle,
+  getCouponStatusChipStyle,
   getDiscountTypeChipStyle,
 } from "app/utils/chip/common/style.util";
 import { getCouponStatusChipText } from "app/utils/chip/common/text.util";
@@ -35,7 +35,7 @@ export function AppCouponList({ coupons }: AppCouponListProps) {
 
   return (
     <div>
-      <CouponList headers={headers}>
+      <CouponList title="" headers={headers}>
         {paginatedItems.map((coupon) => (
           <tr key={coupon.id}>
             <td className="px-6 py-4 whitespace-nowrap text-sm">{coupon.sn}</td>
@@ -44,7 +44,7 @@ export function AppCouponList({ coupons }: AppCouponListProps) {
             </td>
             <td className="px-4 py-4 whitespace-nowrap text-sm">
               <span
-                className={`px-2 py-1 rounded-full text-xs ${getStatusChipStyle(
+                className={`px-2 py-1 rounded-full text-xs ${getCouponStatusChipStyle(
                   coupon.status
                 )}`}
               >
