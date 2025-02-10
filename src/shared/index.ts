@@ -7,6 +7,7 @@ export * from "./dtos/identify.dto";
 export * from "./dtos/push.dto";
 export * from "./dtos/select.dto";
 
+export * from "./dtos/admin/coupon.dto";
 export * from "./dtos/admin/member.dto";
 export * from "./dtos/admin/subscriptionRewardRequest.dto";
 
@@ -20,6 +21,7 @@ export * from "./types/entities/pushQueue.entity";
 export * from "./types/entities/pushStsMsg.entity";
 export * from "./types/entities/testIdentify.entity";
 
+export * from "./types/entities/admin/coupon.entity";
 export * from "./types/entities/admin/member.entity";
 export * from "./types/entities/admin/newbest.entity";
 export * from "./types/entities/admin/subscriptionRewardRequest.entity";

@@ -2,12 +2,15 @@ import { SubscriptionRewardRequest } from "../../models/admin/SubscriptionReward
 import { BaseRepository } from "../base.repository";
 
 import { Op } from "sequelize";
+import { CouponPool } from "../../models/admin/CouponPool";
+import { Coupon } from "../../models/admin/Coupon";
+import { IMembershipAppCoupon } from "@push-manager/shared";
 
-export class SubscriptionRewardRequestRepository extends BaseRepository<SubscriptionRewardRequest> {
+export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> {
   constructor() {
     super(SubscriptionRewardRequest);
   }
-  async findByDate(startAt: Date, endAt: Date) {
+  async findSubscriptionRewardRequestsByDate(startAt: Date, endAt: Date) {
     return await SubscriptionRewardRequest.findAll({
       where: {
         createdAt: {
@@ -27,5 +30,16 @@ export class SubscriptionRewardRequestRepository extends BaseRepository<Subscrip
       ],
       order: [["id", "asc"]],
     });
+  }
+
+  async getAppCouponsByMemberId(id: string): Promise<IMembershipAppCoupon[]> {
+    return (await CouponPool.findAll({
+      where: { memberId: id },
+      include: [
+        {
+          model: Coupon,
+        },
+      ],
+    })) as unknown as IMembershipAppCoupon[];
   }
 }
