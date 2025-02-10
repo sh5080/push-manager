@@ -1,6 +1,9 @@
 import spacetime from "spacetime";
 import {
+  INewBestObsRes,
   INewBestRes,
+  IRetrieveMoblCoupCustArrayNewRes,
+  IRetrieveObsUserMbsCouponListRes,
   IRetrieveRestMbsCustRes,
   NewBestErrorException,
 } from "@push-manager/shared";
@@ -18,37 +21,57 @@ export class NewbestService {
     this.symmetricKey = EXT.NEWBEST.SECRETS.LGOBSORDERNWBEST.SYMMETRIC_KEY;
   }
 
+  private async fetchAndDecrypt(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      ...options,
+      headers: {
+        apikey: this.apiKey,
+        ...options.headers,
+      },
+    });
+
+    if (!response.ok) {
+      throw new NewBestErrorException("FDE-C-901,1");
+    }
+
+    const cRes = await response.text();
+    return KISA_SEED_ECB.decrypt(this.symmetricKey, cRes.replace(/\s/g, ""));
+  }
+
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
     try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
-        ...options,
-        headers: {
-          apikey: this.apiKey,
-          ...options.headers,
-        },
-      });
-
-      if (!response.ok) {
-        throw new NewBestErrorException("FDE-C-901,1");
-      }
-
-      const cRes = await response.text();
-      const pRes = KISA_SEED_ECB.decrypt(
-        this.symmetricKey,
-        cRes.replace(/\s/g, "")
-      );
+      const pRes = await this.fetchAndDecrypt(endpoint, options);
       const jRes: INewBestRes<T> = JSON.parse(pRes);
-
       if (jRes.RTN_CD !== "S") {
         throw new NewBestErrorException(
           `FDE-C-901,2 [${jRes.RTN_CD}: ${jRes.RTN_MSG}]`
         );
       }
+      return jRes.OutResult;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-      return jRes.OutResult[0];
+  private async obsRequest<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T[]> {
+    try {
+      const pRes = await this.fetchAndDecrypt(endpoint, options);
+      const jRes: INewBestObsRes<T> = JSON.parse(pRes);
+      if (jRes.ERR_CODE !== "00") {
+        throw new NewBestErrorException(
+          `FDE-C-901,2 [${jRes.ERR_CODE}: ${jRes.ERR_MSG}]`
+        );
+      }
+      return jRes.OUTPUT;
     } catch (error) {
       throw error;
     }
@@ -64,7 +87,7 @@ export class NewbestService {
       })
     );
 
-    return this.request<IRetrieveRestMbsCustRes>(
+    return await this.request<IRetrieveRestMbsCustRes>(
       EXT.NEWBEST.APIS.RETRIEVE_REST_MBS_CUST[0],
       {
         method: EXT.NEWBEST.APIS.RETRIEVE_REST_MBS_CUST[1],
@@ -74,7 +97,10 @@ export class NewbestService {
     );
   }
 
-  async getCoupons(memNo: string, type: "P" | "F") {
+  async getCoupons(
+    memNo: string,
+    type: "P" | "F"
+  ): Promise<IRetrieveMoblCoupCustArrayNewRes[]> {
     const now = spacetime.now("Asia/Seoul");
     const encryptedBody = KISA_SEED_ECB.encrypt(
       this.symmetricKey,
@@ -94,14 +120,31 @@ export class NewbestService {
       })
     );
 
-    return this.request(EXT.NEWBEST.APIS.RETRIEVE_MOBL_COUP_CUST_ARRAY_NEW[0], {
-      method: EXT.NEWBEST.APIS.RETRIEVE_MOBL_COUP_CUST_ARRAY_NEW[1],
-      headers: {
-        timeStamp: now.unixFmt("yyyyMMddHHmmss"),
-      },
-      body: encryptedBody,
-    });
+    return await this.request(
+      EXT.NEWBEST.APIS.RETRIEVE_MOBL_COUP_CUST_ARRAY_NEW[0],
+      {
+        method: EXT.NEWBEST.APIS.RETRIEVE_MOBL_COUP_CUST_ARRAY_NEW[1],
+        headers: {
+          timeStamp: now.unixFmt("yyyyMMddHHmmss"),
+        },
+        body: encryptedBody,
+      }
+    );
   }
 
-  // ... 필요한 다른 API 메서드들 추가
+  async getObsCoupons(ci: string): Promise<IRetrieveObsUserMbsCouponListRes[]> {
+    const encryptedBody = KISA_SEED_ECB.encrypt(
+      EXT.NEWBEST.SECRETS.LGOBSORDERNWBEST.SYMMETRIC_KEY,
+      JSON.stringify({ CI: ci })
+    );
+
+    return await this.obsRequest(
+      EXT.NEWBEST.APIS.RETRIEVE_OBS_USER_MBS_COUPON_LIST[0],
+      {
+        method: EXT.NEWBEST.APIS.RETRIEVE_OBS_USER_MBS_COUPON_LIST[1],
+        headers: { apikey: EXT.NEWBEST.SECRETS.LGOBSORDERNWBEST.API_KEY },
+        body: encryptedBody,
+      }
+    );
+  }
 }
