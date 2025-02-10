@@ -3,11 +3,24 @@ import {
   CouponDiscountType,
 } from "@push-manager/shared/types/constants/coupon.const";
 
-type StatusType = (typeof CouponPoolStatus)[keyof typeof CouponPoolStatus];
+type CouponStatusType =
+  (typeof CouponPoolStatus)[keyof typeof CouponPoolStatus];
 type DiscountType =
   (typeof CouponDiscountType)[keyof typeof CouponDiscountType];
+type StatusType = "사용완료" | "미사용";
 
 export const getStatusChipStyle = (status: StatusType) => {
+  switch (status) {
+    case "미사용":
+      return "bg-yellow-100 text-yellow-800";
+    case "사용완료":
+      return "bg-blue-100 text-blue-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
+
+export const getCouponStatusChipStyle = (status: CouponStatusType) => {
   switch (status) {
     case CouponPoolStatus.PENDING:
       return "bg-yellow-100 text-yellow-800";
@@ -17,8 +30,6 @@ export const getStatusChipStyle = (status: StatusType) => {
       return "bg-blue-100 text-blue-800";
     case CouponPoolStatus.CANCELLED:
       return "bg-red-100 text-red-800";
-    default:
-      return "bg-gray-100 text-gray-800";
   }
 };
 
