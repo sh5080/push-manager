@@ -77,7 +77,7 @@ export class NewbestService {
     }
   }
 
-  async getMemberInfo(ci: string): Promise<IRetrieveRestMbsCustRes> {
+  async getMemberInfo(ci: string): Promise<IRetrieveRestMbsCustRes[]> {
     const encryptedBody = KISA_SEED_ECB.encrypt(
       this.symmetricKey,
       JSON.stringify({
@@ -87,7 +87,7 @@ export class NewbestService {
       })
     );
 
-    return await this.request<IRetrieveRestMbsCustRes>(
+    return await this.request<IRetrieveRestMbsCustRes[]>(
       EXT.NEWBEST.APIS.RETRIEVE_REST_MBS_CUST[0],
       {
         method: EXT.NEWBEST.APIS.RETRIEVE_REST_MBS_CUST[1],
