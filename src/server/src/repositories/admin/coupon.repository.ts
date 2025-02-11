@@ -19,7 +19,14 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
     dto: GetCouponsDto,
     memberId?: string
   ): Promise<PaginatedResponse<CouponPool>> {
-    const { page = 1, pageSize = 10, sn, status } = dto;
+    const {
+      page = 1,
+      pageSize = 10,
+      sn,
+      status,
+      redeemedAtFrom,
+      redeemedAtTo,
+    } = dto;
 
     const where: any = {};
 
@@ -31,6 +38,13 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
     // 상태 검색
     if (status && status !== "ALL") {
       where.status = status;
+    }
+
+    if (redeemedAtFrom || redeemedAtTo) {
+      where.redeemedAt = {
+        ...(redeemedAtFrom && { [Op.gte]: redeemedAtFrom }),
+        ...(redeemedAtTo && { [Op.lt]: redeemedAtTo }),
+      };
     }
 
     // 회원 ID 검색
