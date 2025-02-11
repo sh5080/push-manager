@@ -100,7 +100,12 @@ export function SidebarItem({
       <span className="inline-flex items-center justify-center w-5 h-5 text-[18px]">
         {item.icon}
       </span>
-      <span className="text-[14px] font-medium">{item.name}</span>
+
+      {item.name.length > 9 ? (
+        <span className="text-[13px] font-medium">{item.name}</span>
+      ) : (
+        <span className="text-[14px] font-medium">{item.name}</span>
+      )}
     </Link>
   );
 }
@@ -150,7 +155,12 @@ export const menuItems: MenuItem[] = [
         icon: <HiOutlineUser />,
       },
       {
-        name: "구독쿠폰 조회",
+        name: "쿠폰 내역 조회",
+        path: "/admin/coupon",
+        icon: <HiOutlineClipboardList />,
+      },
+      {
+        name: "구독쿠폰 발급 조회",
         path: "/admin/subscriptionRewardRequest",
         icon: <HiOutlineClipboardList />,
       },
