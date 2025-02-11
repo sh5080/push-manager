@@ -21,6 +21,12 @@ export class GetCouponsDto {
 
   @IsOptional()
   memNo?: string;
+
+  @IsOptional()
+  redeemedAtFrom?: Date;
+
+  @IsOptional()
+  redeemedAtTo?: Date;
 }
 
 export class GetMemberCouponsDto {

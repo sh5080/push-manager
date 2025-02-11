@@ -14,6 +14,7 @@ import {
   STATUS_OPTIONS,
   StatusOption,
 } from "./components/searchFields.component";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 
 export default function CouponPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,8 +54,12 @@ export default function CouponPage() {
             status as (typeof CouponPoolStatus)[keyof typeof CouponPoolStatus],
         }),
         ...(memNo && { memNo }),
-        ...(startDate && { redeemedAtFrom: new Date(startDate) }),
-        ...(endDate && { redeemedAtTo: new Date(endDate) }),
+        ...(startDate && {
+          redeemedAtFrom: new Date(formatDate(startDate, "+09:00")),
+        }),
+        ...(endDate && {
+          redeemedAtTo: new Date(formatDate(endDate, "+09:00", "+1d")),
+        }),
       };
 
       const response = await couponApi.getCoupons(dto);

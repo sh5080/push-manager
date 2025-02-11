@@ -9,23 +9,32 @@ class CouponAPI extends BaseAPI {
     dto: GetCouponsDto
   ): Promise<PaginatedResponse<IMembershipAppCoupon>> {
     const validatedDto = await validateDto(GetCouponsDto, dto);
-    const { type, page, pageSize, sn, status, memNo } = validatedDto;
-    const queryParams = new URLSearchParams();
-    if (page) {
-      queryParams.append("page", page.toString());
-    }
-    if (pageSize) {
-      queryParams.append("pageSize", pageSize.toString());
-    }
-    if (sn) {
-      queryParams.append("sn", sn);
-    }
-    if (status) {
-      queryParams.append("status", status);
-    }
-    if (memNo) {
-      queryParams.append("memNo", memNo);
-    }
+    const {
+      type,
+      page,
+      pageSize,
+      sn,
+      status,
+      memNo,
+      redeemedAtFrom,
+      redeemedAtTo,
+    } = validatedDto;
+
+    const params = {
+      page: page?.toString(),
+      pageSize: pageSize?.toString(),
+      sn,
+      status,
+      memNo,
+      redeemedAtFrom: redeemedAtFrom?.toISOString(),
+      redeemedAtTo: redeemedAtTo?.toISOString(),
+    };
+
+    const queryParams = new URLSearchParams(
+      Object.entries(params)
+        .filter(([_, value]) => value !== undefined)
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+    );
 
     return this.customFetch<PaginatedResponse<IMembershipAppCoupon>>(
       `/api/admin/coupon?${queryParams}&type=${type}`

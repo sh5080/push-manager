@@ -1,14 +1,33 @@
 import { Dropdown } from "@commonComponents/inputs/dropdown.component";
 import { DatePicker } from "@commonComponents/inputs/datePicker.component";
-import { CouponPoolStatus } from "@push-manager/shared/types/constants/coupon.const";
+import {
+  CouponPoolStatus,
+  CouponPoolStatusText,
+} from "@push-manager/shared/types/constants/coupon.const";
 import { Input } from "@commonComponents/inputs/input.component";
 
 export const STATUS_OPTIONS = [
   { value: 0, label: "전체", key: "ALL" },
-  { value: 1, label: "발급 대기", key: CouponPoolStatus.PENDING },
-  { value: 2, label: "발급됨", key: CouponPoolStatus.ISSUED },
-  { value: 3, label: "사용됨", key: CouponPoolStatus.REDEEMED },
-  { value: 4, label: "취소됨", key: CouponPoolStatus.CANCELLED },
+  {
+    value: 1,
+    label: CouponPoolStatusText.PENDING,
+    key: CouponPoolStatus.PENDING,
+  },
+  {
+    value: 2,
+    label: CouponPoolStatusText.ISSUED,
+    key: CouponPoolStatus.ISSUED,
+  },
+  {
+    value: 3,
+    label: CouponPoolStatusText.REDEEMED,
+    key: CouponPoolStatus.REDEEMED,
+  },
+  {
+    value: 4,
+    label: CouponPoolStatusText.CANCELLED,
+    key: CouponPoolStatus.CANCELLED,
+  },
 ];
 
 export type StatusOption = (typeof STATUS_OPTIONS)[number];
@@ -95,7 +114,7 @@ export function SearchFields({
 
       {conditions.date && (
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-500">발급일시</label>
+          <label className="text-sm text-gray-500">사용일시</label>
           <DatePicker
             type="date"
             value={startDate}
