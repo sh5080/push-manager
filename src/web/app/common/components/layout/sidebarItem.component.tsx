@@ -155,12 +155,12 @@ export const menuItems: MenuItem[] = [
         icon: <HiOutlineUser />,
       },
       {
-        name: "쿠폰 내역 조회",
+        name: "앱 쿠폰 내역 조회",
         path: "/admin/coupon",
         icon: <HiOutlineClipboardList />,
       },
       {
-        name: "구독쿠폰 발급 조회",
+        name: "구독쿠폰 내역 조회",
         path: "/admin/subscriptionRewardRequest",
         icon: <HiOutlineClipboardList />,
       },

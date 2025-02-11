@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  GetCouponsDto,
   GetMemberCouponsDto,
   GetSubscriptionRewardRequestsDto,
   IMembershipAppCoupon,
@@ -18,11 +19,16 @@ export class CouponService implements ICouponService {
     private readonly memberService: MemberService
   ) {}
 
-  async getSubscriptionRewardRequests(dto: GetSubscriptionRewardRequestsDto) {
-    return await this.couponRepository.findSubscriptionRewardRequestsByDate(
-      dto.startAt,
-      dto.endAt
-    );
+  async getCoupons(dto: GetCouponsDto) {
+    let memberId: string;
+    if (dto.memNo) {
+      const member = await this.memberService.getMemberByMemNo({
+        memNo: dto.memNo,
+      });
+      memberId = member.id;
+      const result = await this.couponRepository.getCoupons(dto, memberId);
+      return { ...result, memberName: member.name };
+    } else return await this.couponRepository.getCoupons(dto);
   }
 
   async getMemberCoupons(dto: GetMemberCouponsDto) {
@@ -45,5 +51,11 @@ export class CouponService implements ICouponService {
     } else {
       throw new BadRequestException("Invalid coupon type");
     }
+  }
+  async getSubscriptionRewardRequests(dto: GetSubscriptionRewardRequestsDto) {
+    return await this.couponRepository.findSubscriptionRewardRequestsByDate(
+      dto.startAt,
+      dto.endAt
+    );
   }
 }

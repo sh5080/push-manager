@@ -63,7 +63,7 @@ export default function SubscriptionRewardRequestPage() {
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <PageHeader
-          title="구독쿠폰 조회"
+          title="구독쿠폰 발급 내역 조회"
           description="특정 기간의 구독쿠폰 발급 내역을 조회할 수 있습니다."
         />
 

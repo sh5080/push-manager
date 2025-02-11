@@ -14,7 +14,8 @@ const couponService = new CouponService(
 );
 const couponController = new CouponController(couponService);
 
-router.get("/subscription", couponController.getSubscriptionRewardRequests);
+router.get("/", couponController.getCoupons);
 router.get("/member", couponController.getMemberCoupons);
+router.get("/subscription", couponController.getSubscriptionRewardRequests);
 
 export const couponRoutes = router;
