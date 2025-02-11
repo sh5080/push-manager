@@ -17,7 +17,8 @@ export const parseDateTime = (dateTimeStr: string): Date => {
 
 export const formatDate = (
   date: Date | string,
-  offset: string = "+09:00" // 기본값은 KST
+  offset: string = "+09:00", // 기본값은 KST
+  dateAdjust?: string // 예: "+1d", "-1d"
 ): string => {
   if (!date) return "";
 
@@ -27,6 +28,24 @@ export const formatDate = (
   // 유효한 날짜인지 확인
   if (isNaN(dateObj.getTime())) {
     return "";
+  }
+
+  // dateAdjust 처리
+  if (dateAdjust) {
+    const value = parseInt(dateAdjust.slice(0, -1));
+    const unit = dateAdjust.slice(-1);
+
+    switch (unit) {
+      case "d":
+        dateObj = new Date(dateObj.setDate(dateObj.getDate() + value));
+        break;
+      case "m":
+        dateObj = new Date(dateObj.setMonth(dateObj.getMonth() + value));
+        break;
+      case "y":
+        dateObj = new Date(dateObj.setFullYear(dateObj.getFullYear() + value));
+        break;
+    }
   }
 
   // offset 파싱 (예: "+09:00" -> 9, "-05:00" -> -5)
