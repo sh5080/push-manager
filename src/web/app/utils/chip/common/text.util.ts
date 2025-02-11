@@ -1,25 +1,15 @@
 import {
   CouponPoolStatus,
   CouponDiscountType,
+  CouponPoolStatusText,
 } from "@push-manager/shared/types/constants/coupon.const";
 
-type StatusType = (typeof CouponPoolStatus)[keyof typeof CouponPoolStatus];
+type StatusType = keyof typeof CouponPoolStatusText;
 type DiscountType =
   (typeof CouponDiscountType)[keyof typeof CouponDiscountType];
 
 export const getCouponStatusChipText = (status: StatusType) => {
-  switch (status) {
-    case CouponPoolStatus.PENDING:
-      return "발급대기";
-    case CouponPoolStatus.ISSUED:
-      return "발급완료";
-    case CouponPoolStatus.REDEEMED:
-      return "사용완료";
-    case CouponPoolStatus.CANCELLED:
-      return "발급취소";
-    default:
-      return status;
-  }
+  return CouponPoolStatusText[status] || status;
 };
 
 export const getDiscountTypeChipText = (type: DiscountType) => {

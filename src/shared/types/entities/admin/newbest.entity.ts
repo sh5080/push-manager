@@ -47,7 +47,7 @@ export interface IMemberGetRes {
 export interface INewBestRes<T> {
   RTN_CD: string;
   RTN_MSG: string;
-  OutResult: T[];
+  OutResult: T;
 }
 
 export interface IRetrieveRestMbsCustRes {

@@ -16,9 +16,10 @@ export interface Rnum {
 }
 
 export interface PaginatedResponse<T> {
-  data: (T & Rnum)[];
+  data: T[] | (T & Rnum)[];
   total: number;
   page: number;
   pageSize: number;
   totalPages: number;
+  memberName?: string;
 }
