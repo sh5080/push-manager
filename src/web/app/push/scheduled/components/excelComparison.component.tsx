@@ -10,7 +10,7 @@ import { ExcelComparisonGuideContent } from "app/push/components/guides/excelCom
 import { ExcelCompareUtil } from "app/utils/excel/compare.util";
 
 interface ExcelComparisonProps {
-  queues: (IPushQueue & Rnum)[];
+  queues: IPushQueue[] | (IPushQueue & Rnum)[];
 }
 
 interface ComparisonResult {

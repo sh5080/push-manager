@@ -21,7 +21,9 @@ export function PushReservationStatusModal({
   onClose,
   cmpncode,
 }: PushReservationStatusModalProps) {
-  const [queues, setQueues] = useState<(IPushQueue & Rnum)[]>([]);
+  const [queues, setQueues] = useState<IPushQueue[] | (IPushQueue & Rnum)[]>(
+    []
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);

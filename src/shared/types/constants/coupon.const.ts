@@ -20,3 +20,10 @@ export const CouponPoolStatus = {
   REDEEMED: "REDEEMED",
   CANCELLED: "CANCELLED",
 } as const;
+
+export const CouponPoolStatusText = {
+  PENDING: "발급대기",
+  ISSUED: "발급완료",
+  REDEEMED: "사용완료",
+  CANCELLED: "발급취소",
+} as const;

@@ -1,4 +1,3 @@
-type TimeZone = "UTC" | "KST";
 /**
  * 날짜와 시간 문자열을 Date 객체로 변환하는 함수 (KST 기준)
  * @param dateTimeStr 'YYYY-MM-DD HH:MM' 형식의 문자열
@@ -18,7 +17,8 @@ export const parseDateTime = (dateTimeStr: string): Date => {
 
 export const formatDate = (
   date: Date | string,
-  offset: string = "+09:00" // 기본값은 KST
+  offset: string = "+09:00", // 기본값은 KST
+  dateAdjust?: string // 예: "+1d", "-1d"
 ): string => {
   if (!date) return "";
 
@@ -28,6 +28,24 @@ export const formatDate = (
   // 유효한 날짜인지 확인
   if (isNaN(dateObj.getTime())) {
     return "";
+  }
+
+  // dateAdjust 처리
+  if (dateAdjust) {
+    const value = parseInt(dateAdjust.slice(0, -1));
+    const unit = dateAdjust.slice(-1);
+
+    switch (unit) {
+      case "d":
+        dateObj = new Date(dateObj.setDate(dateObj.getDate() + value));
+        break;
+      case "m":
+        dateObj = new Date(dateObj.setMonth(dateObj.getMonth() + value));
+        break;
+      case "y":
+        dateObj = new Date(dateObj.setFullYear(dateObj.getFullYear() + value));
+        break;
+    }
   }
 
   // offset 파싱 (예: "+09:00" -> 9, "-05:00" -> -5)
@@ -46,43 +64,12 @@ export const formatDate = (
 
   return `${year}-${month}-${day} ${hours24}:${minutes}`;
 };
-/**
- * 날짜를 엑셀 형식(yyyy.mm.dd h:mm:ss AM/PM)으로 변환
- * @param date Date 객체 또는 날짜 문자열
- * @param timezone 시간대 (UTC 또는 KST)
- * @returns 'yyyy.mm.dd h:mm:ss AM/PM' 형식의 문자열
- */
-export const formatDateForExcel = (
-  date: Date | string,
-  timezone: TimeZone = "KST"
-): string => {
-  if (!date) return "";
 
-  const dateObj = typeof date === "string" ? new Date(date) : date;
-
-  if (isNaN(dateObj.getTime())) {
-    return "";
-  }
-
-  // KST인 경우 9시간 추가
-  const targetDate =
-    timezone === "KST"
-      ? new Date(dateObj.getTime() + 9 * 60 * 60 * 1000)
-      : dateObj;
-
-  const year = targetDate.getUTCFullYear();
-  const month = targetDate.getUTCMonth() + 1;
-  const day = targetDate.getUTCDate();
-  const hours = targetDate.getUTCHours();
-  const minutes = targetDate.getUTCMinutes();
-  const seconds = targetDate.getUTCSeconds();
-
-  // AM/PM 변환
-  const period = hours >= 12 ? "PM" : "AM";
-  const hour12 = hours % 12 || 12;
-
-  return `${year}.${month}.${day} ${hour12}:${String(minutes).padStart(
-    2,
-    "0"
-  )}:${String(seconds).padStart(2, "0")} ${period}`;
+export const formatDateString = (date: string) => {
+  if (date.length > 9)
+    return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(
+      6,
+      8
+    )} ${date.slice(8, 10)}:${date.slice(10, 12)}`;
+  else return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`;
 };
