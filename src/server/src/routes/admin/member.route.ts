@@ -11,6 +11,6 @@ const memberService = new MemberService(
 );
 const memberController = new MemberController(memberService);
 
-router.get("/", memberController.getMemberByMemNo);
+router.get("/", memberController.getMember);
 
 export const memberRoutes = router;
