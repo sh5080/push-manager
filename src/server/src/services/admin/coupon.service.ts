@@ -22,7 +22,7 @@ export class CouponService implements ICouponService {
   async getCoupons(dto: GetCouponsDto) {
     let memberId: string;
     if (dto.memNo) {
-      const member = await this.memberService.getMemberByMemNo({
+      const member = await this.memberService.getMember({
         memNo: dto.memNo,
       });
       memberId = member.id;
@@ -38,12 +38,12 @@ export class CouponService implements ICouponService {
 
       return { parking, free } as INewbestCommonCoupons;
     } else if (dto.type === "obs") {
-      const member = await this.memberService.getMemberByMemNo(dto);
+      const member = await this.memberService.getMember(dto);
       const obs = await this.newbestService.getObsCoupons(member.ci);
 
       return { obs } as INewbestObsCoupons;
     } else if (dto.type === "app") {
-      const member = await this.memberService.getMemberByMemNo(dto);
+      const member = await this.memberService.getMember(dto);
       const app = await this.couponRepository.getAppCouponsByMemberId(
         member.id
       );
