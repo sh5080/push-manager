@@ -22,6 +22,26 @@ export class BaseAPI {
     try {
       useLoadingStore.getState().setIsLoading(true);
 
+      if (path.includes("?")) {
+        const [basePath, queryString] = path.split("?");
+
+        const encodedParams = queryString
+          .split("&")
+          .map((param) => {
+            const firstEqualIndex = param.indexOf("=");
+            const key = param.slice(0, firstEqualIndex);
+            const value = param.slice(firstEqualIndex + 1);
+
+            // URL 예약어 포함 여부 체크
+            const hasReservedChars = /[&+\s?#/=]/.test(value);
+            return hasReservedChars
+              ? `${key}=${encodeURIComponent(value)}`
+              : `${key}=${value}`;
+          })
+          .join("&");
+
+        path = `${basePath}?${encodedParams}`;
+      }
       const headers = {
         ...this.defaultHeaders,
         ...(options?.headers || {}),
