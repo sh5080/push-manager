@@ -98,7 +98,7 @@ export default function PushHistoryPage() {
               <Search
                 value={searchQuery}
                 onChange={setSearchQuery}
-                placeholder="제목 검색"
+                defaultPlaceholder="제목 검색"
                 size="38"
               />
             </div>
