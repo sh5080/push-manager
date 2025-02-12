@@ -21,6 +21,7 @@ export * from "./types/entities/pushQueue.entity";
 export * from "./types/entities/pushStsMsg.entity";
 export * from "./types/entities/testIdentify.entity";
 
+export * from "./types/entities/admin/appSetting.entity";
 export * from "./types/entities/admin/coupon.entity";
 export * from "./types/entities/admin/member.entity";
 export * from "./types/entities/admin/newbest.entity";
