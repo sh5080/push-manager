@@ -56,7 +56,7 @@ export function MemberInfo({ member }: MemberInfoProps) {
           <p className="text-gray-500">생년월일</p>
           <p className="font-medium">
             {member.newbestInfo.BIRTHDAY_DATE
-              ? formatDate(member.newbestInfo.BIRTHDAY_DATE)
+              ? formatDateString(member.newbestInfo.BIRTHDAY_DATE)
               : "-"}
           </p>
         </div>

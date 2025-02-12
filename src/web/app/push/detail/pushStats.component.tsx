@@ -37,7 +37,7 @@ export function PushStats({ detail, result }: PushStatsProps) {
     });
     return acc;
   }, {} as Record<StatKey, number>);
-  console.log(detail, result);
+
   return (
     <div>
       <div className="mb-3">
