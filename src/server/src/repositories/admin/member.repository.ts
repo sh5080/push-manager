@@ -2,7 +2,7 @@ import { BaseRepository } from "../base.repository";
 import { Encrypted } from "../../decorators/encrypted.decorator";
 import { Decrypted } from "../../decorators/decrypted.decorator";
 import { Member } from "../../models/admin/init-models";
-import { GetMemberByMemNoDto } from "@push-manager/shared";
+import { GetMemberDto } from "@push-manager/shared";
 
 export class MemberRepository extends BaseRepository<Member> {
   constructor() {
@@ -11,9 +11,13 @@ export class MemberRepository extends BaseRepository<Member> {
 
   @Encrypted()
   @Decrypted()
-  async findByMemNo(dto: GetMemberByMemNoDto) {
+  async findByDto(dto: GetMemberDto) {
     return await Member.findOne({
-      where: { memNo: dto.memNo },
+      where: {
+        ...(dto.memNo && { memNo: dto.memNo }),
+        ...(dto.ci && { ci: dto.ci }),
+        ...(dto.phoneNumber && { phoneNumber: dto.phoneNumber }),
+      },
       attributes: [
         "id",
         "memNo",

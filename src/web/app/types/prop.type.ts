@@ -21,3 +21,5 @@ export type StepEnumType = 0 | 1 | 2 | 3 | 4 | 5;
 export type DeviceType = "A" | "I";
 
 export type StatKey = "sent" | "opened" | "failed" | "appdel";
+
+export type MemberSearchType = "memNo" | "ci" | "phoneNumber";
