@@ -74,7 +74,7 @@ export function IdentifierList({
                 <Search
                   value={searchTerm}
                   onChange={onSearchChange}
-                  placeholder={`${title} 검색...`}
+                  defaultPlaceholder={`${title} 검색...`}
                 />
                 <div className="flex gap-2">
                   {showMoveAllButton && filteredCount > 0 && (

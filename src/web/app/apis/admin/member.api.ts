@@ -3,12 +3,13 @@ import { IMembershipAppCoupon } from "@push-manager/shared/types/entities/admin/
 
 import { BaseAPI } from "../base.api";
 import {
-  GetMemberByMemNoDto,
-  GetMemberCouponsDto,
   INewbestCommonCoupons,
   INewbestObsCoupons,
 } from "@push-manager/shared";
 import { CouponType } from "@push-manager/shared/dist/types/newbest.type";
+import { validateDto } from "@push-manager/shared/utils/validate.util";
+import { GetMemberDto } from "@push-manager/shared/dtos/admin/member.dto";
+import { GetMemberCouponsDto } from "@push-manager/shared/dtos/admin/coupon.dto";
 
 type CouponResponseType<T extends CouponType> = T extends "app"
   ? IMembershipAppCoupon[]
@@ -19,11 +20,15 @@ type CouponResponseType<T extends CouponType> = T extends "app"
   : never;
 
 class MemberAPI extends BaseAPI {
-  async getMemberByMemNo(
-    dto: GetMemberByMemNoDto
-  ): Promise<IMemberWithNewbestInfo> {
+  async getMember(dto: GetMemberDto): Promise<IMemberWithNewbestInfo> {
+    const validatedDto = await validateDto(GetMemberDto, dto);
+
+    const queryString = Object.entries(validatedDto)
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+
     return await this.customFetch<IMemberWithNewbestInfo>(
-      `/api/admin/member?memNo=${dto.memNo}`
+      `/api/admin/member?${queryString}`
     );
   }
 

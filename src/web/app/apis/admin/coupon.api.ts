@@ -21,6 +21,7 @@ class CouponAPI extends BaseAPI {
     } = validatedDto;
 
     const params = {
+      type,
       page: page?.toString(),
       pageSize: pageSize?.toString(),
       sn,
@@ -37,7 +38,7 @@ class CouponAPI extends BaseAPI {
     );
 
     return this.customFetch<PaginatedResponse<IMembershipAppCoupon>>(
-      `/api/admin/coupon?${queryParams}&type=${type}`
+      `/api/admin/coupon?${queryParams}`
     );
   }
 }
