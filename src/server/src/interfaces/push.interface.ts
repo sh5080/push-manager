@@ -4,10 +4,10 @@ import {
   GetPushQueuesDto,
   GetRecentPushesDto,
   IPushMasterWithMsg,
-  IPushStsMsg,
   PaginatedResponse,
   ConfirmPushQueueDto,
   GetTargetPushesDto,
+  IPushStsMsgWithDetail,
 } from "@push-manager/shared";
 import { TblFpMaster, TblFpQueue, TblPushstsmsg } from "../models/init-models";
 
@@ -21,7 +21,7 @@ export interface IPushService {
     page: number,
     pageSize: number
   ): Promise<PaginatedResponse<IPushMasterWithMsg>>;
-  getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null>;
+  getPushStsMsgDetail(idx: string): Promise<IPushStsMsgWithDetail | null>;
   getPushQueues(dto: GetPushQueuesDto): Promise<PaginatedResponse<TblFpQueue>>;
   addToQueue(dto: AddToQueueDto): Promise<number>;
   confirmPushQueue(dto: ConfirmPushQueueDto): Promise<TblFpMaster>;

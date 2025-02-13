@@ -9,6 +9,7 @@ import {
 } from "../constants/pushQueue.const";
 import {
   IPushStsMsgDetail,
+  IPushStsMsgOpenInfo,
   IPushStsMsgResult,
 } from "./pushStsMsgDetail.entity";
 
@@ -66,4 +67,5 @@ export interface IPushStsMsg {
 export interface IPushStsMsgWithDetail extends IPushStsMsg {
   detail: IPushStsMsgDetail[];
   result: IPushStsMsgResult[];
+  openinfo: IPushStsMsgOpenInfo[];
 }

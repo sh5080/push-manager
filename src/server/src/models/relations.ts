@@ -6,6 +6,7 @@ import { TblFpQueue } from "./TblFpQueue";
 import { TblDeviceToken } from "./TblDeviceToken";
 import { TblDeviceTokenOption } from "./TblDeviceTokenOption";
 import { TblPushstssend } from "./TblPushstssend";
+import { TblOpeninfo } from "./init-models";
 
 export function initializeRelations() {
   TblPushstsmsg.hasMany(TblPushstssendStatsDay, {
@@ -48,5 +49,11 @@ export function initializeRelations() {
     foreignKey: "tokenIdx",
     targetKey: "tokenIdx",
     as: "tokenOption",
+  });
+
+  TblPushstssend.belongsTo(TblOpeninfo, {
+    foreignKey: "msgIdx",
+    targetKey: "msgIdx",
+    as: "openinfo",
   });
 }

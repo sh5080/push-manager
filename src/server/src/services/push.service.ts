@@ -7,10 +7,10 @@ import {
   GetPushQueuesDto,
   GetRecentPushesDto,
   IPushMasterWithMsg,
-  IPushStsMsg,
   PaginatedResponse,
   ConfirmPushQueueDto,
   GetTargetPushesDto,
+  IPushStsMsgWithDetail,
 } from "@push-manager/shared";
 
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
@@ -129,7 +129,9 @@ export class PushService implements IPushService {
     return this.pushMasterRepository.getOnePushMasterWithMsg(page, pageSize);
   }
 
-  async getPushStsMsgDetail(idx: string): Promise<IPushStsMsg | null> {
+  async getPushStsMsgDetail(
+    idx: string
+  ): Promise<IPushStsMsgWithDetail | null> {
     return this.pushStsMsgRepository.getPushStsMsgDetail(idx);
   }
 
