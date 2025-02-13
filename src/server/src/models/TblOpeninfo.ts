@@ -56,7 +56,7 @@ export class TblOpeninfo
           field: "IDX",
         },
         msgIdx: {
-          type: "NUMBER",
+          type: DataTypes.BIGINT,
           allowNull: true,
           field: "MSG_IDX",
         },
@@ -76,7 +76,7 @@ export class TblOpeninfo
           field: "TOKEN",
         },
         tokenIdx: {
-          type: "NUMBER",
+          type: DataTypes.BIGINT,
           allowNull: true,
           field: "TOKEN_IDX",
         },
