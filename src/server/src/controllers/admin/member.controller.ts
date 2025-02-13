@@ -5,11 +5,7 @@ import { IMemberService } from "../../interfaces/admin/member.interface";
 export class MemberController {
   constructor(private readonly memberService: IMemberService) {}
 
-  getMemberByMemNo = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  getMember = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const dto = await validateDto(GetMemberDto, req.query);
       const members = await this.memberService.getMember(dto);

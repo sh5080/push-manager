@@ -102,8 +102,22 @@ export function MemberInfo({ member }: MemberInfoProps) {
           </p>
         </div>
         <div>
-          <p className="text-gray-500">등급</p>
-          <p className="font-medium">{member.newbestInfo.LGE_CUST_GRD_NM}</p>
+          <p className="text-gray-500">
+            등급
+            {member.newbestInfo.LGE_CUST_GRD_NM_DISP !==
+              member.newbestInfo.LGE_CUST_GRD_NM && (
+              <span className="text-green-700 ml-8">등급 구분</span>
+            )}
+          </p>
+          <p className="font-medium flex items-center gap-1">
+            {member.newbestInfo.LGE_CUST_GRD_NM_DISP}
+            {member.newbestInfo.LGE_CUST_GRD_NM_DISP !==
+              member.newbestInfo.LGE_CUST_GRD_NM && (
+              <span className="text-green-700 ml-8">
+                {member.newbestInfo.LGE_CUST_GRD_NM}
+              </span>
+            )}
+          </p>
         </div>
         <div>
           <p className="text-gray-500">포인트</p>
