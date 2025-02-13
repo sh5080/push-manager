@@ -57,7 +57,7 @@ export class TblDeviceToken
           field: "DEVICE_TYPE",
         },
         idx: {
-          type: "NUMBER",
+          type: DataTypes.BIGINT,
           allowNull: false,
           field: "IDX",
         },
