@@ -3,6 +3,7 @@ import { APP_CONFIG } from "../configs/app.config";
 import {
   TblDeviceToken,
   TblDeviceTokenOption,
+  TblOpeninfo,
   TblPushstsmsg,
   TblPushstssend,
   TblPushstssendStatsDay,
@@ -29,15 +30,17 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
   }
 
   async getPushStsMsgDetail(idx: string): Promise<IPushStsMsgWithDetail> {
-    const [pushMsg, statsDetails, sendResults] = await Promise.all([
+    const [pushMsg, statsDetails, sendResults, openinfo] = await Promise.all([
       TblPushstsmsg.findOne({
         where: { idx },
         raw: true,
+        mapToModel: true,
       }),
       TblPushstssendStatsDay.findAll({
         where: { msgIdx: idx },
         attributes: ["deviceType", "sent", "failed", "opened", "appdel", "sms"],
         raw: true,
+        mapToModel: true,
       }),
       TblPushstssend.findAll({
         where: { msgIdx: idx },
@@ -83,8 +86,15 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
             ],
           },
         ],
+
         raw: true,
         nest: true,
+        mapToModel: true,
+      }),
+      TblOpeninfo.findAll({
+        where: { msgIdx: idx },
+        attributes: ["openDate", "oMode", "tokenIdx"],
+        raw: true,
         mapToModel: true,
       }),
     ]);
@@ -93,6 +103,7 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
       ...pushMsg,
       detail: statsDetails,
       result: sendResults,
+      openinfo: openinfo,
     } as unknown as IPushStsMsgWithDetail;
   }
 

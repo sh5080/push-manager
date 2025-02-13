@@ -1,5 +1,6 @@
 import {
   IPushStsMsgDetail,
+  IPushStsMsgOpenInfo,
   IPushStsMsgResult,
 } from "@push-manager/shared/types/entities/pushStsMsgDetail.entity";
 import { StatKey } from "app/types/prop.type";
@@ -28,12 +29,17 @@ const STAT_ITEMS = [
 interface PushStatsProps {
   detail: IPushStsMsgDetail[];
   result: IPushStsMsgResult[];
+  openinfo: IPushStsMsgOpenInfo[];
 }
 
-export function PushStats({ detail, result }: PushStatsProps) {
+export function PushStats({ detail, result, openinfo }: PushStatsProps) {
   const totalStats = detail.reduce((acc, curr) => {
     STAT_ITEMS.forEach(({ key }) => {
-      acc[key] = (acc[key] || 0) + (curr[key] || 0);
+      if (key === "opened") {
+        acc[key] = openinfo.length;
+      } else {
+        acc[key] = (acc[key] || 0) + (curr[key] || 0);
+      }
     });
     return acc;
   }, {} as Record<StatKey, number>);
@@ -46,7 +52,13 @@ export function PushStats({ detail, result }: PushStatsProps) {
           <ContentViewer
             buttonText="자세히"
             title="발송 상세 현황"
-            content={<PushStatsDetail detail={detail} result={result} />}
+            content={
+              <PushStatsDetail
+                detail={detail}
+                result={result}
+                openinfo={openinfo}
+              />
+            }
             isComponent={true}
           />
         </div>
