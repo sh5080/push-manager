@@ -9,6 +9,12 @@ export interface IPushStsMsgDetail {
   appdel: number;
 }
 
+export interface IPushStsMsgOpenInfo {
+  openDate: string;
+  oMode: string;
+  tokenIdx: string;
+}
+
 export interface IPushStsMsgResult {
   idx: string;
   msgIdx: string;

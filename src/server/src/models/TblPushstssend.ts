@@ -62,12 +62,12 @@ export class TblPushstssend
           field: "DEVICE_TYPE",
         },
         idx: {
-          type: "NUMBER",
+          type: DataTypes.BIGINT,
           allowNull: false,
           field: "IDX",
         },
         msgIdx: {
-          type: "NUMBER",
+          type: DataTypes.BIGINT,
           allowNull: false,
           field: "MSG_IDX",
         },
@@ -97,7 +97,7 @@ export class TblPushstssend
           field: "SENDDATE",
         },
         sendlistIdx: {
-          type: "NUMBER",
+          type: DataTypes.BIGINT,
           allowNull: true,
           field: "SENDLIST_IDX",
         },
@@ -107,7 +107,7 @@ export class TblPushstssend
           field: "TOKEN",
         },
         tokenIdx: {
-          type: "NUMBER",
+          type: DataTypes.BIGINT,
           allowNull: true,
           field: "TOKEN_IDX",
         },

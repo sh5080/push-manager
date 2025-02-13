@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react";
 import {
   IPushStsMsgDetail,
+  IPushStsMsgOpenInfo,
   IPushStsMsgResult,
 } from "@push-manager/shared/types/entities/pushStsMsgDetail.entity";
 import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
@@ -8,6 +9,7 @@ import { getMessageStatusStyle } from "app/utils/chip/pushResult/style.util";
 import { getMessageStatusText } from "app/utils/chip/pushResult/text.util";
 import { InfoTooltip } from "@commonComponents/dataDisplay/infoTooltip.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
+
 const TABLE_HEADERS = [
   { key: "identify", label: "식별자" },
   { key: "deviceType", label: "디바이스" },
@@ -24,9 +26,14 @@ const DEVICE_LABELS: Record<string, string> = {
 interface PushStatsDetailProps {
   detail: IPushStsMsgDetail[];
   result: IPushStsMsgResult[];
+  openinfo: IPushStsMsgOpenInfo[];
 }
 
-export function PushStatsDetail({ detail, result }: PushStatsDetailProps) {
+export function PushStatsDetail({
+  detail,
+  result,
+  openinfo,
+}: PushStatsDetailProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -40,26 +47,30 @@ export function PushStatsDetail({ detail, result }: PushStatsDetailProps) {
     setCurrentPage(1);
   };
 
-  const renderCell = (item: IPushStsMsgResult, key: string) => {
+  const renderCell = (
+    result: IPushStsMsgResult,
+    openinfo: IPushStsMsgOpenInfo[],
+    key: string
+  ) => {
     switch (key) {
       case "identify":
-        return item.tokenOption.identify;
+        return result.tokenOption.identify;
       case "deviceType":
-        return DEVICE_LABELS[item.deviceType] || item.deviceType;
+        return DEVICE_LABELS[result.deviceType] || result.deviceType;
       case "sendDate":
-        return formatDate(item.sendDate, "+09:00");
+        return formatDate(result.sendDate, "+09:00");
       case "result":
         return (
           <span
             className={`
                   mt-1 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                  ${getMessageStatusStyle(item.result)}
+                  ${getMessageStatusStyle(result.result)}
                 `}
           >
-            {getMessageStatusText(item.result)}
-            {item.resultMsg && (
+            {getMessageStatusText(result.result)}
+            {result.resultMsg && (
               <InfoTooltip
-                content={item.resultMsg}
+                content={result.resultMsg}
                 width="w-1000"
                 isMark={true}
                 position="center"
@@ -68,9 +79,14 @@ export function PushStatsDetail({ detail, result }: PushStatsDetailProps) {
           </span>
         );
       case "opened":
-        return item.opened;
+        const matchingOpenInfo = openinfo?.find(
+          (open) => open.tokenIdx.toString() === result.tokenIdx.toString()
+        );
+        return matchingOpenInfo
+          ? formatDate(matchingOpenInfo.openDate, "+09:00")
+          : "-";
       default:
-        return item[key as keyof IPushStsMsgResult];
+        return result[key as keyof IPushStsMsgResult];
     }
   };
 
@@ -90,14 +106,14 @@ export function PushStatsDetail({ detail, result }: PushStatsDetailProps) {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {paginatedResults.map((item) => (
-            <tr key={item.idx}>
+          {paginatedResults.map((result) => (
+            <tr key={result.idx}>
               {TABLE_HEADERS.map(({ key }) => (
                 <td
                   key={key}
                   className="py-4 whitespace-nowrap text-center text-sm text-gray-500"
                 >
-                  {renderCell(item, key) as ReactNode}
+                  {renderCell(result, openinfo, key) as ReactNode}
                 </td>
               ))}
             </tr>

@@ -118,7 +118,11 @@ export function DetailModal({ push, isOpen, onClose }: DetailModalProps) {
 
                 {push.detail && push.result ? (
                   <Section title="발송 결과">
-                    <PushStats detail={push.detail} result={push.result} />
+                    <PushStats
+                      detail={push.detail}
+                      result={push.result}
+                      openinfo={push.openinfo}
+                    />
                   </Section>
                 ) : (
                   <Section title="오류">
