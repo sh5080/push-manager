@@ -7,6 +7,7 @@ import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
 import { getMessageStatusStyle } from "app/utils/chip/pushResult/style.util";
 import { getMessageStatusText } from "app/utils/chip/pushResult/text.util";
 import { InfoTooltip } from "@commonComponents/dataDisplay/infoTooltip.component";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 const TABLE_HEADERS = [
   { key: "identify", label: "식별자" },
   { key: "deviceType", label: "디바이스" },
@@ -46,7 +47,7 @@ export function PushStatsDetail({ detail, result }: PushStatsDetailProps) {
       case "deviceType":
         return DEVICE_LABELS[item.deviceType] || item.deviceType;
       case "sendDate":
-        return new Date(item.sendDate).toLocaleString();
+        return formatDate(item.sendDate, "+09:00");
       case "result":
         return (
           <span
