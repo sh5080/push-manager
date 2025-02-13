@@ -9,6 +9,7 @@ import {
   HiChevronDown,
   HiChevronUp,
   HiOutlineUser,
+  HiOutlineCog,
 } from "react-icons/hi";
 
 export interface MenuItem {
@@ -163,6 +164,11 @@ export const menuItems: MenuItem[] = [
         name: "구독쿠폰 내역 조회",
         path: "/admin/subscriptionRewardRequest",
         icon: <HiOutlineClipboardList />,
+      },
+      {
+        name: "앱 설정",
+        path: "/admin/appSetting",
+        icon: <HiOutlineCog />,
       },
     ],
   },
