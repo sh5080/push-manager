@@ -20,12 +20,24 @@ import type {
   CouponPoolAttributes,
   CouponPoolCreationAttributes,
 } from "../admin/CouponPool";
+import { AppSetting as _AppSetting } from "../admin/AppSetting";
+import type {
+  AppSettingAttributes,
+  AppSettingCreationAttributes,
+} from "../admin/AppSetting";
+import { Maintenance as _Maintenance } from "../admin/Maintenance";
+import type {
+  MaintenanceAttributes,
+  MaintenanceCreationAttributes,
+} from "../admin/Maintenance";
 
 export {
   _SubscriptionRewardRequest as SubscriptionRewardRequest,
   _Member as Member,
   _Coupon as Coupon,
   _CouponPool as CouponPool,
+  _AppSetting as AppSetting,
+  _Maintenance as Maintenance,
 };
 export type {
   SubscriptionRewardRequestAttributes,
@@ -36,6 +48,10 @@ export type {
   CouponCreationAttributes,
   CouponPoolAttributes,
   CouponPoolCreationAttributes,
+  AppSettingAttributes,
+  AppSettingCreationAttributes,
+  MaintenanceAttributes,
+  MaintenanceCreationAttributes,
 };
 
 export function initAdminModels(sequelize: Sequelize) {
@@ -44,10 +60,14 @@ export function initAdminModels(sequelize: Sequelize) {
   const Member = _Member.initModel(sequelize);
   const Coupon = _Coupon.initModel(sequelize);
   const CouponPool = _CouponPool.initModel(sequelize);
+  const AppSetting = _AppSetting.initModel(sequelize);
+  const Maintenance = _Maintenance.initModel(sequelize);
   return {
     SubscriptionRewardRequest: SubscriptionRewardRequest,
     Member: Member,
     Coupon: Coupon,
     CouponPool: CouponPool,
+    AppSetting: AppSetting,
+    Maintenance: Maintenance,
   };
 }
