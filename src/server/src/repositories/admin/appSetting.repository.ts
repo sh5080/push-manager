@@ -19,6 +19,7 @@ export class AppSettingRepository extends BaseRepository<AppSetting> {
   async getMaintenances() {
     return (await Maintenance.findAll({
       raw: true,
+      order: [["id", "DESC"]],
     })) as unknown as IMaintenance[];
   }
 }

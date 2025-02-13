@@ -1,7 +1,23 @@
+export interface INoticeBar {
+  link: string;
+  content: string;
+  startAt: Date;
+  endAt: Date;
+  isActive: boolean;
+  platform: string;
+}
+
+export interface IFooter {
+  html: string;
+}
+
+export type IAppSettingKey = "NOTICE_BAR" | "FOOTER";
+export type IAppSettingValue = INoticeBar | IFooter;
+
 export interface IAppSetting {
   id: number;
-  key: string;
-  value: string;
+  key: IAppSettingKey;
+  value: IAppSettingValue;
   createdAt: Date;
   updatedAt: Date;
 }
