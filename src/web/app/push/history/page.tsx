@@ -30,6 +30,7 @@ export default function PushHistoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   const STEP_OPTIONS = [
     { value: 0, label: "모든 상태" },
@@ -55,6 +56,7 @@ export default function PushHistoryPage() {
 
       setPushes(data.data);
       setTotalPages(data.totalPages);
+      setTotalCount(data.total);
     } catch (error: any) {
       Toast.error(error.message);
     }
@@ -137,7 +139,7 @@ export default function PushHistoryPage() {
             onPushSelect={handlePushClick}
             onRefresh={fetchPushes}
             pagination={{
-              total: totalPages,
+              total: totalCount,
               currentPage: currentPage,
               pageSize: pageSize,
               totalPages: totalPages,

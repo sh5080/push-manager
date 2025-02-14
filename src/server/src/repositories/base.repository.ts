@@ -15,7 +15,7 @@ interface PaginationOptions {
   replacements?: Record<string, any>;
 }
 
-export async function paginationQuery<T>(
+export async function paginationQuery<T extends Model>(
   sequelize: Sequelize,
   options: PaginationOptions & { model?: ModelStatic<Model> },
   innerQuery: string
@@ -44,9 +44,10 @@ export async function paginationQuery<T>(
 
   const queryOptions = model
     ? {
+        type: QueryTypes.SELECT,
         model,
         mapToModel: true,
-        type: QueryTypes.SELECT,
+        raw: true,
       }
     : {
         type: QueryTypes.SELECT,
@@ -64,6 +65,7 @@ export async function paginationQuery<T>(
     sequelize.query<{ total: number }>(countQuery, {
       type: QueryTypes.SELECT,
       replacements,
+      raw: true,
     }),
   ]);
 
