@@ -176,16 +176,16 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
 
     result.data = result.data.map((item: any) => {
       try {
-        const statsStr = item.get("stats");
+        const statsStr = item.stats;
         const parsedStats = statsStr ? JSON.parse(statsStr) : null;
         return {
-          ...item.dataValues,
+          ...item,
           stats: parsedStats,
         };
       } catch (e) {
         console.error("Failed to parse stats:", e);
         return {
-          ...item.dataValues,
+          ...item,
           stats: null,
         };
       }
