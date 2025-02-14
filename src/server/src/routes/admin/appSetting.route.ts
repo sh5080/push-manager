@@ -7,6 +7,7 @@ const router = Router();
 const appSettingService = new AppSettingService(new AppSettingRepository());
 const appSettingController = new AppSettingController(appSettingService);
 
+router.post("/maintenance", appSettingController.createMaintenance);
 router.get("/", appSettingController.getAppSettings);
 
 export const appSettingRoutes = router;

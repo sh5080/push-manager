@@ -4,6 +4,13 @@ import { getYNChipStyle } from "app/utils/chip/common/style.util";
 import { getYNChipText } from "app/utils/chip/common/text.util";
 import { usePagination } from "app/common/hooks/usePagination.hook";
 import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
+import { useState } from "react";
+import { Button } from "@commonComponents/inputs/button.component";
+import { MaintenanceModal } from "../modals/maintenance.modal";
+import { CreateMaintenanceDto } from "@push-manager/shared/dtos/admin/appSetting.dto";
+import { appSettingApi } from "app/apis/admin/appSetting.api";
+import { Toast } from "app/utils/toast.util";
+import { MaintenanceFormData } from "app/types/prop.type";
 
 interface MaintenanceProps {
   maintenances: IMaintenance[];
@@ -19,6 +26,7 @@ const TABLE_HEADERS = [
 ] as const;
 
 export function Maintenance({ maintenances }: MaintenanceProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     currentPage,
     pageSize,
@@ -57,9 +65,44 @@ export function Maintenance({ maintenances }: MaintenanceProps) {
     }
   };
 
+  const handleAddMaintenance = async (data: MaintenanceFormData) => {
+    try {
+      if (
+        !data.description ||
+        data.noticeAt.length === 0 ||
+        data.startAt.length === 0 ||
+        data.endAt.length === 0
+      ) {
+        throw new Error("모든 필드를 입력해야 합니다.");
+      }
+      console.log("data: ", data);
+      const dto: CreateMaintenanceDto = {
+        description: data.description,
+        noticeAt: new Date(formatDate(data.noticeAt, "+00:00")),
+        startAt: new Date(formatDate(data.startAt, "+00:00")),
+        endAt: new Date(formatDate(data.endAt, "+00:00")),
+      };
+      console.log("dto: ", dto);
+      const result = await appSettingApi.createMaintenance(dto);
+      console.log("result: ", result);
+      if (result) {
+        Toast.success("점검 일정이 추가되었습니다.");
+      } else {
+        throw new Error("점검 일정 추가에 실패했습니다.");
+      }
+    } catch (error: any) {
+      Toast.error(error.message);
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-      <h2 className="text-lg font-medium mb-4">점검 일정</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-medium">점검 일정</h2>
+        <Button onClick={() => setIsModalOpen(true)} variant="solid" size="32">
+          추가
+        </Button>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -97,6 +140,11 @@ export function Maintenance({ maintenances }: MaintenanceProps) {
           onPageSizeChange={handlePageSizeChange}
         />
       </div>
+      <MaintenanceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleAddMaintenance}
+      />
     </div>
   );
 }
