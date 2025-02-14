@@ -7,6 +7,7 @@ export * from "./dtos/identify.dto";
 export * from "./dtos/push.dto";
 export * from "./dtos/select.dto";
 
+export * from "./dtos/admin/appSetting.dto";
 export * from "./dtos/admin/coupon.dto";
 export * from "./dtos/admin/member.dto";
 export * from "./dtos/admin/subscriptionRewardRequest.dto";

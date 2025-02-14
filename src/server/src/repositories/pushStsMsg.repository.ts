@@ -8,7 +8,7 @@ import {
   TblPushstssend,
   TblPushstssendStatsDay,
 } from "../models/init-models";
-import { Sequelize } from "sequelize";
+import { Sequelize, Op } from "sequelize";
 import {
   GetTargetPushesDto,
   IPushStsMsgWithDetail,
@@ -130,67 +130,60 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
   async getTargetPushes(
     dto: GetTargetPushesDto,
     appIds?: string[]
-  ): Promise<PaginatedResponse<TblPushstsmsg & PushMsgStats>> {
+  ): Promise<PaginatedResponse<TblPushstsmsg>> {
     const { page, pageSize, startDate, endDate, step, title } = dto;
 
-    const innerQuery = `
-      SELECT m.*,
-             '{"sent":' || NVL(s.sent, 0) || 
-             ',"failed":' || NVL(s.failed, 0) || 
-             ',"opened":' || NVL(s.opened, 0) || '}' as "stats"
-      FROM COKR_MBR_APP.TBL_PUSHSTSMSG m
-      LEFT JOIN (
-        SELECT msg_idx,
-               SUM(sent) as sent,
-               SUM(failed) as failed,
-               SUM(opened) as opened
-        FROM COKR_MBR_APP.TBL_PUSHSTSSEND_STATS_DAY
-        GROUP BY msg_idx
-      ) s ON m.idx = s.msg_idx
-      WHERE m.APPID IN (:appIds)
-      AND TO_CHAR(m.SENDDATE, 'YYYY-MM-DD') 
-        BETWEEN TO_CHAR(TO_DATE(:startDate, 'YYYY-MM-DD'), 'YYYY-MM-DD')
-        AND TO_CHAR(TO_DATE(:endDate, 'YYYY-MM-DD'), 'YYYY-MM-DD')
-      ${step ? "AND m.STEP = :step" : ""}
-      ${title ? "AND m.TITLE LIKE :title" : ""}
-    `;
-
-    const result = await paginationQuery<TblPushstsmsg & PushMsgStats>(
-      sequelize,
-      {
-        page,
-        pageSize,
-        orderBy: "IDX",
-        orderDirection: "DESC",
-        model: TblPushstsmsg,
-        replacements: {
-          appIds: appIds ? appIds : this.appIds,
-          startDate,
-          endDate,
-          ...(step ? { step } : {}),
-          ...(title ? { title: `%${title}%` } : {}),
-        },
+    const pushMessages = await TblPushstsmsg.findAll({
+      where: Sequelize.literal(`
+        idx IN (
+          SELECT idx FROM (
+            SELECT idx FROM tbl_pushstsmsg 
+            WHERE APPID IN (:appIds) AND
+            SENDDATE BETWEEN TO_DATE(:startDate, 'YYYY-MM-DD') 
+            AND TO_DATE(:endDate, 'YYYY-MM-DD') + 0.99999
+            ${step ? "AND STEP = :step" : ""}
+            ${title ? "AND TITLE LIKE :title" : ""}
+            ORDER BY idx DESC
+          ) WHERE ROWNUM <= :endRow
+        ) AND ROWNUM > :startRow
+      `),
+      replacements: {
+        appIds: appIds ? appIds : this.appIds,
+        startDate,
+        endDate,
+        startRow: (page - 1) * pageSize,
+        endRow: page * pageSize,
+        ...(step ? { step } : {}),
+        ...(title ? { title: `%${title}%` } : {}),
       },
-      innerQuery
-    );
-
-    result.data = result.data.map((item: any) => {
-      try {
-        const statsStr = item.get("stats");
-        const parsedStats = statsStr ? JSON.parse(statsStr) : null;
-        return {
-          ...item.dataValues,
-          stats: parsedStats,
-        };
-      } catch (e) {
-        console.error("Failed to parse stats:", e);
-        return {
-          ...item.dataValues,
-          stats: null,
-        };
-      }
+      order: [["idx", "DESC"]],
+      raw: true,
+      nest: true,
+      subQuery: false,
+      mapToModel: true,
     });
 
-    return result;
+    const total = await TblPushstsmsg.count({
+      where: {
+        appId: { [Op.in]: appIds ? appIds : this.appIds },
+        sendDate: {
+          [Op.between]: [startDate, endDate],
+        },
+        ...(step ? { step } : {}),
+        ...(title
+          ? {
+              title: { [Op.like]: `%${title}%` },
+            }
+          : {}),
+      },
+    });
+
+    return {
+      data: pushMessages,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    };
   }
 }
