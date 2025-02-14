@@ -15,7 +15,7 @@ interface PaginationOptions {
   replacements?: Record<string, any>;
 }
 
-export async function paginationQuery<T extends Model>(
+export async function paginationQuery<T>(
   sequelize: Sequelize,
   options: PaginationOptions & { model?: ModelStatic<Model> },
   innerQuery: string
