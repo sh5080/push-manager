@@ -23,3 +23,10 @@ export type DeviceType = "A" | "I";
 export type StatKey = "sent" | "opened" | "failed" | "appdel";
 
 export type MemberSearchType = "memNo" | "ci" | "phoneNumber";
+
+export interface MaintenanceFormData {
+  description: string;
+  noticeAt: string;
+  startAt: string;
+  endAt: string;
+}
