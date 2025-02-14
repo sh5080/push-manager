@@ -2,6 +2,8 @@ import { IMaintenance } from "@push-manager/shared";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { getYNChipStyle } from "app/utils/chip/common/style.util";
 import { getYNChipText } from "app/utils/chip/common/text.util";
+import { usePagination } from "app/common/hooks/usePagination.hook";
+import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
 
 interface MaintenanceProps {
   maintenances: IMaintenance[];
@@ -9,7 +11,7 @@ interface MaintenanceProps {
 
 const TABLE_HEADERS = [
   { key: "id", label: "" },
-  { key: "description", label: "설명" },
+  { key: "description", label: "내용" },
   { key: "noticeAt", label: "공지일" },
   { key: "startAt", label: "점검 시작일" },
   { key: "endAt", label: "점검 종료일" },
@@ -17,6 +19,16 @@ const TABLE_HEADERS = [
 ] as const;
 
 export function Maintenance({ maintenances }: MaintenanceProps) {
+  const {
+    currentPage,
+    pageSize,
+    totalPages,
+    paginatedItems: paginatedMaintenances,
+    handlePageChange,
+    handlePageSizeChange,
+    totalItems,
+  } = usePagination<IMaintenance>(maintenances);
+
   const renderCell = (
     maintenance: IMaintenance,
     key: (typeof TABLE_HEADERS)[number]["key"]
@@ -55,7 +67,7 @@ export function Maintenance({ maintenances }: MaintenanceProps) {
               {TABLE_HEADERS.map(({ key, label }) => (
                 <th
                   key={key}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
                   {label}
                 </th>
@@ -63,10 +75,10 @@ export function Maintenance({ maintenances }: MaintenanceProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {maintenances.map((maintenance) => (
+            {paginatedMaintenances.map((maintenance) => (
               <tr key={maintenance.id}>
                 {TABLE_HEADERS.map(({ key }) => (
-                  <td key={key} className="px-6 py-4 text-xs whitespace-nowrap">
+                  <td key={key} className="px-4 py-4 text-xs whitespace-nowrap">
                     {renderCell(maintenance, key)}
                   </td>
                 ))}
@@ -74,6 +86,16 @@ export function Maintenance({ maintenances }: MaintenanceProps) {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="mt-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          total={totalItems}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
     </div>
   );
