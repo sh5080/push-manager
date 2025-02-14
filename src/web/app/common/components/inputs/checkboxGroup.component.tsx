@@ -1,4 +1,5 @@
-import { Field, Label, Switch } from "@headlessui/react";
+import { Field, Label } from "@headlessui/react";
+import { Switch } from "./switch.component";
 
 export interface CheckboxOption {
   key: string;
@@ -22,22 +23,12 @@ export function CheckboxGroup({
     <div className={className}>
       {options.map(({ key, label }) => (
         <Field key={key}>
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={selectedKeys[key]}
-              onChange={(checked) => onChange(key, checked)}
-              className={`${
-                selectedKeys[key] ? "bg-green-600" : "bg-gray-200"
-              } relative inline-flex h-5 w-9 items-center rounded-full transition-colors`}
-            >
-              <span
-                className={`${
-                  selectedKeys[key] ? "translate-x-5" : "translate-x-1"
-                } inline-block h-3 w-3 transform rounded-full bg-white transition-transform`}
-              />
-            </Switch>
-            <Label className="text-sm text-gray-600">{label}</Label>
-          </div>
+          <Switch
+            checked={selectedKeys[key]}
+            onChange={(checked) => onChange(key, checked)}
+          >
+            <Label className="ml-2 text-sm text-gray-600">{label}</Label>
+          </Switch>
         </Field>
       ))}
     </div>
