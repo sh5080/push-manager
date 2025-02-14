@@ -4,6 +4,7 @@ import {
   CreateMaintenanceDto,
   IAppSetting,
   IMaintenance,
+  UpdateMaintenanceDto,
 } from "@push-manager/shared";
 
 export class AppSettingRepository extends BaseRepository<AppSetting> {
@@ -20,6 +21,16 @@ export class AppSettingRepository extends BaseRepository<AppSetting> {
       ...dto,
       updatedAt: new Date(),
     });
+  }
+  async getMaintenanceById(id: number) {
+    return await Maintenance.findByPk(id, { raw: true });
+  }
+
+  async updateMaintenance(dto: UpdateMaintenanceDto) {
+    return await Maintenance.update(
+      { ...dto, updatedAt: new Date() },
+      { where: { id: dto.id }, returning: true }
+    );
   }
 
   async getAppSettings() {

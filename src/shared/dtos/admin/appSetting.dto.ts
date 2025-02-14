@@ -14,3 +14,11 @@ export class CreateMaintenanceDto {
   @IsNotEmpty()
   endAt!: Date;
 }
+
+export class UpdateMaintenanceDto extends CreateMaintenanceDto {
+  @IsNotEmpty()
+  id!: number;
+
+  @IsNotEmpty()
+  isActive!: boolean;
+}

@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { IAppSettingService } from "../../interfaces/admin/appSetting.interface";
-import { CreateMaintenanceDto, validateDto } from "@push-manager/shared";
+import {
+  CreateMaintenanceDto,
+  UpdateMaintenanceDto,
+  validateDto,
+} from "@push-manager/shared";
 
 export class AppSettingController {
   constructor(private readonly appSettingService: IAppSettingService) {}
@@ -18,6 +22,21 @@ export class AppSettingController {
       next(error);
     }
   };
+
+  updateMaintenance = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = await validateDto(UpdateMaintenanceDto, req.body);
+      const maintenance = await this.appSettingService.updateMaintenance(dto);
+      res.success(maintenance);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getAppSettings = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const appSettings = await this.appSettingService.getAppSettings();
