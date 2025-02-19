@@ -112,7 +112,9 @@ export function TargetUploadTab({
 }: TargetUploadTabProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [tempEditableIds, setTempEditableIds] = useState("");
-  const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
+  const [uploadedFileIds, setUploadedFileIds] = useState<string[]>(() => {
+    return targetIds ? targetIds.split("\n").filter((id) => id.trim()) : [];
+  });
   const [manualIds, setManualIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"file" | "manual">("file");
   const [isTestIdentifiersModalOpen, setIsTestIdentifiersModalOpen] =
@@ -183,6 +185,12 @@ export function TargetUploadTab({
     const selectedIdentifies = identifiers.map((id) => id.identify);
     setManualIds(selectedIdentifies);
     onUpdateIdentifiers(selectedIdentifies.join("\n"));
+  };
+
+  const handleSelectionChange = (identifiers: ITestIdentify[]) => {
+    const newSelectedIds = new Set(identifiers.map((id) => id.idx));
+    setSelectedIdentifierIds(newSelectedIds);
+    setTempSelectedIdentifiers(identifiers);
   };
 
   const handleAddIdentifiers = () => {
@@ -390,6 +398,7 @@ export function TargetUploadTab({
       >
         <TestIdentifies
           onIdentifiersLoad={handleIdentifiersLoad}
+          onSelectionChange={handleSelectionChange}
           initialSelectedIds={selectedIdentifierIds}
           key={isTestIdentifiersModalOpen ? "modal-open" : "modal-closed"}
         />

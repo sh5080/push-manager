@@ -43,7 +43,7 @@ interface PushFormData {
 
 export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
   const router = useRouter();
-  const [pushData, setFormData] = useState<PushFormData>({
+  const [pushData, setPushData] = useState<PushFormData>({
     targetFile: null,
     identifyArray: [],
     fName: "",
@@ -60,7 +60,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
   const [isParsingFile, setIsParsingFile] = useState(false);
 
   const handleFileUpload = (file: File | null) => {
-    setFormData((prev) => ({
+    setPushData((prev) => ({
       ...prev,
       targetFile: file,
       identifyArray: [],
@@ -93,7 +93,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
         throw new Error("식별자를 찾을 수 없습니다.");
       }
 
-      setFormData((prev) => ({
+      setPushData((prev) => ({
         ...prev,
         identifyArray: identifyArray,
       }));
@@ -112,7 +112,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
   const handleUpdateIdentifiers = (newIds: string) => {
     const newIdentifiers = newIds.split("\n").filter((id) => id.trim());
 
-    setFormData((prev) => ({
+    setPushData((prev) => ({
       ...prev,
       identifyArray: newIdentifiers,
     }));
@@ -150,6 +150,19 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
 
       if (response) {
         Toast.update(toastId, "푸시 발송이 예약되었습니다.", "success");
+        setPushData({
+          targetFile: null,
+          identifyArray: [],
+          fName: "",
+          pLink: "",
+          sendDateString: "",
+          title: "",
+          content: "",
+          appId: AppIdEnum.PROD,
+          imageEnabled: false,
+          linkEnabled: false,
+          isTestMode: false,
+        });
         onClose();
       }
     } catch (error) {
@@ -168,7 +181,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     field: string,
     value: string | (typeof AppIdEnum)[keyof typeof AppIdEnum] | boolean
   ) => {
-    setFormData((prev) => {
+    setPushData((prev) => {
       const newState = {
         ...prev,
         [field]: value,
