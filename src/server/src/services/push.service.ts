@@ -111,7 +111,14 @@ export class PushService implements IPushService {
   }
 
   async getRecentPushes(dto: GetRecentPushesDto): Promise<TblPushstsmsg[]> {
-    return this.pushStsMsgRepository.getRecentTargetPushes(dto.limit);
+    const result = await this.pushStsMsgRepository.getRecentTargetPushes(
+      dto.limit
+    );
+
+    result.map((item) => {
+      item.appId = convertAppIdToAppName(item.appId!);
+    });
+    return result;
   }
 
   async getTargetPushes(
@@ -129,15 +136,15 @@ export class PushService implements IPushService {
     page: number,
     pageSize: number
   ): Promise<PaginatedResponse<IPushMasterWithMsg>> {
-    const data = await this.pushMasterRepository.getOnePushMasterWithMsg(
+    const result = await this.pushMasterRepository.getOnePushMasterWithMsg(
       page,
       pageSize
     );
 
-    data.data.map((item) => {
+    result.data.map((item) => {
       item.appId = convertAppIdToAppName(item.appId);
     });
-    return data;
+    return result;
   }
 
   async getPushStsMsgDetail(
