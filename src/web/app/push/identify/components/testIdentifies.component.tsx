@@ -9,11 +9,13 @@ import {
 
 interface TestIdentifiesProps {
   onIdentifiersLoad: (identifies: ITestIdentify[]) => void;
+  onSelectionChange?: (identifies: ITestIdentify[]) => void;
   initialSelectedIds?: Set<number>;
 }
 
 export function TestIdentifies({
   onIdentifiersLoad,
+  onSelectionChange,
   initialSelectedIds,
 }: TestIdentifiesProps) {
   const [identifies, setIdentifies] = useState<ITestIdentify[]>([]);
@@ -65,7 +67,7 @@ export function TestIdentifies({
     const selectedIdentifiers = identifies.filter((item) =>
       newSelection.has(item.idx)
     );
-    onIdentifiersLoad(selectedIdentifiers);
+    onSelectionChange?.(selectedIdentifiers);
   };
 
   return (
