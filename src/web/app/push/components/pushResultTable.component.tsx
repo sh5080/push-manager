@@ -1,8 +1,6 @@
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { StatusChip } from "@commonComponents/dataDisplay/statusChip.component";
-// import { StatusChip } from "app/common/components/dataDisplay/statusChip.component";
 import { InfoTooltip } from "@commonComponents/dataDisplay/infoTooltip.component";
-// import { InfoTooltip } from "app/common/components/dataDisplay/infoTooltip.component";
 import { StatusGuideContent } from "app/push/components/guides/statusGuide.component";
 import { StatusChipType } from "app/types/prop.type";
 import { HiRefresh } from "react-icons/hi";
@@ -17,6 +15,7 @@ interface PushTableProps {
   rStartDate: Date | string;
   step: (typeof StepEnum)[keyof typeof StepEnum];
   fpStep?: (typeof StepEnum)[keyof typeof StepEnum];
+  appId?: string;
 }
 
 interface PaginationProps {
@@ -48,6 +47,9 @@ export function PushResultTable({
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               {pushes.length && pushes[0].cmpncode ? "캠페인 코드" : ""}
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              앱 구분
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               제목
@@ -84,6 +86,9 @@ export function PushResultTable({
               >
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {push.cmpncode ? push.cmpncode : index + 1}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {push.appId}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {push.title}
