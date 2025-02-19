@@ -25,13 +25,11 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
   }
 
   async getLastCampaignCode(transaction: Transaction): Promise<TblFpMaster[]> {
-    const [result] = await TblFpMaster.findAll({
+    return await TblFpMaster.findAll({
       attributes: ["cmpncode"],
       order: [["cmpncode", "DESC"]],
       transaction,
     });
-
-    return result ? [result] : [];
   }
 
   async createMasterRecord(
@@ -50,7 +48,7 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
         (:cmpncode, :pMode, :step, ${dto.startDate})
       `;
 
-    const result = await sequelize.query(query, {
+    return await sequelize.query(query, {
       replacements: {
         cmpncode: dto.campaignCode,
         pMode: dto.pMode,
@@ -59,8 +57,6 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
       type: QueryTypes.INSERT,
       transaction,
     });
-
-    return result;
   }
 
   async updateMasterRecord(
