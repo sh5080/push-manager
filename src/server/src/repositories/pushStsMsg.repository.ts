@@ -14,8 +14,6 @@ import {
   IPushStsMsgWithDetail,
   PaginatedResponse,
 } from "@push-manager/shared";
-import { sequelize } from "../configs/db.config";
-import { PushMsgStats } from "../types/push.type";
 
 export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
   private appIds: string[];
