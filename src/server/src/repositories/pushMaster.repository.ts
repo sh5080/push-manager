@@ -101,6 +101,7 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
         m.FPSTEP as "fpStep",
         m.RSTART_DATE as "rStartDate",
         m.REND_DATE as "rEndDate",
+        p.APPID as "appId",
         CASE 
           WHEN m.MSGIDX IS NOT NULL THEN p.TITLE 
           ELSE q.MSGTITLE 

@@ -17,7 +17,10 @@ import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
 import { PushMasterRepository } from "../repositories/pushMaster.repository";
 import { PModeEnum, StepEnum } from "@push-manager/shared";
 import { PushQueueRepository } from "../repositories/pushQueue.repository";
-import { convertToSysdate } from "../utils/transform.util";
+import {
+  convertAppIdToAppName,
+  convertToSysdate,
+} from "../utils/transform.util";
 import { createPushBaseData } from "../utils/push.util";
 import { CreateBasePushDto } from "../types/push.type";
 import { TblPushstsmsg } from "../models/TblPushstsmsg";
@@ -126,7 +129,15 @@ export class PushService implements IPushService {
     page: number,
     pageSize: number
   ): Promise<PaginatedResponse<IPushMasterWithMsg>> {
-    return this.pushMasterRepository.getOnePushMasterWithMsg(page, pageSize);
+    const data = await this.pushMasterRepository.getOnePushMasterWithMsg(
+      page,
+      pageSize
+    );
+
+    data.data.map((item) => {
+      item.appId = convertAppIdToAppName(item.appId);
+    });
+    return data;
   }
 
   async getPushStsMsgDetail(
