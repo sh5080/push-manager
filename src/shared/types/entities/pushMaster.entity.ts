@@ -13,4 +13,5 @@ export interface IPushMaster {
 export interface IPushMasterWithMsg extends IPushMaster {
   title: string;
   message: string;
+  appId: string;
 }
