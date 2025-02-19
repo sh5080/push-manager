@@ -65,7 +65,6 @@ export default function ScheduledPushPage() {
           rStartDate: push.rStartDate,
           step: push.step,
           fpStep: push.fpStep,
-          appId: push.appId!,
         }))}
         onPushSelect={setSelectedPush}
         onRefresh={handleRefresh}

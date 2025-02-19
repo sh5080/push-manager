@@ -1,4 +1,4 @@
-import { BadRequestException, envConfig } from "@push-manager/shared";
+import { BadRequestException } from "@push-manager/shared";
 
 export function transformDbToEntity<T extends Record<string, any>>(
   data: { [key: string]: any },
@@ -57,15 +57,3 @@ export function convertToSysdate(dateString: string): string {
   // SYSDATE + 분/24*60 형식으로 반환
   return `SYSDATE + ${minutesDiff}/1440`;
 }
-export const convertAppIdToAppName = (value: string): string => {
-  switch (value) {
-    case envConfig.push.keyFreed:
-      return "프리디";
-    case envConfig.push.keyFreed2:
-      return "통테";
-    case envConfig.push.keyPrd:
-      return "운영";
-    default:
-      return "확인 필요";
-  }
-};
