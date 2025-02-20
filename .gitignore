@@ -48,7 +48,7 @@ yarn-error.log*
 next-env.d.ts
 
 TblFpResult*.ts
-
+app.config.ts
 # logs
 logs
 
