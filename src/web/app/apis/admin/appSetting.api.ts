@@ -1,9 +1,14 @@
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "../base.api";
-import { IAppSettingWithMaintenance, IMaintenance } from "@push-manager/shared";
+import {
+  IAppSettingWithMaintenance,
+  IMaintenance,
+  INoticeBar,
+} from "@push-manager/shared";
 import {
   CreateMaintenanceDto,
   UpdateMaintenanceDto,
+  UpdateNoticeBarDto,
 } from "@push-manager/shared/dtos/admin/appSetting.dto";
 
 class AppSettingAPI extends BaseAPI {
@@ -24,6 +29,14 @@ class AppSettingAPI extends BaseAPI {
         body: JSON.stringify(validatedDto),
       }
     );
+  }
+
+  async updateNoticeBar(dto: UpdateNoticeBarDto) {
+    const validatedDto = await validateDto(UpdateNoticeBarDto, dto);
+    return this.customFetch<INoticeBar>(`/api/admin/appSetting/noticeBar`, {
+      method: "PUT",
+      body: JSON.stringify(validatedDto),
+    });
   }
 
   async getAppSettings(): Promise<IAppSettingWithMaintenance> {

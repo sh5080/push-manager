@@ -3,6 +3,7 @@ import { IAppSettingService } from "../../interfaces/admin/appSetting.interface"
 import {
   CreateMaintenanceDto,
   UpdateMaintenanceDto,
+  UpdateNoticeBarDto,
   validateDto,
 } from "@push-manager/shared";
 
@@ -32,6 +33,18 @@ export class AppSettingController {
       const dto = await validateDto(UpdateMaintenanceDto, req.body);
       const maintenance = await this.appSettingService.updateMaintenance(dto);
       res.success(maintenance);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  updateNoticeBar = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = await validateDto(UpdateNoticeBarDto, {
+        value: req.body,
+      });
+      const noticeBar = await this.appSettingService.updateNoticeBar(dto);
+      res.success(noticeBar);
     } catch (error) {
       next(error);
     }
