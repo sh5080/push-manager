@@ -5,6 +5,7 @@ import {
   IAppSetting,
   IMaintenance,
   UpdateMaintenanceDto,
+  UpdateNoticeBarDto,
 } from "@push-manager/shared";
 
 export class AppSettingRepository extends BaseRepository<AppSetting> {
@@ -30,6 +31,12 @@ export class AppSettingRepository extends BaseRepository<AppSetting> {
     return await Maintenance.update(
       { ...dto, updatedAt: new Date() },
       { where: { id: dto.id }, returning: true }
+    );
+  }
+  async updateNoticeBar(dto: UpdateNoticeBarDto) {
+    return await AppSetting.update(
+      { ...dto, updatedAt: new Date() },
+      { where: { key: "NOTICE_BAR" }, returning: true }
     );
   }
 
