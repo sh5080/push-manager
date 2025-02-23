@@ -37,7 +37,7 @@ export function NoticeBar({ noticeBar }: NoticeBarProps) {
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-medium">노티스바 설정</h2>
-        <Button variant="line" onClick={() => setIsModalOpen(true)}>
+        <Button variant="solid" onClick={() => setIsModalOpen(true)}>
           수정
         </Button>
       </div>
