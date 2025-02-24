@@ -40,9 +40,7 @@ export class AppSettingController {
 
   updateNoticeBar = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const dto = await validateDto(UpdateNoticeBarDto, {
-        value: req.body,
-      });
+      const dto = await validateDto(UpdateNoticeBarDto, req.body);
       const noticeBar = await this.appSettingService.updateNoticeBar(dto);
       res.success(noticeBar);
     } catch (error) {
