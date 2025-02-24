@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   IAppSetting,
   INoticeBar,
-  UpdateNoticeBarDto,
+  IAppSettingValue,
 } from "@push-manager/shared";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { NoticeBarModal } from "../modals/noticeBar.modal";
@@ -16,10 +16,11 @@ interface NoticeBarProps {
 
 export function NoticeBar({ noticeBar }: NoticeBarProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentData, setCurrentData] = useState(noticeBar);
 
   const handleSubmit = async (data: INoticeBar) => {
     try {
-      const dto: UpdateNoticeBarDto = {
+      const dto = {
         value: {
           ...data,
           startAt: new Date(data.startAt!).toISOString(),
@@ -27,7 +28,11 @@ export function NoticeBar({ noticeBar }: NoticeBarProps) {
         },
       };
       await appSettingApi.updateNoticeBar(dto);
+
+      setCurrentData({ ...currentData, value: data });
+
       Toast.success("노티스바 설정이 업데이트되었습니다.");
+      setIsModalOpen(false);
     } catch (error) {
       Toast.error("노티스바 설정 업데이트에 실패했습니다.");
     }
@@ -42,19 +47,19 @@ export function NoticeBar({ noticeBar }: NoticeBarProps) {
         </Button>
       </div>
       <div className="space-y-2 text-sm">
-        <p>링크: {noticeBar?.value.link}</p>
-        <p>내용: {noticeBar?.value.content}</p>
-        <p>시작일: {formatDate(noticeBar?.value.startAt!, "+00:00")}</p>
-        <p>종료일: {formatDate(noticeBar?.value.endAt!, "+00:00")}</p>
-        <p>활성화: {noticeBar?.value.isActive ? "예" : "아니오"}</p>
-        <p>플랫폼: {noticeBar?.value.platform}</p>
+        <p>링크: {currentData?.value.link}</p>
+        <p>내용: {currentData?.value.content}</p>
+        <p>시작일: {formatDate(currentData?.value.startAt!, "+00:00")}</p>
+        <p>종료일: {formatDate(currentData?.value.endAt!, "+00:00")}</p>
+        <p>활성화: {currentData?.value.isActive ? "예" : "아니오"}</p>
+        <p>플랫폼: {currentData?.value.platform}</p>
       </div>
 
       <NoticeBarModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
-        initialData={noticeBar}
+        initialData={currentData}
       />
     </div>
   );
