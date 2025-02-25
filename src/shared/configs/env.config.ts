@@ -31,6 +31,15 @@ const envSchema = Joi.object({
   NEXT_PUBLIC_SERVER_PORT: Joi.number().required(),
   NEXT_PUBLIC_FRONTEND_URL: Joi.string().required(),
   NEXT_PUBLIC_FRONTEND_PORT: Joi.number().required(),
+
+  FIREBASE_PROJECT_ID: Joi.string().required(),
+  FIREBASE_PRIVATE_KEY: Joi.string().required(),
+  FIREBASE_CLIENT_EMAIL: Joi.string().required(),
+  FIREBASE_CLIENT_ID: Joi.string().required(),
+  APNS_KEY_ID: Joi.string().required(),
+  APNS_TEAM_ID: Joi.string().required(),
+  APNS_PRIVATE_KEY: Joi.string().required(),
+  APNS_BUNDLE_ID: Joi.string().required(),
 });
 
 const { error, value: envVars } = envSchema.validate(process.env, {
@@ -59,6 +68,19 @@ export const envConfig: EnvConfig = {
     database: envVars.ADMIN_DB_DATABASE,
   },
   push: {
+    firebase: {
+      projectId: envVars.FIREBASE_PROJECT_ID,
+      privateKeyId: envVars.FIREBASE_PRIVATE_KEY_ID,
+      privateKey: envVars.FIREBASE_PRIVATE_KEY,
+      clientEmail: envVars.FIREBASE_CLIENT_EMAIL,
+      clientId: envVars.FIREBASE_CLIENT_ID,
+    },
+    apns: {
+      keyId: envVars.APNS_KEY_ID,
+      teamId: envVars.APNS_TEAM_ID,
+      privateKey: envVars.APNS_PRIVATE_KEY,
+      bundleId: envVars.APNS_BUNDLE_ID,
+    },
     keyPrd: envVars.PUSH_APP_KEY_PRD,
     secretPrd: envVars.PUSH_APP_SECRET_PRD,
     keyStg: envVars.PUSH_APP_KEY_STG,
