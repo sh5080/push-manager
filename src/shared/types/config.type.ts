@@ -7,7 +7,24 @@ export interface PushDBConfig {
   clientDir: string;
 }
 
+export interface FirebaseConfig {
+  projectId: string;
+  privateKeyId: string;
+  privateKey: string;
+  clientEmail: string;
+  clientId: string;
+}
+
+export interface ApnsConfig {
+  keyId: string;
+  teamId: string;
+  privateKey: string;
+  bundleId: string;
+}
+
 export interface PushConfig {
+  firebase: FirebaseConfig;
+  apns: ApnsConfig;
   keyPrd: string;
   secretPrd: string;
   keyStg: string;

@@ -14,6 +14,8 @@
     "@push-manager/shared": "1.0.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "firebase-admin": "^13.1.0",
+    "node-apn": "^3.0.0",
     "oracledb": "^6.7.1",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
