@@ -3,6 +3,8 @@ import { envConfig, AppIdEnum } from "@push-manager/shared";
 const { keyFreed, keyFreed2, keyPrd, secretFreed, secretFreed2, secretPrd } =
   envConfig.push;
 
+const { appId, apiKey } = envConfig.push.oneSignal;
+
 export const APP_CONFIG = {
   [AppIdEnum.FREED]: {
     appId: keyFreed,
@@ -16,6 +18,12 @@ export const APP_CONFIG = {
     appId: keyPrd,
     appSecret: secretPrd,
   },
+} as const;
+
+export const ONE_SIGNAL_CONFIG = {
+  [AppIdEnum.FREED]: { appId, apiKey },
+  [AppIdEnum.TEST]: { appId, apiKey },
+  [AppIdEnum.PROD]: { appId, apiKey },
 } as const;
 
 export const REX = {

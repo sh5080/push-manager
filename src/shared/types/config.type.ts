@@ -22,9 +22,15 @@ export interface ApnsConfig {
   bundleId: string;
 }
 
+export interface OneSignalConfig {
+  appId: string;
+  apiKey: string;
+}
+
 export interface PushConfig {
   firebase: FirebaseConfig;
   apns: ApnsConfig;
+  oneSignal: OneSignalConfig;
   keyPrd: string;
   secretPrd: string;
   keyStg: string;
