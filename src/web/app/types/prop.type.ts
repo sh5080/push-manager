@@ -3,6 +3,8 @@ export type ButtonVariant =
   | "point"
   | "red-point"
   | "green-point"
+  | "blue-point"
+  | "blue-solid"
   | "solid"
   | "square-line"
   | "square-point"
@@ -25,6 +27,8 @@ export type StatKey = "sent" | "opened" | "failed" | "appdel";
 export type MemberSearchType = "memNo" | "ci" | "phoneNumber";
 
 export type MaintenanceModeType = "create" | "edit";
+
+export type PushType = "oneSignal" | "fingerPush";
 
 export interface MaintenanceFormData {
   description: string;

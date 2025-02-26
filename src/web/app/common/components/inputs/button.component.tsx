@@ -30,8 +30,11 @@ export function Button({
       "rounded-full border border-red-500 text-red-500 hover:bg-red-50",
     "green-point":
       "rounded-full border border-[#00CD3C] text-[#00CD3C] hover:bg-[#00CD3C]/10",
+    "blue-point":
+      "rounded-full border border-[#0075FF] text-[#0075FF] hover:bg-[#0075FF]/10",
     solid: "rounded-full bg-[#00CD3C] text-white hover:bg-[#00B534] shadow-sm",
-
+    "blue-solid":
+      "rounded-full bg-[#0075FF] text-white hover:bg-[#0075FF]/10 shadow-sm",
     "square-line":
       "rounded-lg border border-gray-200 text-gray-900 hover:border-gray-400",
     "square-point":
