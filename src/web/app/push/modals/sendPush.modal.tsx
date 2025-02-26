@@ -21,6 +21,8 @@ import { PushContentTab } from "./tabs/tab3.modal";
 import { Toast } from "app/utils/toast.util";
 import { useRouter } from "next/navigation";
 import { Button } from "@commonComponents/inputs/button.component";
+import { PushType } from "app/types/prop.type";
+import { convertKSTtoUTC } from "@push-manager/shared/utils/date.util";
 
 interface SendPushModalProps {
   isOpen: boolean;
@@ -118,7 +120,10 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     }));
   };
 
-  const handleSubmit = async (isReady: boolean = false) => {
+  const handleSubmit = async (
+    isReady: boolean = false,
+    pushType: PushType = "fingerPush"
+  ) => {
     const toastId = Toast.loading("푸시 발송 요청 처리중...");
 
     try {
@@ -127,7 +132,10 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       if (pushData.identifyArray.length === 0) {
         throw new Error("타겟 대상을 입력하거나 파일을 업로드해주세요.");
       }
-      if (!pushData.sendDateString) {
+      if (
+        (!pushData.sendDateString && pushType === "fingerPush") ||
+        (!pushData.sendDateString && pushType === "oneSignal" && !isReady)
+      ) {
         throw new Error("발송 시간을 설정해주세요.");
       }
       if (!pushData.title.trim()) {
@@ -136,17 +144,33 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       if (!pushData.content.trim()) {
         throw new Error("푸시 내용을 입력해주세요.");
       }
+      let response;
 
-      const response = await pushApi.sendPush({
-        identifyArray: pushData.identifyArray,
-        ...(pushData.imageEnabled && { fName: pushData.fName }),
-        ...(pushData.linkEnabled && { pLink: pushData.pLink }),
-        sendDateString: pushData.sendDateString,
-        title: pushData.title,
-        content: pushData.content,
-        appId: pushData.appId,
-        isReady,
-      });
+      if (pushType === "fingerPush") {
+        response = await pushApi.sendPush({
+          identifyArray: pushData.identifyArray,
+          ...(pushData.imageEnabled && { fName: pushData.fName }),
+          ...(pushData.linkEnabled && { pLink: pushData.pLink }),
+          sendDateString: pushData.sendDateString,
+          title: pushData.title,
+          content: pushData.content,
+          appId: pushData.appId,
+          isReady,
+        });
+      }
+      if (pushType === "oneSignal") {
+        response = await pushApi.sendOneSignalPush({
+          identifyArray: pushData.identifyArray,
+          // ...(pushData.imageEnabled && { fName: pushData.fName }),
+          ...(pushData.linkEnabled && { deepLink: pushData.pLink }),
+          ...(!isReady && {
+            sendDate: convertKSTtoUTC(pushData.sendDateString),
+          }),
+          title: pushData.title,
+          content: pushData.content,
+          appId: pushData.appId,
+        });
+      }
 
       if (response) {
         Toast.update(toastId, "푸시 발송이 예약되었습니다.", "success");
@@ -207,7 +231,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-3xl bg-white rounded-2xl shadow-xl">
+        <DialogPanel className="w-full max-w-4xl bg-white rounded-2xl shadow-xl">
           <div className="flex justify-between items-center p-6 border-b border-gray-100">
             <DialogTitle className="text-lg font-semibold text-gray-900">
               타겟 푸시 예약
@@ -296,7 +320,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
           <div className="flex justify-end gap-3 p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
             <div className="flex-1">
               <p className="text-sm text-gray-600 leading-6">
-                생성을 완료한 뒤{" "}
+                핑거푸시는 예약 생성을 완료한 뒤{" "}
                 <Button
                   variant="green-point"
                   size="32"
@@ -311,32 +335,49 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
                 (즉시 발송시 예약 확정 과정 없이 바로 전송 가능하나,
                 지양해주세요.)
               </p>
+              <p className="text-sm text-gray-600 leading-6">
+                원시그널은 예약 확정 과정 없이 예약시간 설정 / 즉시 전송
+                가능합니다.
+              </p>
             </div>
-            <div className="flex gap-3">
-              <Button
-                variant="line"
-                size="38"
-                onClick={onClose}
-                disabled={isLoading}
-              >
-                취소
-              </Button>
-              <Button
-                variant="solid"
-                size="38"
-                onClick={() => handleSubmit(false)}
-                disabled={isLoading}
-              >
-                {isLoading ? "처리중..." : "생성하기"}
-              </Button>
-              <Button
-                variant="green-point"
-                size="38"
-                onClick={() => handleSubmit(true)}
-                disabled={isLoading}
-              >
-                {isLoading ? "처리중..." : "즉시 발송"}
-              </Button>
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-3">
+                <Button
+                  variant="solid"
+                  size="38"
+                  onClick={() => handleSubmit(false)}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "처리중..." : "핑거푸시 예약 생성"}
+                </Button>
+
+                <Button
+                  variant="green-point"
+                  size="38"
+                  onClick={() => handleSubmit(true)}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "처리중..." : "핑거푸시 즉시 발송"}
+                </Button>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  variant="blue-solid"
+                  size="38"
+                  onClick={() => handleSubmit(false, "oneSignal")}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "처리중..." : "원시그널 예약 생성"}
+                </Button>
+                <Button
+                  variant="blue-point"
+                  size="38"
+                  onClick={() => handleSubmit(true, "oneSignal")}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "처리중..." : "원시그널 즉시 발송"}
+                </Button>
+              </div>
             </div>
           </div>
         </DialogPanel>
