@@ -1,5 +1,5 @@
+import { envConfig } from "@push-manager/shared";
 import { ServiceAccount } from "firebase-admin";
-import { envConfig } from "@push-manager/shared/configs/env.config";
 
 const { firebase, apns, oneSignal } = envConfig.push;
 const { projectId, privateKeyId, privateKey, clientEmail, clientId } = firebase;
