@@ -9,7 +9,11 @@ import {
   ConfirmPushQueueDto,
   validateDto,
   GetTargetPushesDto,
+  OneSignalPushDto,
 } from "@push-manager/shared";
+import { initFirebase } from "../configs/firebase.config";
+import { pushConfig } from "../configs/push.config";
+import apn from "node-apn";
 
 export class PushController {
   constructor(private readonly pushService: IPushService) {}
@@ -135,38 +139,90 @@ export class PushController {
       next(error);
     }
   };
-  // getPushHistory = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const page = Number(req.query.page) || 1;
-  //     const limit = Number(req.query.limit) || 10;
-  //     const history = await this.pushService.getPushHistory(page, limit);
-  //     res.success(history);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
 
-  // getPushStats = async (_req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const stats = await this.pushService.getPushStats();
-  //     res.success(stats);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+  validateToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const token = req.query.token as string;
+      const admin = initFirebase();
+      // FCM 검증
+      try {
+        await admin
+          .messaging()
+          .send({ token, data: { validate: "true" } }, true);
+        return res.success({ isValid: true, platform: "FCM" });
+      } catch (fcmError) {
+        // APNS 검증
+        try {
+          const apnProvider = new apn.Provider({
+            token: {
+              key: pushConfig.apns.privateKey,
+              keyId: pushConfig.apns.keyId,
+              teamId: pushConfig.apns.teamId,
+            },
+            production: true, // 개발용은 false, 프로덕션은 true
+          });
 
-  // getPushDetail = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const campaignCode = Number(req.params.campaignCode);
-  //     const push = await this.pushService.getPushDetail(campaignCode);
+          const notification = new apn.Notification();
+          notification.topic = pushConfig.apns.bundleId;
 
-  //     if (!push) {
-  //       throw new NotFoundException("푸시를 찾을 수 없습니다.");
-  //     }
+          const result = await apnProvider.send(notification, token);
+          apnProvider.shutdown();
 
-  //     res.success(push);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+          return res.success({
+            isValid: !result.failed.length,
+            platform: "APNS",
+            response: result,
+          });
+        } catch (apnsError: any) {
+          return res.success({
+            isValid: false,
+            platform: "APNS",
+            reason: apnsError.message,
+          });
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+  sendOneSignalPush = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = await validateDto(OneSignalPushDto, req.body);
+      const { identifyArray, title, content, subtitle, deepLink, sendDate } =
+        dto;
+      const url = "https://api.onesignal.com/notifications?c=push";
+      const options = {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          Authorization: `Key ${pushConfig.oneSignal.apiKey}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          app_id: pushConfig.oneSignal.appId,
+          include_aliases: { external_id: identifyArray },
+          headings: { en: title },
+          subtitle: { en: subtitle },
+          contents: { en: content },
+          url: deepLink,
+          target_channel: "push",
+          send_after: sendDate,
+        }),
+      };
+
+      const data = await fetch(url, options);
+
+      const result = await data.json();
+      if (result.errors) {
+        throw new Error(result.errors[0]);
+      }
+      res.success(result);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

@@ -22,7 +22,8 @@ router.get("/detail/:idx", pushController.getPushStsMsgDetail);
 router.get("/queue/:cmpncode", pushController.getPushQueues);
 router.post("/queue/:cmpncode", pushController.addToQueue);
 router.patch("/queue/confirm", pushController.confirmPushQueue);
-// router.get("/stats", pushController.getPushStats);
-// router.get("/:campaignCode", pushController.getPushDetail);
+
+router.get("/token", pushController.validateToken);
+router.post("/oneSignal", pushController.sendOneSignalPush);
 
 export const pushRoutes = router;
