@@ -3,7 +3,6 @@ import { IMemberService } from "../../interfaces/admin/member.interface";
 import { MemberRepository } from "../../repositories/admin/member.repository";
 
 import { NewbestService } from "../external/newbest.service";
-import { Member } from "@/src/models/admin/init-models";
 
 export class MemberService implements IMemberService {
   constructor(

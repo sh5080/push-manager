@@ -94,13 +94,6 @@ export function PushConditionTab({
             onChange={(value) => onChange("sendDateString", value)}
           />
         </div>
-        <p className="mt-1 text-sm text-gray-500">
-          안정적인 발송을 위해 현재 시간보다 최소한 100건 당 1분 뒤로
-          설정해주세요.
-        </p>
-        <p className="mt-1 text-sm text-gray-500">
-          과거 시간으로 식별자가 삽입될 경우 발송에 실패할 수 있습니다.
-        </p>
       </div>
 
       <div>
