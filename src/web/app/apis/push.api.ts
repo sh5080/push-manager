@@ -6,6 +6,7 @@ import {
   AddToQueueDto,
   ConfirmPushQueueDto,
   GetTargetPushesDto,
+  OneSignalPushDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import {
@@ -79,6 +80,14 @@ export class PushAPI extends BaseAPI {
     });
 
     return this.customFetch<SendPushResponse>("/api/push", {
+      method: "POST",
+      body: JSON.stringify(validatedDto),
+    });
+  }
+  async sendOneSignalPush(dto: OneSignalPushDto): Promise<SendPushResponse> {
+    const validatedDto = await validateDto(OneSignalPushDto, dto);
+
+    return this.customFetch<SendPushResponse>("/api/push/oneSignal", {
       method: "POST",
       body: JSON.stringify(validatedDto),
     });

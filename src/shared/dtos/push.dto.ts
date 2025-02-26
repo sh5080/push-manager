@@ -198,3 +198,35 @@ export class AddToQueueDto {
   @IsNotEmpty({ message: "캠페인 코드는 필수입니다." })
   cmpncode!: number;
 }
+
+export class OneSignalPushDto {
+  @IsArray()
+  @ArrayMinSize(1, { message: "최소 1개 이상의 식별자가 필요합니다." })
+  @IsString({ each: true })
+  identifyArray!: string[];
+
+  @IsString()
+  @IsNotEmpty({ message: "타이틀은 필수입니다." })
+  title!: string;
+
+  @IsString()
+  @IsOptional()
+  subtitle?: string;
+
+  @IsString()
+  @IsNotEmpty({ message: "내용은 필수입니다." })
+  content!: string;
+
+  @IsUrl()
+  @IsOptional()
+  deepLink?: string;
+
+  @IsDateString()
+  @IsOptional()
+  sendDate?: string;
+
+  @IsEnum(AppIdEnum, {
+    message: "유효하지 않은 appId입니다. (FREED: 0, TEST: 1, PROD: 2)",
+  })
+  appId!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+}
