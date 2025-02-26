@@ -1,7 +1,7 @@
 import { ServiceAccount } from "firebase-admin";
 import { envConfig } from "@push-manager/shared/configs/env.config";
 
-const { firebase, apns } = envConfig.push;
+const { firebase, apns, oneSignal } = envConfig.push;
 const { projectId, privateKeyId, privateKey, clientEmail, clientId } = firebase;
 const { keyId, teamId, privateKey: apnsPrivateKey, bundleId } = apns;
 
@@ -27,4 +27,5 @@ export const pushConfig = {
     privateKey: apnsPrivateKey,
     bundleId,
   },
+  oneSignal: { appId: oneSignal.appId, apiKey: oneSignal.apiKey },
 };

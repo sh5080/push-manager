@@ -81,6 +81,10 @@ export const envConfig: EnvConfig = {
       privateKey: envVars.APNS_PRIVATE_KEY,
       bundleId: envVars.APNS_BUNDLE_ID,
     },
+    oneSignal: {
+      appId: envVars.ONESIGNAL_APP_ID,
+      apiKey: envVars.ONESIGNAL_API_KEY,
+    },
     keyPrd: envVars.PUSH_APP_KEY_PRD,
     secretPrd: envVars.PUSH_APP_SECRET_PRD,
     keyStg: envVars.PUSH_APP_KEY_STG,
