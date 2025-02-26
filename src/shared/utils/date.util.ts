@@ -73,3 +73,14 @@ export const formatDateString = (date: string) => {
     )} ${date.slice(8, 10)}:${date.slice(10, 12)}`;
   else return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`;
 };
+
+export const convertKSTtoUTC = (kstDateTimeString: string): string => {
+  // "2025-02-26T11:28" 형식의 문자열을 Date 객체로 변환
+  const kstDate = new Date(kstDateTimeString);
+
+  // KST는 UTC+9이므로 9시간을 빼서 UTC로 변환
+  const utcTime = new Date(kstDate.getTime() - 9 * 60 * 60 * 1000);
+
+  // ISO 형식으로 변환 (YYYY-MM-DDTHH:MM:SS.sssZ)
+  return utcTime.toISOString();
+};
