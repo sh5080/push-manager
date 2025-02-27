@@ -9,14 +9,16 @@ import { getMessageStatusStyle } from "app/utils/chip/pushResult/style.util";
 import { getMessageStatusText } from "app/utils/chip/pushResult/text.util";
 import { InfoTooltip } from "@commonComponents/dataDisplay/infoTooltip.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
+import { useSort } from "app/common/hooks/useTableSort.hook";
+import { TableHeader } from "app/types/prop.type";
 
-const TABLE_HEADERS = [
-  { key: "identify", label: "식별자" },
-  { key: "deviceType", label: "디바이스" },
-  { key: "result", label: "결과" },
-  { key: "opened", label: "오픈 여부" },
-  { key: "sendDate", label: "발송 시각" },
-] as const;
+const TABLE_HEADERS: TableHeader[] = [
+  { key: "identify", label: "식별자", sortable: true },
+  { key: "deviceType", label: "디바이스", sortable: true },
+  { key: "result", label: "결과", sortable: true },
+  { key: "opened", label: "오픈 여부", sortable: true },
+  { key: "sendDate", label: "발송 시각", sortable: true },
+];
 
 const DEVICE_LABELS: Record<string, string> = {
   A: "Android",
@@ -34,10 +36,14 @@ export function PushStatsDetail({
   result,
   openinfo,
 }: PushStatsDetailProps) {
-  const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const paginatedResults = result.slice(
+  // 정렬 기능 추가
+  const { items: sortedResults, renderSortButton } =
+    useSort<IPushStsMsgResult>(result);
+
+  const paginatedResults = sortedResults.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -51,7 +57,7 @@ export function PushStatsDetail({
     result: IPushStsMsgResult,
     openinfo: IPushStsMsgOpenInfo[],
     key: string
-  ) => {
+  ): ReactNode => {
     switch (key) {
       case "identify":
         return result.tokenOption.identify;
@@ -86,7 +92,7 @@ export function PushStatsDetail({
           ? formatDate(matchingOpenInfo.openDate, "+09:00")
           : "-";
       default:
-        return result[key as keyof IPushStsMsgResult];
+        return String(result[key as keyof IPushStsMsgResult] || "");
     }
   };
 
@@ -95,12 +101,14 @@ export function PushStatsDetail({
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            {TABLE_HEADERS.map(({ key, label }) => (
+            {TABLE_HEADERS.map(({ key, label, sortable }) => (
               <th
                 key={key}
                 className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                {label}
+                {sortable
+                  ? renderSortButton(key as keyof IPushStsMsgResult, label)
+                  : label}
               </th>
             ))}
           </tr>
@@ -113,7 +121,7 @@ export function PushStatsDetail({
                   key={key}
                   className="py-4 whitespace-nowrap text-center text-sm text-gray-500"
                 >
-                  {renderCell(result, openinfo, key) as ReactNode}
+                  {renderCell(result, openinfo, key)}
                 </td>
               ))}
             </tr>

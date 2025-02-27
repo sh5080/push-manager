@@ -3,6 +3,7 @@ import { formatDate } from "@push-manager/shared/utils/date.util";
 import { getYNChipStyle } from "app/utils/chip/common/style.util";
 import { getYNChipText } from "app/utils/chip/common/text.util";
 import { usePagination } from "app/common/hooks/usePagination.hook";
+import { useSort } from "app/common/hooks/useTableSort.hook";
 import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
 import { useState } from "react";
 import { Button } from "@commonComponents/inputs/button.component";
@@ -10,20 +11,24 @@ import { MaintenanceModal } from "../modals/maintenance.modal";
 import { CreateMaintenanceDto } from "@push-manager/shared/dtos/admin/appSetting.dto";
 import { appSettingApi } from "app/apis/admin/appSetting.api";
 import { Toast } from "app/utils/toast.util";
-import { MaintenanceFormData, MaintenanceModeType } from "app/types/prop.type";
+import {
+  MaintenanceFormData,
+  MaintenanceModeType,
+  TableHeader,
+} from "app/types/prop.type";
 
 interface MaintenanceProps {
   maintenances: IMaintenance[];
 }
 
-const TABLE_HEADERS = [
-  { key: "id", label: "" },
+const TABLE_HEADERS: TableHeader[] = [
+  { key: "id", label: "ID", sortable: true },
   { key: "description", label: "내용" },
   { key: "noticeAt", label: "공지일" },
-  { key: "startAt", label: "점검 시작일" },
-  { key: "endAt", label: "점검 종료일" },
+  { key: "startAt", label: "점검 시작일", sortable: true },
+  { key: "endAt", label: "점검 종료일", sortable: true },
   { key: "isActive", label: "상태" },
-] as const;
+];
 
 export function Maintenance({
   maintenances: initialMaintenances,
@@ -35,6 +40,9 @@ export function Maintenance({
   >();
   const [mode, setMode] = useState<MaintenanceModeType>("create");
 
+  const { items: sortedMaintenances, renderSortButton } =
+    useSort<IMaintenance>(initialMaintenances);
+
   const {
     currentPage,
     pageSize,
@@ -43,12 +51,9 @@ export function Maintenance({
     handlePageChange,
     handlePageSizeChange,
     totalItems,
-  } = usePagination<IMaintenance>(maintenances);
+  } = usePagination<IMaintenance>(sortedMaintenances);
 
-  const renderCell = (
-    maintenance: IMaintenance,
-    key: (typeof TABLE_HEADERS)[number]["key"]
-  ) => {
+  const renderCell = (maintenance: IMaintenance, key: TableHeader["key"]) => {
     switch (key) {
       case "isActive":
         return (
@@ -69,7 +74,7 @@ export function Maintenance({
       case "description":
         return <div className="whitespace-normal">{maintenance[key]}</div>;
       default:
-        return maintenance[key];
+        return String(maintenance[key as keyof IMaintenance]);
     }
   };
 
@@ -160,12 +165,14 @@ export function Maintenance({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              {TABLE_HEADERS.map(({ key, label }) => (
+              {TABLE_HEADERS.map(({ key, label, sortable }) => (
                 <th
                   key={key}
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  {label}
+                  {sortable
+                    ? renderSortButton(key as keyof IMaintenance, label)
+                    : label}
                 </th>
               ))}
             </tr>
