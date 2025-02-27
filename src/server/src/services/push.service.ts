@@ -125,11 +125,17 @@ export class PushService implements IPushService {
     dto: GetTargetPushesDto
   ): Promise<PaginatedResponse<TblPushstsmsg>> {
     const { targetMode } = dto;
+    let result: PaginatedResponse<TblPushstsmsg>;
     if (targetMode) {
       const { appId } = APP_CONFIG[targetMode];
-      return this.pushStsMsgRepository.getTargetPushes(dto, [appId]);
+      result = await this.pushStsMsgRepository.getTargetPushes(dto, [appId]);
+    } else {
+      result = await this.pushStsMsgRepository.getTargetPushes(dto);
     }
-    return this.pushStsMsgRepository.getTargetPushes(dto);
+    result.data.map((item) => {
+      item.appId = convertAppIdToAppName(item.appId!);
+    });
+    return result;
   }
 
   async getScheduledPushes(
