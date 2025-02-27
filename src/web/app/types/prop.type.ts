@@ -37,3 +37,9 @@ export interface MaintenanceFormData {
   endAt: string;
   isActive: boolean;
 }
+
+export interface TableHeader {
+  key: string;
+  label: string;
+  sortable?: boolean;
+}
