@@ -35,7 +35,7 @@ const TABLE_HEADERS: TableHeader[] = [
   { key: "name", label: "쿠폰명", sortable: true },
   { key: "discountValue", label: "할인금액", sortable: true },
   { key: "status", label: "상태", sortable: true },
-  { key: "dates", label: "날짜 정보", sortable: false },
+  { key: "dates", label: "날짜 정보", sortable: true },
 ];
 
 export function CouponList({
