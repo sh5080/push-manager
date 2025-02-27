@@ -135,23 +135,25 @@ export class PushStsMsgRepository extends BaseRepository<TblPushstsmsg> {
 
     const pushMessages = await TblPushstsmsg.findAll({
       where: Sequelize.literal(`
-        idx IN (
-          SELECT idx FROM (
-            SELECT idx FROM tbl_pushstsmsg 
+      IDX IN (
+        SELECT IDX FROM (
+          SELECT A.*, ROWNUM AS RN FROM (
+            SELECT IDX FROM TBL_PUSHSTSMSG 
             WHERE APPID IN (:appIds) AND
             SENDDATE BETWEEN TO_DATE(:startDate, 'YYYY-MM-DD') 
-            AND TO_DATE(:endDate, 'YYYY-MM-DD') + 0.99999
+            AND TO_DATE(:endDate, 'YYYY-MM-DD')
             ${step ? "AND STEP = :step" : ""}
             ${title ? "AND TITLE LIKE :title" : ""}
-            ORDER BY idx DESC
-          ) WHERE ROWNUM <= :endRow
-        ) AND ROWNUM > :startRow
-      `),
+            ORDER BY IDX DESC
+          ) A WHERE ROWNUM <= :endRow
+        ) WHERE RN >= :startRow
+      )
+    `),
       replacements: {
         appIds: appIds ? appIds : this.appIds,
         startDate,
         endDate,
-        startRow: (page - 1) * pageSize,
+        startRow: (page - 1) * pageSize + 1,
         endRow: page * pageSize,
         ...(step ? { step } : {}),
         ...(title ? { title: `%${title}%` } : {}),
