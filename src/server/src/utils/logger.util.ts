@@ -8,7 +8,7 @@ export class DatabaseLogger {
   private logger: any;
 
   private constructor() {
-    const logDir = path.join(process.cwd(), "logs", "database");
+    const logDir = path.join(process.cwd(), "logs");
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });
     }
@@ -39,6 +39,13 @@ export class DatabaseLogger {
           maxSize: "100m",
           level: "error",
         }),
+        new transports.DailyRotateFile({
+          filename: "logs/push/onesignal-%DATE%.log",
+          datePattern: "YYYY-MM-DD",
+          zippedArchive: true,
+          maxFiles: "30d",
+          maxSize: "100m",
+        }),
       ],
     });
   }
@@ -64,6 +71,24 @@ export class DatabaseLogger {
       stack: error.stack,
       query,
       parameters,
+    });
+  }
+
+  logPushEvent(message: string, meta: any) {
+    this.logger.info(message, {
+      ...meta,
+      service: "OneSignal",
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  logPushError(message: string, error: Error, meta: any) {
+    this.logger.error(message, {
+      ...meta,
+      error: error.message,
+      stack: error.stack,
+      service: "OneSignal",
+      timestamp: new Date().toISOString(),
     });
   }
 }
