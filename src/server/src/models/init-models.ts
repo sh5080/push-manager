@@ -4,6 +4,11 @@ import type {
   IfAppInstallTemp09Attributes,
   IfAppInstallTemp09CreationAttributes,
 } from "./IfAppInstallTemp09";
+import { OneSignalSendLog as _OneSignalSendLog } from "./OneSignalSendLog";
+import type {
+  OneSignalSendLogAttributes,
+  OneSignalSendLogCreationAttributes,
+} from "./OneSignalSendLog";
 import { SyncCi01 as _SyncCi01 } from "./SyncCi01";
 import type {
   SyncCi01Attributes,
@@ -489,6 +494,7 @@ import type {
 export {
   _IfAppInstallTemp09 as IfAppInstallTemp09,
   _SyncCi01 as SyncCi01,
+  _OneSignalSendLog as OneSignalSendLog,
   _TabAppBestUser as TabAppBestUser,
   _TabAppTempCareCi as TabAppTempCareCi,
   _TabAppTempCi as TabAppTempCi,
@@ -593,6 +599,8 @@ export type {
   IfAppInstallTemp09CreationAttributes,
   SyncCi01Attributes,
   SyncCi01CreationAttributes,
+  OneSignalSendLogAttributes,
+  OneSignalSendLogCreationAttributes,
   TabAppBestUserAttributes,
   TabAppBestUserCreationAttributes,
   TabAppTempCareCiAttributes,
@@ -792,6 +800,7 @@ export type {
 export function initModels(sequelize: Sequelize) {
   const IfAppInstallTemp09 = _IfAppInstallTemp09.initModel(sequelize);
   const SyncCi01 = _SyncCi01.initModel(sequelize);
+  const OneSignalSendLog = _OneSignalSendLog.initModel(sequelize);
   const TabAppBestUser = _TabAppBestUser.initModel(sequelize);
   const TabAppTempCareCi = _TabAppTempCareCi.initModel(sequelize);
   const TabAppTempCi = _TabAppTempCi.initModel(sequelize);
@@ -894,6 +903,7 @@ export function initModels(sequelize: Sequelize) {
   return {
     IfAppInstallTemp09: IfAppInstallTemp09,
     SyncCi01: SyncCi01,
+    OneSignalSendLog: OneSignalSendLog,
     TabAppBestUser: TabAppBestUser,
     TabAppTempCareCi: TabAppTempCareCi,
     TabAppTempCi: TabAppTempCi,
