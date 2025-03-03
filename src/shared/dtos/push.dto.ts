@@ -203,7 +203,7 @@ export class AddToQueueDto {
 export class OneSignalPushDto {
   @IsArray()
   @ArrayMinSize(1, { message: "최소 1개 이상의 식별자가 필요합니다." })
-  @ArrayMaxSize(2000, { message: "식별자는 최대 2000개까지만 가능합니다." })
+  @ArrayMaxSize(200000, { message: "식별자는 최대 20만개까지만 가능합니다." })
   @IsString({ each: true })
   identifyArray!: string[];
 
