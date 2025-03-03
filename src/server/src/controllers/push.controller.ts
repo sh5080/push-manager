@@ -14,9 +14,13 @@ import {
 import { initFirebase } from "../configs/firebase.config";
 import { pushConfig } from "../configs/push.config";
 import apn from "node-apn";
+import { IOneSignalService } from "../interfaces/oneSignal.interface";
 
 export class PushController {
-  constructor(private readonly pushService: IPushService) {}
+  constructor(
+    private readonly pushService: IPushService,
+    private readonly oneSignalService: IOneSignalService
+  ) {}
 
   createPushes = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -192,34 +196,7 @@ export class PushController {
   ) => {
     try {
       const dto = await validateDto(OneSignalPushDto, req.body);
-      const { identifyArray, title, content, subtitle, deepLink, sendDate } =
-        dto;
-      const url = "https://api.onesignal.com/notifications?c=push";
-      const options = {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          Authorization: `Key ${pushConfig.oneSignal.apiKey}`,
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          app_id: pushConfig.oneSignal.appId,
-          include_aliases: { external_id: identifyArray },
-          headings: { en: title },
-          subtitle: { en: subtitle },
-          contents: { en: content },
-          url: deepLink,
-          target_channel: "push",
-          send_after: sendDate,
-        }),
-      };
-
-      const data = await fetch(url, options);
-
-      const result = await data.json();
-      if (result.errors) {
-        throw new Error(result.errors[0]);
-      }
+      const result = await this.oneSignalService.sendPush(dto);
       res.success(result);
     } catch (error) {
       next(error);

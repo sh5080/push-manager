@@ -1,4 +1,4 @@
-import { CreatePushDto } from "@push-manager/shared";
+import { CreatePushDto, OneSignalPushDto } from "@push-manager/shared";
 
 export interface CreateBasePushDto {
   dto: CreatePushDto;
@@ -13,4 +13,9 @@ export interface PushMsgStats {
     failed: number;
     opened: number;
   };
+}
+
+export interface PushNotificationJobData extends OneSignalPushDto {
+  batch: string[];
+  logId: number;
 }

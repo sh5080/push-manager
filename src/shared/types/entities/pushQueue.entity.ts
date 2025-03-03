@@ -57,3 +57,9 @@ export interface IPushQueue {
   wDate?: () => string;
   uDate?: () => string;
 }
+
+export interface PushQueueResponse {
+  message: string;
+  totalBatches: number;
+  logId: number;
+}
