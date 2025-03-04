@@ -10,6 +10,10 @@ import { initModels } from "./models/init-models";
 import { initializeRelations } from "./models/relations";
 import { initAdminModels } from "./models/admin/init-models";
 import { initializeAdminRelations } from "./models/admin/relations";
+import { BullAdapter } from "@bull-board/api/bullAdapter";
+import { createBullBoard } from "@bull-board/api";
+import { ExpressAdapter } from "@bull-board/express";
+import { QueueService } from "./services/queue.service";
 
 const app = express();
 const port = envConfig.server.port;
@@ -43,6 +47,21 @@ sequelizeAdmin
     console.log("Sequelize Admin Models and Relations initialized");
   })
   .catch(console.error);
+
+// QueueService 인스턴스 생성
+const queueService = new QueueService();
+
+// Bull Board 설정
+const serverAdapter = new ExpressAdapter();
+createBullBoard({
+  queues: [new BullAdapter(queueService.getPushQueue())],
+  serverAdapter,
+});
+
+console.log("Bull Board initialized");
+
+// Bull Board 라우트 설정
+app.use("/admin/queues", serverAdapter.getRouter());
 
 app.use(responseMiddleware());
 app.use("/api", apiRoutes);
