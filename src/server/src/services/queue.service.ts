@@ -66,4 +66,8 @@ export class QueueService {
       failed: await this.pushQueue.getFailedCount(),
     };
   }
+
+  getPushQueue() {
+    return this.pushQueue;
+  }
 }
