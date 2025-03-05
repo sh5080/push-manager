@@ -51,3 +51,8 @@ TblFpResult*.ts
 
 # logs
 logs
+
+# db
+src/server/src/db/meta
+src/server/src/db/*.json
+*.sql

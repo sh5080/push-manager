@@ -3,6 +3,8 @@ import { Sequelize } from "sequelize";
 import { envConfig } from "@push-manager/shared";
 import fs from "fs";
 import path from "path";
+import { drizzle as drizzleORM } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 const logDMLQuery = (query: string) => {
   const isDMLQuery = /^(?!BEGIN|COMMIT).*\b(INSERT|UPDATE|DELETE)\b/i.test(
@@ -26,6 +28,24 @@ Query: ${query}
     fs.appendFileSync(path.join(logDir, `${dateStr}.log`), logEntry);
   }
 };
+
+const client = postgres({
+  host: envConfig.adminDB.host,
+  port: envConfig.adminDB.port,
+  database: envConfig.adminDB.database,
+  username: envConfig.adminDB.username,
+  password: envConfig.adminDB.password,
+  max: 10,
+  idle_timeout: 20,
+  connect_timeout: 10,
+  onnotice: (notice) => console.log("Database notice:", notice),
+  debug: (connection, query, params, types) => {
+    logDMLQuery(query);
+  },
+});
+
+export const drizzle = drizzleORM(client);
+
 oracledb.initOracleClient({ libDir: envConfig.pushDB.clientDir });
 oracledb.fetchAsString = [oracledb.NUMBER];
 
