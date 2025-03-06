@@ -47,53 +47,65 @@ export class OneSignalSendLog
           type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true,
+          field: "ID",
         },
         totalCount: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          field: "TOTAL_COUNT",
         },
         completedCount: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          field: "COMPLETED_COUNT",
         },
         status: {
           type: DataTypes.STRING(20),
           allowNull: false,
+          field: "STATUS",
         },
         pushId: {
           type: DataTypes.STRING(100),
           allowNull: true,
+          field: "PUSH_ID",
         },
         lastProcessedId: {
           type: DataTypes.STRING(100),
           allowNull: true,
+          field: "LAST_PROCESSED_ID",
         },
         errorMessage: {
           type: DataTypes.TEXT,
           allowNull: true,
+          field: "ERROR_MESSAGE",
         },
         startedAt: {
           type: DataTypes.DATE,
           allowNull: false,
+          field: "STARTED_AT",
         },
         completedAt: {
           type: DataTypes.DATE,
           allowNull: true,
+          field: "COMPLETED_AT",
         },
         updatedAt: {
           type: DataTypes.DATE,
           allowNull: false,
+          field: "UPDATED_AT",
         },
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false,
           defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+          field: "CREATED_AT",
         },
       },
       {
         sequelize,
         tableName: "ONE_SIGNAL_SEND_LOG",
         timestamps: true,
+        underscored: true,
       }
     );
 
