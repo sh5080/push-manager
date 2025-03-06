@@ -5,6 +5,8 @@ import { IOneSignalService } from "../interfaces/oneSignal.interface";
 import { QueueService } from "./queue.service";
 import { OneSignalPushDto } from "@push-manager/shared";
 import { DatabaseLogger } from "../utils/logger.util";
+import { sequelize } from "../configs/db.config";
+import { QueryTypes } from "sequelize";
 
 export class OneSignalService implements IOneSignalService {
   private readonly BATCH_SIZE = 2000;
@@ -138,15 +140,29 @@ export class OneSignalService implements IOneSignalService {
       totalIdentifiers: identifyArray.length,
       context: "PushRequest",
     });
-
-    const sendLog = await OneSignalSendLog.create({
-      totalCount: identifyArray.length,
-      completedCount: 0,
-      status: "P",
-      startedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    const [result] = await sequelize.query<{
+      NEXTVAL: number;
+    }>(`SELECT ONE_SIGNAL_SEND_LOG_SEQ.NEXTVAL FROM DUAL`, {
+      type: QueryTypes.SELECT,
     });
+    if (!result?.NEXTVAL) {
+      throw new Error(
+        `Failed to get next value for sequence: ONE_SIGNAL_SEND_LOG_SEQ`
+      );
+    }
+
+    const sendLog = await OneSignalSendLog.create(
+      {
+        id: result.NEXTVAL,
+        totalCount: identifyArray.length,
+        completedCount: 0,
+        status: "P",
+        startedAt: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      { raw: true, mapToModel: true }
+    );
 
     this.logger.logPushEvent("Created send log", {
       logId: sendLog.id,
@@ -169,7 +185,6 @@ export class OneSignalService implements IOneSignalService {
         ...dto,
       });
     }
-
     return {
       message: "발송 작업이 큐에 등록되었습니다.",
       totalBatches: batches.length,
