@@ -75,7 +75,7 @@ export class OneSignalSendLog
           field: "LAST_PROCESSED_ID",
         },
         errorMessage: {
-          type: DataTypes.TEXT,
+          type: DataTypes.STRING(4000),
           allowNull: true,
           field: "ERROR_MESSAGE",
         },
