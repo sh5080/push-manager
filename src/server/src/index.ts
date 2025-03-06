@@ -56,7 +56,10 @@ const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath("/admin/queues");
 
 createBullBoard({
-  queues: [new BullAdapter(queueService.getPushQueue())],
+  queues: [
+    new BullAdapter(queueService.getQueue("default")),
+    new BullAdapter(queueService.getQueue("bullBoard")),
+  ],
   serverAdapter,
 });
 
