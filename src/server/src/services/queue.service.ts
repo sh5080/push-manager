@@ -22,7 +22,7 @@ export class QueueService {
         return redisService.getClient(`bullBoard-${type}`);
       },
     });
-    this.pushQueue = new Queue("push-notifications", {
+    this.pushQueue = new Queue("push", {
       createClient: (type) => {
         return redisService.getClient(`push-${type}`);
       },
@@ -38,14 +38,16 @@ export class QueueService {
   }
 
   async addPushJob(data: PushNotificationJobData) {
+    console.log("data: ", data);
     try {
-      return await this.pushQueue.add(data, {
+      const result = await this.pushQueue.add(data, {
         attempts: 3,
         backoff: {
           type: "exponential",
           delay: 1000,
         },
       });
+      return result;
     } catch (error) {
       this.logger.logPushError("Failed to add job to queue", error as Error, {
         context: "Queue",

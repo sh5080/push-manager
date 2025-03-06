@@ -59,6 +59,7 @@ createBullBoard({
   queues: [
     new BullAdapter(queueService.getQueue("default")),
     new BullAdapter(queueService.getQueue("bullBoard")),
+    new BullAdapter(queueService.getQueue("push")),
   ],
   serverAdapter,
 });
