@@ -4,15 +4,33 @@ import { PushNotificationJobData } from "../types/push.type";
 import { DatabaseLogger } from "../utils/logger.util";
 
 export class QueueService {
+  private defaultQueue: Queue.Queue;
+  private bullBoardQueue: Queue.Queue;
   private pushQueue: Queue.Queue<PushNotificationJobData>;
   private readonly logger = DatabaseLogger.getInstance();
+  private queues: Map<string, Queue.Queue> = new Map();
 
   constructor() {
-    const redisClient = RedisService.getInstance().getClient();
-
-    this.pushQueue = new Queue("push-notifications", {
-      createClient: () => redisClient,
+    const redisService = RedisService.getInstance();
+    this.defaultQueue = new Queue("default", {
+      createClient: (type) => {
+        return redisService.getClient(`default-${type}`);
+      },
     });
+    this.bullBoardQueue = new Queue("bullBoard", {
+      createClient: (type) => {
+        return redisService.getClient(`bullBoard-${type}`);
+      },
+    });
+    this.pushQueue = new Queue("push-notifications", {
+      createClient: (type) => {
+        return redisService.getClient(`push-${type}`);
+      },
+    });
+
+    this.queues.set("default", this.defaultQueue);
+    this.queues.set("bullBoard", this.bullBoardQueue);
+    this.queues.set("push", this.pushQueue);
 
     this.pushQueue.on("error", (error) => {
       this.logger.logPushError("Queue error", error, { context: "Queue" });
@@ -67,7 +85,11 @@ export class QueueService {
     };
   }
 
-  getPushQueue() {
+  getQueue(name: string): Queue.Queue {
+    return this.queues.get(name) || this.defaultQueue;
+  }
+
+  getPushQueue(): Queue.Queue<PushNotificationJobData> {
     return this.pushQueue;
   }
 }

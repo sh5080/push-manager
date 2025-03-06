@@ -4,19 +4,12 @@ import { DatabaseLogger } from "../utils/logger.util";
 
 export class RedisService {
   private static instance: RedisService;
-  private client: Redis;
   private readonly logger = DatabaseLogger.getInstance();
 
+  private clientMap: Map<string, Redis> = new Map();
+
   private constructor() {
-    this.client = new Redis(redisConfig);
-
-    this.client.on("connect", () => {
-      this.logger.logPushEvent("Redis connected", { context: "Redis" });
-    });
-
-    this.client.on("error", (error) => {
-      this.logger.logPushError("Redis error", error, { context: "Redis" });
-    });
+    this.createClient("default");
   }
 
   public static getInstance(): RedisService {
@@ -26,7 +19,28 @@ export class RedisService {
     return RedisService.instance;
   }
 
-  public getClient(): Redis {
-    return this.client;
+  public getClient(name: string = "default"): Redis {
+    if (!this.clientMap.has(name)) {
+      this.createClient(name);
+    }
+    return this.clientMap.get(name)!;
+  }
+
+  private createClient(name: string): void {
+    const client = new Redis(redisConfig);
+
+    client.on("connect", () => {
+      this.logger.logPushEvent(`Redis client '${name}' connected`, {
+        context: "Redis",
+      });
+    });
+
+    client.on("error", (error) => {
+      this.logger.logPushError(`Redis client '${name}' error`, error, {
+        context: "Redis",
+      });
+    });
+
+    this.clientMap.set(name, client);
   }
 }
