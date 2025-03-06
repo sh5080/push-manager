@@ -53,6 +53,8 @@ const queueService = new QueueService();
 
 // Bull Board 설정
 const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath("/admin/queues");
+
 createBullBoard({
   queues: [new BullAdapter(queueService.getPushQueue())],
   serverAdapter,
