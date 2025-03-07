@@ -19,3 +19,8 @@ export interface PushNotificationJobData extends OneSignalPushDto {
   batch: string[];
   logId: number;
 }
+
+export interface OneSignalResponse {
+  id: string;
+  external_id: string | null;
+}
