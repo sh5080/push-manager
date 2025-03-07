@@ -1,13 +1,12 @@
 import { BadRequestException, GetMemberDto } from "@push-manager/shared";
 import { IMemberService } from "../../interfaces/admin/member.interface";
 import { MemberRepository } from "../../repositories/admin/member.repository";
-
-import { NewbestService } from "../external/newbest.service";
+import { NewbestApi } from "../external/newbest.api";
 
 export class MemberService implements IMemberService {
   constructor(
     private readonly memberRepository: MemberRepository,
-    private readonly newbestService: NewbestService
+    private readonly newbestApi: NewbestApi
   ) {}
 
   async getMember(dto: GetMemberDto) {
@@ -17,7 +16,7 @@ export class MemberService implements IMemberService {
       throw new BadRequestException("Member not found");
     }
 
-    const newbestInfo = await this.newbestService.getMemberInfo(member.ci);
+    const newbestInfo = await this.newbestApi.getMemberInfo(member.ci);
     return { ...member, newbestInfo: newbestInfo[0] };
   }
 }

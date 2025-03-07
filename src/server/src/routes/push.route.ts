@@ -5,7 +5,9 @@ import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
 import { PushMasterRepository } from "../repositories/pushMaster.repository";
 import { PushQueueRepository } from "../repositories/pushQueue.repository";
 import { OneSignalService } from "../services/oneSignal.service";
+import { OneSignalApi } from "../services/external/oneSignal.api";
 import { QueueService } from "../services/queue.service";
+import { OneSignalSendLogRepository } from "../repositories/oneSignalSendLog.repository";
 
 const router = Router();
 const pushService = new PushService(
@@ -13,7 +15,11 @@ const pushService = new PushService(
   new PushStsMsgRepository(),
   new PushQueueRepository()
 );
-const oneSignalService = new OneSignalService(new QueueService());
+const oneSignalService = new OneSignalService(
+  new QueueService(),
+  new OneSignalApi(),
+  new OneSignalSendLogRepository()
+);
 const pushController = new PushController(pushService, oneSignalService);
 
 router.post("/", pushController.createPushes);

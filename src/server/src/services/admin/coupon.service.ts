@@ -9,13 +9,13 @@ import {
 } from "@push-manager/shared";
 import { CouponRepository } from "../../repositories/admin/coupon.repository";
 import { ICouponService } from "../../interfaces/admin/coupon.interface";
-import { NewbestService } from "../external/newbest.service";
+import { NewbestApi } from "../external/newbest.api";
 import { MemberService } from "./member.service";
 
 export class CouponService implements ICouponService {
   constructor(
     private readonly couponRepository: CouponRepository,
-    private readonly newbestService: NewbestService,
+    private readonly newbestService: NewbestApi,
     private readonly memberService: MemberService
   ) {}
 

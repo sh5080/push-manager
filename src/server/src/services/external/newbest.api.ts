@@ -10,7 +10,7 @@ import {
 import { KISA_SEED_ECB } from "../../utils/kisa-seed";
 import { EXT } from "../../configs/app.config";
 
-export class NewbestService {
+export class NewbestApi {
   private readonly baseUrl: string;
   private readonly apiKey: string;
   private readonly symmetricKey: string;
