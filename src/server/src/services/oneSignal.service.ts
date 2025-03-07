@@ -1,18 +1,20 @@
 import { chunk } from "lodash";
-import { OneSignalSendLog } from "../models/init-models";
-import { pushConfig } from "../configs/push.config";
 import { IOneSignalService } from "../interfaces/oneSignal.interface";
 import { QueueService } from "./queue.service";
 import { OneSignalPushDto } from "@push-manager/shared";
 import { DatabaseLogger } from "../utils/logger.util";
-import { sequelize } from "../configs/db.config";
-import { QueryTypes } from "sequelize";
+import { OneSignalSendLogRepository } from "../repositories/oneSignalSendLog.repository";
+import { OneSignalApi } from "./external/oneSignal.api";
 
 export class OneSignalService implements IOneSignalService {
   private readonly BATCH_SIZE = 2000;
   private readonly logger = DatabaseLogger.getInstance();
 
-  constructor(private readonly queueService: QueueService) {
+  constructor(
+    private readonly queueService: QueueService,
+    private readonly oneSignalApi: OneSignalApi,
+    private readonly oneSignalSendLogRepository: OneSignalSendLogRepository
+  ) {
     this.setupQueueProcessors();
   }
 
@@ -28,7 +30,7 @@ export class OneSignalService implements IOneSignalService {
       });
 
       try {
-        const result = await this.sendOneSignalNotification(
+        const result = await this.oneSignalApi.sendNotification(
           batch,
           title,
           content,
@@ -37,21 +39,22 @@ export class OneSignalService implements IOneSignalService {
           sendDate
         );
 
-        const log = await OneSignalSendLog.findByPk(logId);
+        const log = await this.oneSignalSendLogRepository.findById(logId);
+
         if (!log) throw new Error("로그를 찾을 수 없습니다.");
 
-        const newCompletedCount = log.completedCount + batch.length;
+        const newCompletedCount = log.currentCount + batch.length;
         this.logger.logPushEvent("Batch progress", {
           logId,
-          completedCount: newCompletedCount,
+          currentCount: newCompletedCount,
           totalCount: log.totalCount,
           context: "QueueProcessing",
         });
 
-        await log.update({
-          completedCount: newCompletedCount,
+        await this.oneSignalSendLogRepository.update(logId, {
+          pushId: result.id,
+          currentCount: newCompletedCount,
           lastProcessedId: batch[batch.length - 1],
-          updatedAt: new Date(),
         });
 
         return result;
@@ -60,14 +63,12 @@ export class OneSignalService implements IOneSignalService {
           logId,
           context: "QueueProcessing",
         });
-        await OneSignalSendLog.update(
-          {
-            status: "F",
-            errorMessage: error.message,
-            updatedAt: new Date(),
-          },
-          { where: { id: logId } }
-        );
+
+        await this.oneSignalSendLogRepository.update(logId, {
+          status: "FAILED",
+          errorMessage: error.message,
+        });
+
         throw error;
       }
     });
@@ -75,15 +76,18 @@ export class OneSignalService implements IOneSignalService {
     this.queueService.onPushCompleted(async (job) => {
       const { logId } = job.data;
 
-      const log = await OneSignalSendLog.findByPk(logId);
-      if (log && log.completedCount === log.totalCount) {
+      const log = await this.oneSignalSendLogRepository.findById(logId);
+
+      if (log && log.currentCount === log.totalCount) {
         this.logger.logPushEvent("All batches completed", {
           logId,
           totalProcessed: log.totalCount,
           context: "QueueCompleted",
         });
 
-        await log.update({ status: "C", completedAt: new Date() });
+        await this.oneSignalSendLogRepository.update(logId, {
+          status: "COMPLETED",
+        });
       }
     });
 
@@ -96,43 +100,6 @@ export class OneSignalService implements IOneSignalService {
     });
   }
 
-  private async sendOneSignalNotification(
-    identifyArray: string[],
-    title: string,
-    content: string,
-    subtitle?: string,
-    deepLink?: string,
-    sendDate?: string
-  ) {
-    const response = await fetch(
-      "https://api.onesignal.com/notifications?c=push",
-      {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          Authorization: `Key ${pushConfig.oneSignal.apiKey}`,
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          app_id: pushConfig.oneSignal.appId,
-          include_aliases: { external_id: identifyArray },
-          headings: { en: title },
-          subtitle: subtitle ? { en: subtitle } : undefined,
-          contents: { en: content },
-          url: deepLink,
-          target_channel: "push",
-          send_after: sendDate,
-        }),
-      }
-    );
-
-    const result = await response.json();
-    if (result.errors) {
-      throw new Error(result.errors[0]);
-    }
-    return result;
-  }
-
   async sendPush(dto: OneSignalPushDto) {
     const { identifyArray } = dto;
 
@@ -140,32 +107,15 @@ export class OneSignalService implements IOneSignalService {
       totalIdentifiers: identifyArray.length,
       context: "PushRequest",
     });
-    const [result] = await sequelize.query<{
-      NEXTVAL: number;
-    }>(`SELECT ONE_SIGNAL_SEND_LOG_SEQ.NEXTVAL FROM DUAL`, {
-      type: QueryTypes.SELECT,
-    });
-    if (!result?.NEXTVAL) {
-      throw new Error(
-        `Failed to get next value for sequence: ONE_SIGNAL_SEND_LOG_SEQ`
-      );
-    }
 
-    const sendLog = await OneSignalSendLog.create(
-      {
-        id: result.NEXTVAL,
-        totalCount: identifyArray.length,
-        completedCount: 0,
-        status: "P",
-        startedAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      { raw: true, mapToModel: true }
-    );
+    const sendLog = await this.oneSignalSendLogRepository.create({
+      totalCount: identifyArray.length,
+      currentCount: 0,
+      status: "PENDING",
+    });
 
     this.logger.logPushEvent("Created send log", {
-      logId: sendLog.id,
+      logId: sendLog[0].id,
       context: "PushRequest",
     });
 
@@ -173,7 +123,7 @@ export class OneSignalService implements IOneSignalService {
 
     for (let i = 0; i < batches.length; i++) {
       this.logger.logPushEvent("Adding batch to queue", {
-        logId: sendLog.id,
+        logId: sendLog[0].id,
         batchNumber: i + 1,
         totalBatches: batches.length,
         context: "PushRequest",
@@ -181,25 +131,23 @@ export class OneSignalService implements IOneSignalService {
 
       await this.queueService.addPushJob({
         batch: batches[i],
-        logId: sendLog.id,
+        logId: sendLog[0].id,
         ...dto,
       });
     }
+
     return {
       message: "발송 작업이 큐에 등록되었습니다.",
       totalBatches: batches.length,
-      logId: sendLog.id,
+      logId: sendLog[0].id,
     };
   }
 
   async getSendLog(logId: number) {
-    return await OneSignalSendLog.findByPk(logId);
+    return await this.oneSignalSendLogRepository.findById(logId);
   }
 
   async getIncompleteSendLogs() {
-    return await OneSignalSendLog.findAll({
-      where: { status: ["P", "F"] },
-      order: [["createdAt", "DESC"]],
-    });
+    return await this.oneSignalSendLogRepository.findIncomplete();
   }
 }
