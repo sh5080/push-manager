@@ -11,7 +11,8 @@
     "db:generate": "ts-node -r dotenv/config src/db/run-drizzle.ts generate",
     "db:push": "ts-node -r dotenv/config src/db/run-drizzle.ts push",
     "db:pull": "ts-node -r dotenv/config src/db/run-drizzle.ts pull",
-    "db:studio": "ts-node -r dotenv/config src/db/run-drizzle.ts studio"
+    "db:studio": "ts-node -r dotenv/config src/db/run-drizzle.ts studio",
+    "db:migrate": "ts-node -r dotenv/config src/db/run-drizzle.ts migrate"
   },
   "dependencies": {
     "@bull-board/express": "^6.7.10",
