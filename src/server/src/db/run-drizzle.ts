@@ -2,9 +2,6 @@ import { exec } from "child_process";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
-import { drizzle } from "drizzle-orm/postgres-js";
-import { migrate } from "drizzle-orm/postgres-js/migrator";
-import postgres from "postgres";
 import { Config } from "drizzle-kit";
 
 dotenv.config({ path: "./src/.env" });
@@ -15,11 +12,16 @@ function createTempConfig() {
     dialect: "postgresql",
     dbCredentials: { url: process.env.DATABASE_URL! },
     schema: "./src/db/schema.ts",
-    out: "./src/db",
+    out: "./src/db/migrations",
     verbose: true,
+    migrations: {
+      table: "drizzle_migrations",
+      schema: "public",
+    },
   } satisfies Config;
 
   fs.writeFileSync(configPath, JSON.stringify(configContent, null, 2));
+
   return configPath;
 }
 
@@ -29,7 +31,7 @@ function cleanupTempFile(configPath: string) {
   }
 }
 
-function runDrizzleCommand(command: string, configPath: string) {
+function runDrizzleCommand(command: string) {
   console.log(`Running: ${command}`);
 
   return new Promise<void>((resolve, reject) => {
@@ -55,66 +57,33 @@ function runDrizzleCommand(command: string, configPath: string) {
   });
 }
 
-async function runMigrations() {
-  console.log("Running migrations...");
-
-  if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL 환경 변수가 설정되지 않았습니다.");
-  }
-
-  const migrationClient = postgres(process.env.DATABASE_URL, { max: 1 });
-  const db = drizzle(migrationClient);
-
-  try {
-    await migrate(db, { migrationsFolder: "./src/db/migrations" });
-    console.log("Migrations completed successfully");
-  } catch (error) {
-    console.error("Migration failed:", error);
-    throw error;
-  } finally {
-    await migrationClient.end();
-  }
-}
-
+// 메인 함수
 async function main() {
   const command = process.argv[2];
 
   if (!command) {
     console.error(
-      "Command is required. Use: generate, push, pull, studio, or migrate"
+      "Command is required. Use: generate, push, pull, studio, migrate, migrate:create, migrate:sql, or migrate:rollback"
     );
     process.exit(1);
   }
 
   try {
     console.log(`Database: ${process.env.DATABASE_URL}`);
-    if (command === "migrate") {
-      await runMigrations();
-      return;
-    }
 
     const configPath = createTempConfig();
 
     try {
       switch (command) {
         case "generate":
-          await runDrizzleCommand(
-            `drizzle-kit generate --config=${configPath}`,
-            configPath
-          );
-          break;
+        case "migrate":
         case "push":
-          await runDrizzleCommand(
-            `drizzle-kit push --config=${configPath}`,
-            configPath
-          );
-          break;
         case "pull":
           await runDrizzleCommand(
-            `drizzle-kit pull --config=${configPath}`,
-            configPath
+            `drizzle-kit ${command} --config=${configPath}`
           );
           break;
+
         case "studio":
           const studioProcess = exec(
             `drizzle-kit studio --port=3333 --config=${configPath}`
