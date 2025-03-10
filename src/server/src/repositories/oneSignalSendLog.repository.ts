@@ -1,6 +1,6 @@
 import { eq, or, desc } from "drizzle-orm";
 import { drizzle } from "../configs/db.config";
-import { pushSendLog, pushSendLogStatus } from "../db/schema";
+import { pushSendLog, pushSendErrorLog, pushSendLogStatus } from "../db/schema";
 
 export class OneSignalSendLogRepository {
   /**
@@ -42,10 +42,9 @@ export class OneSignalSendLogRepository {
     logId: number,
     data: Partial<{
       currentCount: number;
+      lastExternalId: string;
       status: (typeof pushSendLogStatus.enumValues)[number];
-      pushId: string;
-      lastProcessedId: string;
-      errorMessage: string;
+      oneSignalPushId: string;
     }>
   ) {
     return await drizzle
@@ -69,5 +68,18 @@ export class OneSignalSendLogRepository {
         or(eq(pushSendLog.status, "PENDING"), eq(pushSendLog.status, "FAILED"))
       )
       .orderBy(desc(pushSendLog.createdAt));
+  }
+
+  /**
+   * 로그 상세 생성
+   */
+  async createErrorLog(data: { pushSendLogId: number; message: string }) {
+    return await drizzle
+      .insert(pushSendErrorLog)
+      .values({
+        pushSendLogId: data.pushSendLogId,
+        message: data.message,
+      })
+      .returning();
   }
 }

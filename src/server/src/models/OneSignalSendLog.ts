@@ -4,8 +4,8 @@ import { DataTypes, Model } from "sequelize";
 export interface OneSignalSendLogAttributes {
   id?: number;
   totalCount: number;
-  completedCount: number;
-  status: "P" | "C" | "F";
+  currentCount: number;
+  status: "PENDING" | "COMPLETED" | "FAILED";
   pushId?: string;
   lastProcessedId?: string;
   errorMessage?: string;
@@ -30,8 +30,8 @@ export class OneSignalSendLog
 {
   public id!: number;
   public totalCount!: number;
-  public completedCount!: number;
-  public status!: "P" | "C" | "F";
+  public currentCount!: number;
+  public status!: "PENDING" | "COMPLETED" | "FAILED";
   public pushId?: string;
   public lastProcessedId?: string;
   public errorMessage?: string;
@@ -54,7 +54,7 @@ export class OneSignalSendLog
           allowNull: false,
           field: "TOTAL_COUNT",
         },
-        completedCount: {
+        currentCount: {
           type: DataTypes.INTEGER,
           allowNull: false,
           field: "COMPLETED_COUNT",
