@@ -1,7 +1,7 @@
 import { chunk } from "lodash";
 import { IOneSignalService } from "../interfaces/oneSignal.interface";
 import { QueueService } from "./queue.service";
-import { OneSignalPushDto } from "@push-manager/shared";
+import { OneSignalException, OneSignalPushDto } from "@push-manager/shared";
 import { DatabaseLogger } from "../utils/logger.util";
 import { OneSignalSendLogRepository } from "../repositories/oneSignalSendLog.repository";
 import { OneSignalApi } from "./external/oneSignal.api";
@@ -52,9 +52,9 @@ export class OneSignalService implements IOneSignalService {
         });
 
         await this.oneSignalSendLogRepository.update(logId, {
-          pushId: result.id,
+          oneSignalPushId: result.id,
           currentCount: newCompletedCount,
-          lastProcessedId: batch[batch.length - 1],
+          lastExternalId: batch[batch.length - 1],
         });
 
         return result;
@@ -64,10 +64,12 @@ export class OneSignalService implements IOneSignalService {
           context: "QueueProcessing",
         });
 
-        await this.oneSignalSendLogRepository.update(logId, {
-          status: "FAILED",
-          errorMessage: error.message,
-        });
+        if (error instanceof OneSignalException) {
+          await this.oneSignalSendLogRepository.createErrorLog({
+            pushSendLogId: logId,
+            message: error.message,
+          });
+        }
 
         throw error;
       }
