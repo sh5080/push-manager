@@ -38,9 +38,15 @@ export class NotFoundException extends HttpException {
   }
 }
 
-export class NewBestErrorException extends HttpException {
+export class NewBestException extends HttpException {
   constructor(message = "NewBest Error", code?: string) {
     super(500, message, code);
-    this.name = "NewBestErrorException";
+    this.name = "NewBestException";
+  }
+}
+export class OneSignalException extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "OneSignalException";
   }
 }

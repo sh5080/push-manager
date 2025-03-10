@@ -1,3 +1,4 @@
+import { OneSignalException } from "@push-manager/shared";
 import { pushConfig } from "../../configs/push.config";
 import { OneSignalResponse } from "../../types/push.type";
 
@@ -45,7 +46,7 @@ export class OneSignalApi {
 
     const result = await response.json();
     if (result.errors) {
-      throw new Error(result.errors[0]);
+      throw new OneSignalException(result.errors[0]);
     }
     return result;
   }

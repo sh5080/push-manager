@@ -5,7 +5,7 @@ import {
   IRetrieveMoblCoupCustArrayNewRes,
   IRetrieveObsUserMbsCouponListRes,
   IRetrieveRestMbsCustRes,
-  NewBestErrorException,
+  NewBestException,
 } from "@push-manager/shared";
 import { KISA_SEED_ECB } from "../../utils/kisa-seed";
 import { EXT } from "../../configs/app.config";
@@ -34,7 +34,7 @@ export class NewbestApi {
     });
 
     if (!response.ok) {
-      throw new NewBestErrorException("FDE-C-901,1");
+      throw new NewBestException("FDE-C-901,1");
     }
 
     const cRes = await response.text();
@@ -49,7 +49,7 @@ export class NewbestApi {
       const pRes = await this.fetchAndDecrypt(endpoint, options);
       const jRes: INewBestRes<T> = JSON.parse(pRes);
       if (jRes.RTN_CD !== "S") {
-        throw new NewBestErrorException(
+        throw new NewBestException(
           `FDE-C-901,2 [${jRes.RTN_CD}: ${jRes.RTN_MSG}]`
         );
       }
@@ -67,7 +67,7 @@ export class NewbestApi {
       const pRes = await this.fetchAndDecrypt(endpoint, options);
       const jRes: INewBestObsRes<T> = JSON.parse(pRes);
       if (jRes.ERR_CODE !== "00") {
-        throw new NewBestErrorException(
+        throw new NewBestException(
           `FDE-C-901,2 [${jRes.ERR_CODE}: ${jRes.ERR_MSG}]`
         );
       }
