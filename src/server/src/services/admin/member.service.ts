@@ -2,6 +2,7 @@ import {
   BadRequestException,
   GetMemberDto,
   GetMemberListDto,
+  IMemberWithNewbestInfo,
 } from "@push-manager/shared";
 import { IMemberService } from "../../interfaces/admin/member.interface";
 import { MemberRepository } from "../../repositories/admin/member.repository";
@@ -22,10 +23,15 @@ export class MemberService implements IMemberService {
     if (!member) {
       throw new BadRequestException("Member not found");
     }
-
+    // 뉴베스트
     const newbestInfo = await this.newbestApi.getMemberInfo(member.ci);
-
-    return { ...member, newbestInfo: newbestInfo[0] };
+    // 한영본
+    const accountInfo = await this.accountApi.getMemberInfo(member.ci);
+    console.log(accountInfo);
+    return {
+      ...member,
+      newbestInfo: newbestInfo[0],
+    } as unknown as IMemberWithNewbestInfo;
   }
 
   async getMemberList(dto: GetMemberListDto) {
@@ -41,20 +47,21 @@ export class MemberService implements IMemberService {
     const ciList = await Promise.all(
       memNoList.map(async (memNo) => {
         const member = await this.memberRepository.findByDto({ memNo });
-        return { ci: member?.ci };
+        return { ci: member?.ci, memNo: member?.memNo };
       })
     );
     const accountInfo = await Promise.all(
-      ciList.map(async ({ ci }) => {
+      ciList.map(async ({ ci, memNo }) => {
         try {
           const res = await this.accountApi.getMemberInfo(ci as string);
+          // console.log('>>>>>',res);
           return {
             bestshopNm: res.bestshopNm,
-            address1: res.address1,
-            address2: res.address2,
+            // address1: res.address1,
+            // address2: res.address2,
           };
         } catch (error) {
-          console.error(`Error fetching account info for CI ${ci}:`, error);
+          console.error(`Error fetching account info for memNo ${memNo}:`, error);
         }
       })
     );

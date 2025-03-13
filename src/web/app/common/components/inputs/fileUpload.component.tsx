@@ -95,7 +95,6 @@ export function FileUpload({
       const month = formatDate(now, "+09:00").slice(5, 7);
 
       const uploadUrl = await uploadImage(file, `${path}/${year}/${month}`);
-      console.log(">>", uploadUrl);
       if (onUploadSuccess) {
         onUploadSuccess(uploadUrl);
       }
