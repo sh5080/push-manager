@@ -60,6 +60,7 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isParsingFile, setIsParsingFile] = useState(false);
+  const [progress, setProgress] = useState<number | null>(null);
 
   const handleFileUpload = (file: File | null) => {
     setPushData((prev) => ({
@@ -147,16 +148,52 @@ export function SendPushModal({ isOpen, onClose }: SendPushModalProps) {
       let response;
 
       if (pushType === "fingerPush") {
-        response = await pushApi.sendPush({
-          identifyArray: pushData.identifyArray,
-          ...(pushData.imageEnabled && { fName: pushData.fName }),
-          ...(pushData.linkEnabled && { pLink: pushData.pLink }),
-          sendDateString: pushData.sendDateString,
-          title: pushData.title,
-          content: pushData.content,
-          appId: pushData.appId,
-          isReady,
-        });
+        // 5000개씩 나누기
+        const chunkSize = 5000;
+        const identifyChunks = [];
+
+        for (let i = 0; i < pushData.identifyArray.length; i += chunkSize) {
+          identifyChunks.push(pushData.identifyArray.slice(i, i + chunkSize));
+        }
+
+        // 각 청크별로 API 호출 (20초 간격)
+        let totalProcessed = 0;
+
+        for (let i = 0; i < identifyChunks.length; i++) {
+          const chunk = identifyChunks[i];
+
+          // 첫 번째 청크가 아니면 20초 대기
+          if (i > 0) {
+            await new Promise((resolve) => setTimeout(resolve, 20000)); // 20초 대기
+          }
+
+          await pushApi.sendPush({
+            identifyArray: chunk,
+            ...(pushData.imageEnabled && { fName: pushData.fName }),
+            ...(pushData.linkEnabled && { pLink: pushData.pLink }),
+            sendDateString: pushData.sendDateString,
+            title: pushData.title,
+            content: pushData.content,
+            appId: pushData.appId,
+            isReady,
+          });
+
+          // 처리된 건수 누적
+          totalProcessed += chunk.length;
+
+          // 진행 상황 업데이트 (선택 사항)
+          setProgress &&
+            setProgress(
+              Math.floor((totalProcessed / pushData.identifyArray.length) * 100)
+            );
+        }
+
+        // 최종 응답 생성
+        response = {
+          totalCount: pushData.identifyArray.length,
+          processedCount: totalProcessed,
+          message: `총 ${pushData.identifyArray.length}건 중 ${totalProcessed}건 처리 완료`,
+        };
       }
       if (pushType === "oneSignal") {
         response = await pushApi.sendOneSignalPush({
