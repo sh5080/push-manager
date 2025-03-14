@@ -55,11 +55,9 @@ export class CreatePushDto {
   sendDateString!: string;
 
   @IsOptional()
-  @IsUrl({}, { message: "유효한 이미지 URL을 입력해주세요." })
   fName?: string;
 
   @IsOptional()
-  @IsUrl({}, { message: "유효한 URL을 입력해주세요." })
   pLink?: string;
 
   @IsEnum(AppIdEnum, {
