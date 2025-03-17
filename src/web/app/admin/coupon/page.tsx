@@ -128,6 +128,14 @@ export default function CouponPage() {
       const formattedCoupons = coupons.map((coupon) => ({
         ...coupon,
         Coupon: coupon.Coupon?.name,
+        createdAt: formatDate(coupon.createdAt, "+00:00"),
+        updatedAt: formatDate(coupon.updatedAt, "+00:00"),
+        redeemedAt: coupon.redeemedAt
+          ? formatDate(coupon.redeemedAt, "+00:00")
+          : "",
+        issuedAt: coupon.issuedAt ? formatDate(coupon.issuedAt, "+00:00") : "",
+        startDate: formatDate(coupon.startDate, "+00:00"),
+        endDate: formatDate(coupon.endDate, "+00:00"),
       }));
 
       ExcelHandler.convertDataToExcel(formattedCoupons);
