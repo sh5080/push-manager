@@ -119,13 +119,40 @@ export default function CouponPage() {
     setStatus(newStatus.key);
   };
 
-  const handleExcelDownload = () => {
+  const handleExcelDownload = async () => {
     try {
-      if (coupons.length === 0) {
+      if (total === 0) {
         throw new Error("먼저 조회한 뒤 저장이 가능합니다.");
       }
 
-      const formattedCoupons = coupons.map((coupon) => ({
+      // 전체 데이터를 가져오기 위해 pageSize를 total로 설정하여 API 호출
+      const dto: GetCouponsDto = {
+        type: "app",
+        page: 1,
+        pageSize: total, // 전체 데이터를 한 번에 가져오기 위해 total 값 사용
+        ...(sn && { sn }),
+        ...(status && {
+          status:
+            status as (typeof CouponPoolStatus)[keyof typeof CouponPoolStatus],
+        }),
+        ...(memNo && { memNo }),
+        ...(startDate && {
+          redeemedAtFrom: new Date(formatDate(startDate, "+09:00")),
+        }),
+        ...(endDate && {
+          redeemedAtTo: new Date(formatDate(endDate, "+09:00", "+1d")),
+        }),
+      };
+
+      Toast.info("엑셀 파일 생성 중입니다...");
+
+      const response = await couponApi.getCoupons(dto);
+
+      if (response.data.length === 0) {
+        throw new Error("다운로드할 데이터가 없습니다.");
+      }
+
+      const formattedCoupons = response.data.map((coupon) => ({
         ...coupon,
         Coupon: coupon.Coupon?.name,
         createdAt: formatDate(coupon.createdAt, "+00:00"),
@@ -139,6 +166,9 @@ export default function CouponPage() {
       }));
 
       ExcelHandler.convertDataToExcel(formattedCoupons);
+      Toast.success(
+        `총 ${formattedCoupons.length}건의 데이터가 다운로드되었습니다.`
+      );
     } catch (error: any) {
       Toast.error(error.message);
     }
