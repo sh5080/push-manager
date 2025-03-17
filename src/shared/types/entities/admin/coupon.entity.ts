@@ -4,6 +4,7 @@ import {
   CouponDiscountType,
   CouponPoolStatus,
 } from "../../constants/coupon.const";
+import { IMember } from "./member.entity";
 import {
   IRetrieveMoblCoupCustArrayNewRes,
   IRetrieveObsUserMbsCouponListRes,
@@ -42,6 +43,7 @@ export interface ICoupon {
 
 export interface IMembershipAppCoupon extends ICouponPool {
   Coupon: ICoupon;
+  Member?: IMember;
 }
 
 export interface INewbestCommonCoupons {
