@@ -112,6 +112,26 @@ export default function CouponPage() {
 
   const handleSearchConditionChange = (key: string, checked: boolean) => {
     setSearchConditions((prev) => ({ ...prev, [key]: checked }));
+
+    if (!checked) {
+      switch (key) {
+        case "sn":
+          setSn("");
+          break;
+        case "memNo":
+          setMemNo("");
+          setMemberName("");
+          break;
+        case "status":
+          setStatus(STATUS_OPTIONS[0].key);
+          setSelectedStatus(STATUS_OPTIONS[0]);
+          break;
+        case "date":
+          setStartDate("");
+          setEndDate("");
+          break;
+      }
+    }
   };
 
   const handleStatusChange = (newStatus: StatusOption) => {
