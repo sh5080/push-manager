@@ -175,6 +175,7 @@ export default function CouponPage() {
       const formattedCoupons = response.data.map((coupon) => ({
         ...coupon,
         Coupon: coupon.Coupon?.name,
+        Member: coupon.Member?.memNo,
         createdAt: formatDate(coupon.createdAt, "+00:00"),
         updatedAt: formatDate(coupon.updatedAt, "+00:00"),
         redeemedAt: coupon.redeemedAt

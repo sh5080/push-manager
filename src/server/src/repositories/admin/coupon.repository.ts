@@ -8,13 +8,16 @@ import {
   GetCouponsDto,
   IMembershipAppCoupon,
   PaginatedResponse,
-  Rnum,
 } from "@push-manager/shared";
+import { Member } from "../../models/admin/Member";
+import { Decrypted } from "../../decorators/decrypted.decorator";
 
 export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> {
   constructor() {
     super(SubscriptionRewardRequest);
   }
+
+  @Decrypted(["memberId"], { Member: ["memNo"] })
   async getCoupons(
     dto: GetCouponsDto,
     memberId?: string
@@ -63,6 +66,7 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
             model: Coupon,
             attributes: ["name", "discountType", "discountValue"],
           },
+          { model: Member, attributes: ["name", "memNo"] },
         ],
       }),
       CouponPool.count({ where }),
