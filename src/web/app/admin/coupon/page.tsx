@@ -15,6 +15,8 @@ import {
   StatusOption,
 } from "./components/searchFields.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
+import { ExcelHandler } from "@push-manager/shared/utils/excel.util";
+import Image from "next/image";
 
 export default function CouponPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,6 +119,30 @@ export default function CouponPage() {
     setStatus(newStatus.key);
   };
 
+  const handleExcelDownload = () => {
+    try {
+      if (coupons.length === 0) {
+        throw new Error("먼저 조회한 뒤 저장이 가능합니다.");
+      }
+
+      const formattedCoupons = coupons.map((coupon) => ({
+        ...coupon,
+        createdAt: formatDate(coupon.createdAt, "+09:00"),
+        updatedAt: formatDate(coupon.updatedAt, "+09:00"),
+        redeemedAt: coupon.redeemedAt
+          ? formatDate(coupon.redeemedAt, "+09:00")
+          : "",
+        issuedAt: coupon.issuedAt ? formatDate(coupon.issuedAt, "+09:00") : "",
+        startDate: formatDate(coupon.startDate, "+09:00"),
+        endDate: formatDate(coupon.endDate, "+09:00"),
+      }));
+
+      ExcelHandler.convertDataToExcel(formattedCoupons);
+    } catch (error: any) {
+      Toast.error(error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
@@ -152,6 +178,21 @@ export default function CouponPage() {
             </Button>
             <Button variant="solid" size="38" onClick={handleSearch}>
               조회하기
+            </Button>
+            <Button
+              variant="green-point"
+              size="38"
+              onClick={handleExcelDownload}
+              disabled={coupons.length === 0}
+              title="엑셀 다운로드"
+            >
+              <Image
+                src="/icons/excel.svg"
+                width={20}
+                height={20}
+                alt="엑셀 다운로드"
+                className={coupons.length === 0 ? "opacity-40" : ""}
+              />
             </Button>
           </div>
         </div>
