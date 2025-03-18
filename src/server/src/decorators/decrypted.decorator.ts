@@ -14,6 +14,8 @@ export function Decrypted(
 
     // 객체 복호화 함수
     const decryptObject = (obj: any) => {
+      if (!obj) return obj;
+
       // 최상위 필드 복호화
       encryptedFields.forEach((field) => {
         if (obj[field]) {
@@ -52,6 +54,11 @@ export function Decrypted(
       const result = await originalMethod.apply(this, args);
 
       if (!result) return result;
+
+      if (result.data && Array.isArray(result.data)) {
+        result.data = result.data.map((item: any) => decryptObject(item));
+        return result;
+      }
 
       // 단일 객체인 경우
       if (!Array.isArray(result)) {
