@@ -44,9 +44,13 @@ export class NewBestException extends HttpException {
     this.name = "NewBestException";
   }
 }
+
 export class OneSignalException extends Error {
-  constructor(message: string) {
+  public statusCode: number;
+
+  constructor(message: string, statusCode: number = 500) {
     super(message);
     this.name = "OneSignalException";
+    this.statusCode = statusCode;
   }
 }
