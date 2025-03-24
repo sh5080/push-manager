@@ -10,6 +10,7 @@ import {
 import {
   OneSignalMessageResult,
   OneSignalOutcomeResult,
+  OneSignalTemplateResult,
   OneSignalUserResult,
 } from "@push-manager/shared/types/entities/oneSignal.entity";
 
@@ -20,6 +21,6 @@ export interface IOneSignalService {
   getUser(externalId: string): Promise<OneSignalUserResult>;
   getCsv(dto: OneSignalMessageIdDto): Promise<string>;
   getMessage(dto: OneSignalMessageIdDto): Promise<OneSignalMessageResult>;
-  createTemplate(dto: OneSignalTemplateDto): Promise<string>;
+  createTemplate(dto: OneSignalTemplateDto): Promise<OneSignalTemplateResult>;
   getOutcomes(dto: OneSignalOutcomeDto): Promise<OneSignalOutcomeResult>;
 }

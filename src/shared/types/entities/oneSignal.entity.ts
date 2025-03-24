@@ -177,3 +177,44 @@ export interface OneSignalMessageResult {
   huawei_category: null;
   huawei_bi_tag: null;
 }
+export interface OneSignalTemplateResult {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  channel: string;
+  content: {
+    isAndroid: boolean;
+    isIos: boolean;
+    isMacOSX: boolean;
+    isAdm: boolean;
+    isAlexa: boolean | null;
+    isWP: boolean;
+    isWP_WNS: boolean;
+    isChrome: boolean;
+    isChromeWeb: boolean;
+    isSafari: boolean;
+    isFirefox: boolean;
+    isEdge: boolean;
+    headings: {
+      en: string;
+    };
+    subtitle: {
+      en: string;
+    };
+    contents: {
+      en: string;
+    };
+    global_image: null;
+    url: null;
+    isEmail: boolean | null;
+    email_body: null;
+    email_subject: null;
+    email_preheader: null;
+    isSMS: boolean | null;
+    sms_from: null;
+    sms_media_urls: null;
+    email_reply_to_address: null;
+    disable_email_click_tracking: null;
+  };
+}

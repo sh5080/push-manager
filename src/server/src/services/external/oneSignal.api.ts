@@ -14,6 +14,7 @@ import {
 import {
   OneSignalMessageResult,
   OneSignalOutcomeResult,
+  OneSignalTemplateResult,
   OneSignalUserResult,
 } from "@push-manager/shared/types/entities/oneSignal.entity";
 
@@ -138,7 +139,10 @@ export class OneSignalApi {
     };
     return await this.requestFetch(url, options);
   }
-  async createTemplate(name: string, contents: string): Promise<string> {
+  async createTemplate(
+    name: string,
+    contents: string
+  ): Promise<OneSignalTemplateResult> {
     const url = `https://api.onesignal.com/templates`;
     const options = {
       method: "POST",
