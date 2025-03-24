@@ -1,7 +1,15 @@
 import { chunk } from "lodash";
 import { IOneSignalService } from "../interfaces/oneSignal.interface";
 import { QueueService } from "./queue.service";
-import { OneSignalException, OneSignalPushDto } from "@push-manager/shared";
+import {
+  OneSignalException,
+  OneSignalMessageIdDto,
+  OneSignalOutcomeDto,
+  OneSignalPushDto,
+  OneSignalSubscriptionDto,
+  OneSignalTemplateDto,
+  OneSignalUserDto,
+} from "@push-manager/shared";
 import { DatabaseLogger } from "../utils/logger.util";
 import { OneSignalSendLogRepository } from "../repositories/oneSignalSendLog.repository";
 import { OneSignalApi } from "./external/oneSignal.api";
@@ -143,6 +151,21 @@ export class OneSignalService implements IOneSignalService {
       totalBatches: batches.length,
       logId: sendLog[0].id,
     };
+    // api테스트
+    // const result = await this.oneSignalApi.sendNotification(
+    //   identifyArray,
+    //   dto.title,
+    //   dto.content,
+    //   dto.subtitle,
+    //   dto.deepLink,
+    //   dto.sendDate
+    // );
+    // console.log("testResult: ", result);
+    // return {
+    //   message: "발송 작업이 큐에 등록되었습니다.",
+    //   totalBatches: 1,
+    //   logId: 1,
+    // };
   }
 
   async getSendLog(logId: number) {
@@ -151,5 +174,47 @@ export class OneSignalService implements IOneSignalService {
 
   async getIncompleteSendLogs() {
     return await this.oneSignalSendLogRepository.findIncomplete();
+  }
+
+  async getOutcomes(dto: OneSignalOutcomeDto) {
+    const { outcomeNames, aggregation, timeRange, platforms, attribution } =
+      dto;
+
+    // aggregations이 제공된 경우, 이름과 집계 타입 조합
+    let formattedOutcomeNames = outcomeNames;
+
+    if (aggregation && aggregation.length > 0) {
+      formattedOutcomeNames = outcomeNames.map((name) =>
+        OneSignalApi.formatOutcomeName(name, aggregation)
+      );
+    }
+
+    return await this.oneSignalApi.getOutcomes(
+      formattedOutcomeNames,
+      timeRange,
+      platforms,
+      attribution
+    );
+  }
+  async createTemplate(dto: OneSignalTemplateDto) {
+    const { name, contents } = dto;
+    return await this.oneSignalApi.createTemplate(name, contents);
+  }
+  async getUser(externalId: string) {
+    return await this.oneSignalApi.getUser(externalId);
+  }
+  async getCsv(dto: OneSignalMessageIdDto) {
+    return await this.oneSignalApi.getCsv(dto.messageId);
+  }
+  async getMessage(dto: OneSignalMessageIdDto) {
+    return await this.oneSignalApi.getMessage(dto.messageId);
+  }
+  async createUser(dto: OneSignalUserDto) {
+    const { externalId } = dto;
+    return await this.oneSignalApi.createUser(externalId);
+  }
+  async createSubscription(dto: OneSignalSubscriptionDto): Promise<string> {
+    const { type, externalId, token } = dto;
+    return await this.oneSignalApi.createSubscription(type, externalId, token);
   }
 }
