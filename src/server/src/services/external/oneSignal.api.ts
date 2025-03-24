@@ -2,7 +2,6 @@ import { OneSignalException } from "@push-manager/shared";
 import { pushConfig } from "../../configs/push.config";
 import { OneSignalResponse } from "../../types/push.type";
 import {
-  OneSignalOutcomeResult,
   OneSignalAttribution,
   OneSignalPlatform,
   OneSignalTimeRange,
@@ -12,6 +11,11 @@ import {
   OneSignalOutcomeNameType,
   OneSignalOutcomeAggregationType,
 } from "@push-manager/shared/types/constants/oneSignal.const";
+import {
+  OneSignalMessageResult,
+  OneSignalOutcomeResult,
+  OneSignalUserResult,
+} from "@push-manager/shared/types/entities/oneSignal.entity";
 
 export class OneSignalApi {
   private readonly apiKey: string;
@@ -122,7 +126,7 @@ export class OneSignalApi {
     };
     return await this.requestFetch(url, options);
   }
-  async getMessage(notificationId: string): Promise<string> {
+  async getMessage(notificationId: string): Promise<OneSignalMessageResult> {
     const url = `https://api.onesignal.com/notifications/${notificationId}?app_id=${this.appId}`;
     const options = {
       method: "GET",
@@ -153,7 +157,7 @@ export class OneSignalApi {
     };
     return await this.requestFetch(url, options);
   }
-  async createUser(externalId: string): Promise<string> {
+  async createUser(externalId: string): Promise<OneSignalUserResult> {
     const url = `https://api.onesignal.com/apps/${this.appId}/users`;
     const options = {
       method: "POST",
@@ -173,8 +177,8 @@ export class OneSignalApi {
 
     return await this.requestFetch(url, options);
   }
-  async getUser(): Promise<string> {
-    const url = `https://api.onesignal.com/apps/${this.appId}/users/by/external_id/1009624565`;
+  async getUser(externalId: string): Promise<OneSignalUserResult> {
+    const url = `https://api.onesignal.com/apps/${this.appId}/users/by/external_id/${externalId}`;
     const options = {
       method: "GET",
       headers: {

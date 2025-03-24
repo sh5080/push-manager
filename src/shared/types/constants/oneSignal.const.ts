@@ -44,13 +44,4 @@ export type OneSignalPlatformType =
 export type OneSignalAttributionType =
   (typeof OneSignalAttribution)[keyof typeof OneSignalAttribution];
 
-export interface OneSignalOutcomeResult {
-  id: string;
-  app_id: string;
-  outcome_names: {
-    [key: string]: {
-      [attribution: string]: number;
-    };
-  };
-}
 export type PushType = "AndroidPush" | "iOSPush";
