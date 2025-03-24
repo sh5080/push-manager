@@ -34,5 +34,13 @@ router.patch("/queue/confirm", pushController.confirmPushQueue);
 
 router.get("/token", pushController.validateToken);
 router.post("/oneSignal", pushController.sendOneSignalPush);
+router.post(
+  "/oneSignal/subscription",
+  pushController.createOneSignalSubscription
+);
+router.post("/oneSignal/user", pushController.createOneSignalUser);
+router.get("/oneSignal/user", pushController.getOneSignalUser);
+router.get("/oneSignal/message", pushController.getOneSignalMessage);
+router.get("/oneSignal/outcomes", pushController.getOneSignalOutcomes);
 
 export const pushRoutes = router;
