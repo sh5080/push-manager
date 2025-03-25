@@ -4,16 +4,13 @@ import { useState } from "react";
 import { FileUpload } from "../../common/components/inputs/fileUpload.component";
 import { Modal } from "../../common/components/inputs/modal.component";
 import { Toast } from "app/utils/toast.util";
-import { HiClipboard, HiClipboardCheck } from "react-icons/hi";
+import { Clipboard } from "@commonComponents/dataDisplay/clipboard.component";
 
 export default function PushImagesPage() {
-  const [file, setFile] = useState<File | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
 
   const handleFileUpload = (uploadedFile: File | null) => {
-    setFile(uploadedFile);
     // 파일이 변경되면 이전 업로드 결과 초기화
     setUploadedImageUrl(null);
   };
@@ -21,24 +18,9 @@ export default function PushImagesPage() {
   const handleUploadSuccess = (result: string | null) => {
     if (result) {
       setUploadedImageUrl(result);
-      setIsModalOpen(true); // 업로드 성공 시 모달 열기
+      setIsModalOpen(true);
     } else {
       Toast.error("이미지 업로드에 실패했습니다.");
-    }
-  };
-
-  const handleCopyUrl = () => {
-    if (uploadedImageUrl) {
-      navigator.clipboard
-        .writeText(uploadedImageUrl)
-        .then(() => {
-          setIsCopied(true);
-          setTimeout(() => setIsCopied(false), 2000); // 2초 후 복사 상태 초기화
-        })
-        .catch((err) => {
-          console.error("클립보드 복사 실패:", err);
-          Toast.error("클립보드 복사에 실패했습니다.");
-        });
     }
   };
 
@@ -81,7 +63,6 @@ export default function PushImagesPage() {
             이미지가 성공적으로 업로드되었습니다.
           </p>
 
-          {/* 이미지 미리보기 */}
           <div className="border rounded-md p-2 bg-gray-50">
             <img
               src={uploadedImageUrl || ""}
@@ -95,30 +76,11 @@ export default function PushImagesPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               이미지 URL
             </label>
-            <div className="flex items-center">
-              <input
-                type="text"
-                value={uploadedImageUrl || ""}
-                readOnly
-                className="flex-1 border rounded-l-md px-3 py-2 text-sm bg-gray-50"
-              />
-              <button
-                onClick={handleCopyUrl}
-                className={`px-3 py-2 rounded-r-md text-white ${
-                  isCopied ? "bg-green-600" : "bg-blue-600 hover:bg-blue-700"
-                }`}
-              >
-                {isCopied ? (
-                  <>
-                    <HiClipboardCheck className="inline-block mr-1" /> 복사 완료
-                  </>
-                ) : (
-                  <>
-                    <HiClipboard className="inline-block mr-1" /> 복사
-                  </>
-                )}
-              </button>
-            </div>
+            <Clipboard
+              text={uploadedImageUrl || ""}
+              successMessage="URL이 클립보드에 복사되었습니다."
+              errorMessage="복사에 실패했습니다."
+            />
           </div>
         </div>
       </Modal>

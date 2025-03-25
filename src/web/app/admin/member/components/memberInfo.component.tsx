@@ -1,16 +1,11 @@
 import { IMemberWithNewbestInfo } from "@push-manager/shared/types/entities/admin/member.entity";
 import { getYNChipStyle } from "app/utils/chip/common/style.util";
 import { getYNChipText } from "app/utils/chip/common/text.util";
-import {
-  formatDate,
-  formatDateString,
-} from "@push-manager/shared/utils/date.util";
-
+import { formatDateString } from "@push-manager/shared/utils/date.util";
 import { CouponModal } from "../modals/coupon.modal";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@commonComponents/inputs/button.component";
-import { Toast } from "app/utils/toast.util";
-import { HiClipboard } from "react-icons/hi";
+import Clipboard from "@commonComponents/dataDisplay/clipboard.component";
 
 interface MemberInfoProps {
   member: IMemberWithNewbestInfo;
@@ -18,27 +13,6 @@ interface MemberInfoProps {
 
 export function MemberInfo({ member }: MemberInfoProps) {
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleCopy = async () => {
-    if (!inputRef.current) return;
-
-    try {
-      // modern clipboard API 시도
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(member.ci);
-      } else {
-        // 구형 브라우저
-        inputRef.current.select();
-        inputRef.current.setSelectionRange(0, 99999);
-        const success = document.execCommand("copy");
-        if (!success) throw new Error("복사 실패");
-      }
-      Toast.success("CI가 클립보드에 복사되었습니다.");
-    } catch (err) {
-      Toast.error("복사에 실패했습니다.");
-    }
-  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -73,26 +47,11 @@ export function MemberInfo({ member }: MemberInfoProps) {
         <div className="col-span-2">
           <p className="text-gray-500">CI</p>
           <div className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <p className="font-medium text-xs">{member.ci}</p>
-              <input
-                ref={inputRef}
-                type="text"
-                value={member.ci}
-                readOnly
-                className="sr-only"
-                aria-hidden="true"
-              />
-            </div>
-            <Button
-              variant="square-line"
-              size="32"
-              onClick={handleCopy}
-              className="!px-2"
-              title="CI 복사"
-            >
-              <HiClipboard className="w-4 h-4" />
-            </Button>
+            <Clipboard
+              text={member.ci || ""}
+              successMessage="CI가 클립보드에 복사되었습니다."
+              errorMessage="복사에 실패했습니다."
+            />
           </div>
         </div>
         <div className="col-span-2">
