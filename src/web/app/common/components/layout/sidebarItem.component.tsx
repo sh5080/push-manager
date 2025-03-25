@@ -11,6 +11,7 @@ import {
   HiOutlineUser,
   HiOutlineCog,
 } from "react-icons/hi";
+import { HiOutlinePhoto } from "react-icons/hi2";
 
 export interface MenuItem {
   name: string;
@@ -141,6 +142,11 @@ export const menuItems: MenuItem[] = [
         name: "식별자 관리",
         path: "/push/identify",
         icon: <HiOutlineIdentification />,
+      },
+      {
+        name: "푸시 이미지 설정",
+        path: "/push/images",
+        icon: <HiOutlinePhoto />,
       },
     ],
   },
