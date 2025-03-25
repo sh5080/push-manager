@@ -3,7 +3,12 @@ import Joi from "joi";
 import { EnvConfig } from "../types/config.type";
 import path from "path";
 
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const envPath =
+  process.env.NODE_ENV === "test"
+    ? path.resolve(__dirname, "../.env.test")
+    : path.resolve(__dirname, "../.env");
+
+dotenv.config({ path: envPath });
 
 const envSchema = Joi.object({
   JWT_HS256_SECRET: Joi.string().required(),
