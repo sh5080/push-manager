@@ -18,6 +18,7 @@
     "@bull-board/express": "^6.7.10",
     "@noble/ciphers": "^1.2.1",
     "@push-manager/shared": "1.0.0",
+    "aws-sdk": "^2.1692.0",
     "bull": "^4.16.5",
     "cors": "^2.8.5",
     "drizzle-orm": "^0.40.0",

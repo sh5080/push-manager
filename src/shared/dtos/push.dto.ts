@@ -25,6 +25,16 @@ import {
   StepEnum,
 } from "../types/constants/pushQueue.const";
 import { PaginationDto } from "./common.dto";
+import {
+  OneSignalOutcomeAggregation,
+  OneSignalPlatform,
+  OneSignalTimeRange,
+  type PushType,
+  type OneSignalAttributionType,
+  type OneSignalOutcomeAggregationType,
+  type OneSignalPlatformType,
+  type OneSignalTimeRangeType,
+} from "../types/constants/oneSignal.const";
 
 export interface PushResponse {
   pushes: IPushQueue[];
@@ -229,4 +239,67 @@ export class OneSignalPushDto {
     message: "유효하지 않은 appId입니다. (FREED: 0, TEST: 1, PROD: 2)",
   })
   appId!: (typeof AppIdEnum)[keyof typeof AppIdEnum];
+}
+
+export class OneSignalOutcomeDto {
+  @IsArray()
+  @IsString({ each: true })
+  outcomeNames!: string[];
+
+  @IsOptional()
+  @IsEnum(OneSignalOutcomeAggregation, {
+    message: "유효하지 않은 출력 집계 유형입니다.",
+  })
+  aggregation?: OneSignalOutcomeAggregationType;
+
+  @IsOptional()
+  @IsEnum(OneSignalTimeRange, {
+    message: "유효하지 않은 시간 범위 유형입니다.",
+  })
+  timeRange?: OneSignalTimeRangeType;
+
+  @IsOptional()
+  @IsEnum(OneSignalPlatform, {
+    message: "유효하지 않은 플랫폼 유형입니다.",
+  })
+  platforms?: OneSignalPlatformType[];
+
+  @IsOptional()
+  attribution?: OneSignalAttributionType;
+}
+
+export class OneSignalMessageIdDto {
+  @IsString()
+  @IsNotEmpty({ message: "메시지 ID는 필수입니다." })
+  messageId!: string;
+}
+
+export class OneSignalTemplateDto {
+  @IsString()
+  @IsNotEmpty({ message: "템플릿 이름은 필수입니다." })
+  name!: string;
+
+  @IsString()
+  @IsNotEmpty({ message: "템플릿 내용은 필수입니다." })
+  contents!: string;
+}
+
+export class OneSignalSubscriptionDto {
+  @IsString()
+  @IsNotEmpty({ message: "타입은 필수입니다." })
+  type!: PushType;
+
+  @IsString()
+  @IsNotEmpty({ message: "식별자는 필수입니다." })
+  externalId!: string;
+
+  @IsString()
+  @IsNotEmpty({ message: "토큰은 필수입니다." })
+  token!: string;
+}
+
+export class OneSignalUserDto {
+  @IsString()
+  @IsNotEmpty({ message: "식별자는 필수입니다." })
+  externalId!: string;
 }

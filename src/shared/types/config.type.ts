@@ -60,10 +60,16 @@ export interface AdminDBConfig {
   database: string;
 }
 
+export interface AwsConfig {
+  accessKeyId: string;
+  secretAccessKey: string;
+}
+
 export interface EnvConfig {
   pushDB: PushDBConfig;
   push: PushConfig;
   server: ServerConfig;
   web: WebConfig;
   adminDB: AdminDBConfig;
+  aws: AwsConfig;
 }

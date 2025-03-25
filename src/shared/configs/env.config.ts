@@ -40,6 +40,9 @@ const envSchema = Joi.object({
   APNS_TEAM_ID: Joi.string().required(),
   APNS_PRIVATE_KEY: Joi.string().required(),
   APNS_BUNDLE_ID: Joi.string().required(),
+
+  AWS_ACCESS_KEY_ID: Joi.string().required(),
+  AWS_SECRET_ACCESS_KEY: Joi.string().required(),
 });
 
 const { error, value: envVars } = envSchema.validate(process.env, {
@@ -66,6 +69,10 @@ export const envConfig: EnvConfig = {
     host: envVars.ADMIN_DB_HOST,
     port: parseInt(envVars.ADMIN_DB_PORT, 10),
     database: envVars.ADMIN_DB_DATABASE,
+  },
+  aws: {
+    accessKeyId: envVars.AWS_ACCESS_KEY_ID,
+    secretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
   },
   push: {
     firebase: {
