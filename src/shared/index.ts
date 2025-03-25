@@ -15,6 +15,7 @@ export * from "./dtos/admin/subscriptionRewardRequest.dto";
 export * from "./types/constants/common.const";
 export * from "./types/constants/joinAlias.const";
 export * from "./types/constants/pushQueue.const";
+export * from "./types/constants/oneSignal.const";
 
 export * from "./types/entities/deviceToken.entity";
 export * from "./types/entities/pushMaster.entity";

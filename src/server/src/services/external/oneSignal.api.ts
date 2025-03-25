@@ -10,7 +10,7 @@ import {
   OneSignalAttributionType,
   OneSignalOutcomeNameType,
   OneSignalOutcomeAggregationType,
-} from "@push-manager/shared/types/constants/oneSignal.const";
+} from "@push-manager/shared";
 import {
   OneSignalMessageResult,
   OneSignalOutcomeResult,
