@@ -161,12 +161,20 @@ export class BaseRepository<T extends Model> {
 
     const nextId = await this.getNextSeq(sequenceName);
 
-    const allFields = [pkField, ...fields].map((field) => {
-      const attribute = this.model?.rawAttributes[field];
-      return attribute?.field || field.toUpperCase();
-    });
+    const uniqueFields = fields.filter((field) => field !== pkField);
+    const allFields = uniqueFields.map((field) => field.toUpperCase());
 
     const allValues = [nextId, ...Object.values(values)];
+
+    if (allFields.length !== allValues.length) {
+      console.error("필드와 값의 개수가 일치하지 않습니다.");
+      console.error("필드:", allFields);
+      console.error("값:", allValues);
+      console.error("원본 값:", values);
+      throw new Error(
+        `필드(${allFields.length})와 값(${allValues.length})의 개수가 일치하지 않습니다.`
+      );
+    }
 
     await this.model.sequelize.query(
       `INSERT INTO ${tableName} ("${allFields.join('", "')}") 
