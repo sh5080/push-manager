@@ -52,6 +52,15 @@ export const apiRequest = {
     return response.body as SuccessResponse<any> | PaginatedResponse<any>;
   },
 
+  patch: async (url: string, id: number, data: any, status?: number) => {
+    const response = await request(app)
+      .patch(`/api${url}/${id}`)
+      .send(data)
+      .expect(status || 200);
+
+    return response.body as SuccessResponse<any> | PaginatedResponse<any>;
+  },
+
   delete: async (url: string, id: number, status?: number) => {
     const response = await request(app)
       .delete(`/api${url}/${id}`)
