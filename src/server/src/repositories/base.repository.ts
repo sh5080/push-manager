@@ -108,7 +108,7 @@ export class BaseRepository<T extends Model> {
     // 내부 쿼리와 외부 쿼리에서 중복 없는 속성 사용
     const query = `
       SELECT ${uniqueAttributes
-        .map((attr) => `inner_query."${attr.toLowerCase()}"`)
+        .map((attr) => `inner_query."${attr.toLowerCase()}" AS "${attr}"`)
         .join(", ")}
       FROM (
         SELECT ${uniqueAttributes
@@ -130,9 +130,6 @@ export class BaseRepository<T extends Model> {
       ) inner_query
       WHERE ROWNUM = 1
     `;
-
-    console.log("query: ", query);
-    console.log("replacements: ", Object.values(whereWithoutRownum));
 
     const [result] = await this.model.sequelize!.query(query, {
       type: QueryTypes.SELECT,
@@ -187,10 +184,6 @@ export class BaseRepository<T extends Model> {
     const allValues = [nextId, ...Object.values(values)];
 
     if (allFields.length !== allValues.length) {
-      console.error("필드와 값의 개수가 일치하지 않습니다.");
-      console.error("필드:", allFields);
-      console.error("값:", allValues);
-      console.error("원본 값:", values);
       throw new Error(
         `필드(${allFields.length})와 값(${allValues.length})의 개수가 일치하지 않습니다.`
       );
