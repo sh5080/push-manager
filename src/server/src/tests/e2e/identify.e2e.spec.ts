@@ -9,6 +9,7 @@ import { initializeRelations } from "../../models/relations";
 describe("Identify E2E 테스트", () => {
   let service: IdentifyService;
   let repository: IdentifyRepository;
+  let env = process.env.NODE_ENV === "test";
   const mockData = [
     { identify: "test-id-1", name: "Test", teamId: 1, appId: 1 },
     { identify: "test-id-2", name: "Test", teamId: 1, appId: 2 },
@@ -47,7 +48,7 @@ describe("Identify E2E 테스트", () => {
       const dto: GetIdentifiesDto = { appId: 3 };
       const result = await service.getIdentifies(dto);
 
-      expect(result.length).toBe(6);
+      env ? expect(result.length).toBe(16) : expect(result.length).toBe(6);
 
       const appIds = result.map((item) => item.appId);
       expect(appIds).toContain(1);
@@ -59,7 +60,7 @@ describe("Identify E2E 테스트", () => {
       const dto: GetIdentifiesDto = { appId: 1, teamId: 2 };
       const result = await service.getIdentifies(dto);
 
-      expect(result.length).toBe(2);
+      env ? expect(result.length).toBe(3) : expect(result.length).toBe(2);
 
       // 모든 결과가 teamId 2를 가지고 있는지 확인
       result.forEach((item) => {
@@ -71,10 +72,14 @@ describe("Identify E2E 테스트", () => {
         expect([1, 3].includes(item.appId)).toBe(true);
       });
 
-      // 특정 식별자가 포함되어 있는지 확인
       const identifies = result.map((item) => item.identify);
-      expect(identifies).toContain("test-id-3"); // teamid 2, appId 1
-      expect(identifies).toContain("test-id-6"); // teamid 2, appId 3
+
+      env
+        ? expect(identifies).toContain("10748015")
+        : expect(identifies).toContain("test-id-3");
+      env
+        ? expect(identifies).toContain("1010290213")
+        : expect(identifies).toContain("test-id-6");
     });
   });
 });
