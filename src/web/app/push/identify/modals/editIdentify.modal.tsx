@@ -81,7 +81,7 @@ export function EditIdentifyModal({
                     ? {
                         name: identify.name,
                         identify: identify.identify,
-                        teamId: identify.teamid.toString(),
+                        teamId: identify.teamId.toString(),
                         appId: identify.appId.toString(),
                       }
                     : undefined

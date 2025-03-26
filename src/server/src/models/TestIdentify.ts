@@ -6,7 +6,7 @@ export interface TestIdentifyAttributes {
   identify: string;
   idx: any;
   name: string;
-  teamid: any;
+  teamId: any;
 }
 
 export type TestIdentifyOptionalAttributes = "appId";
@@ -23,7 +23,7 @@ export class TestIdentify
   identify!: string;
   idx!: any;
   name!: string;
-  teamid!: any;
+  teamId!: any;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof TestIdentify {
     return TestIdentify.init(
@@ -48,7 +48,7 @@ export class TestIdentify
           allowNull: false,
           field: "NAME",
         },
-        teamid: {
+        teamId: {
           type: "NUMBER",
           allowNull: false,
           field: "TEAMID",
