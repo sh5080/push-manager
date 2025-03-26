@@ -3,5 +3,5 @@ export interface ITestIdentify {
   identify: string;
   name: string;
   appId: number;
-  teamid: number;
+  teamId: number;
 }
