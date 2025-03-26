@@ -42,6 +42,7 @@ export class IdentifyRepository extends BaseRepository<TestIdentify> {
       where: whereConditions.length > 0 ? { [Op.and]: whereConditions } : {},
       order: [["idx", "ASC"]],
       attributes: ["idx", "identify", "name", "teamid", "appId"],
+      raw: true,
     });
   }
   async create(dto: CreateIdentifyDto) {
