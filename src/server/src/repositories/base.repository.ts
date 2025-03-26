@@ -101,18 +101,38 @@ export class BaseRepository<T extends Model> {
     delete whereWithoutRownum[Symbol.for("and")];
 
     const tableName = await this.getTableName();
+
+    // 중복 속성 제거
+    const uniqueAttributes = Array.from(new Set(attributes));
+
+    // 내부 쿼리와 외부 쿼리에서 중복 없는 속성 사용
     const query = `
-      SELECT * FROM (
-        SELECT ${attributes
-          .map((attr) => `"${attr.toUpperCase()}" AS "${attr.toLowerCase()}"`)
+      SELECT ${uniqueAttributes
+        .map((attr) => `inner_query."${attr.toLowerCase()}"`)
+        .join(", ")}
+      FROM (
+        SELECT ${uniqueAttributes
+          .map((attr) => {
+            const attribute = this.model?.rawAttributes[attr];
+            const columnName = attribute?.field || attr.toUpperCase();
+            return `"${columnName}" AS "${attr.toLowerCase()}"`;
+          })
           .join(", ")}
         FROM ${tableName}
         WHERE ${Object.entries(whereWithoutRownum)
-          .map(([key, value]) => `"${key.toUpperCase()}" = ?`)
+          .map(([key, value]) => {
+            const attribute = this.model?.rawAttributes[key];
+            const columnName = attribute?.field || key.toUpperCase();
+            return `"${columnName}" = ?`;
+          })
           .join(" AND ")}
         ORDER BY "IDX" ASC
-      ) WHERE ROWNUM = 1
+      ) inner_query
+      WHERE ROWNUM = 1
     `;
+
+    console.log("query: ", query);
+    console.log("replacements: ", Object.values(whereWithoutRownum));
 
     const [result] = await this.model.sequelize!.query(query, {
       type: QueryTypes.SELECT,
@@ -183,6 +203,7 @@ export class BaseRepository<T extends Model> {
         type: QueryTypes.INSERT,
         replacements: allValues,
         model: this.model,
+        raw: true,
       }
     );
 
