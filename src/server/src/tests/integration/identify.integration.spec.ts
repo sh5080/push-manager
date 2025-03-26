@@ -45,6 +45,7 @@ describe("Identify 통합 테스트", () => {
         },
         order: [["idx", "ASC"]],
         attributes: ["idx", "identify", "name", "teamid", "appId"],
+        raw: true,
       });
     });
 
@@ -72,6 +73,7 @@ describe("Identify 통합 테스트", () => {
         },
         order: [["idx", "ASC"]],
         attributes: ["idx", "identify", "name", "teamid", "appId"],
+        raw: true,
       });
     });
 
@@ -98,6 +100,7 @@ describe("Identify 통합 테스트", () => {
         where: {},
         order: [["idx", "ASC"]],
         attributes: ["idx", "identify", "name", "teamid", "appId"],
+        raw: true,
       });
     });
   });
