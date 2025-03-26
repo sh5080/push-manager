@@ -5,6 +5,10 @@ import fs from "fs";
 import path from "path";
 import { drizzle as drizzleORM } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
+import { initAdminModels } from "../models/admin/init-models";
+import { initializeAdminRelations } from "../models/admin/relations";
+import { initModels } from "../models/init-models";
+import { initializeRelations } from "../models/relations";
 
 const logDMLQuery = (query: string) => {
   const isDMLQuery = /^(?!BEGIN|COMMIT).*\b(INSERT|UPDATE|DELETE)\b/i.test(
@@ -89,4 +93,22 @@ export const redisConfig = {
   enableReadyCheck: false,
   maxRetriesPerRequest: null,
   retryStrategy: (times: number) => Math.min(times * 50, 2000),
+};
+
+export const setupDatabase = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Sequelize Database connected");
+    initModels(sequelize);
+    initializeRelations();
+    console.log("Sequelize Models and Relations initialized");
+
+    await sequelizeAdmin.authenticate();
+    console.log("Sequelize Admin Database connected");
+    initAdminModels(sequelizeAdmin);
+    initializeAdminRelations();
+    console.log("Sequelize Admin Models and Relations initialized");
+  } catch (error) {
+    console.error("Database connection error:", error);
+  }
 };
