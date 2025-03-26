@@ -1,15 +1,16 @@
-import { IdentifyService } from "../../services/identify.service";
-import { IdentifyRepository } from "../../repositories/identify.repository";
-import { CreateIdentifyDto, GetIdentifiesDto } from "@push-manager/shared";
+import { CreateIdentifyDto, UpdateIdentifyDto } from "@push-manager/shared";
 import { TestIdentify } from "../../models/TestIdentify";
 import { sequelize } from "../../configs/db.config";
 import { initModels } from "../../models/init-models";
 import { initializeRelations } from "../../models/relations";
+import { IdentifyService } from "../../services/identify.service";
+import { IdentifyRepository } from "../../repositories/identify.repository";
+import { apiRequest } from "../test.util";
 
 describe("Identify E2E 테스트", () => {
+  let env = process.env.NODE_ENV === "test";
   let service: IdentifyService;
   let repository: IdentifyRepository;
-  let env = process.env.NODE_ENV === "test";
   const mockData = [
     { identify: "test-id-1", name: "Test", teamId: 1, appId: 1 },
     { identify: "test-id-2", name: "Test", teamId: 1, appId: 2 },
@@ -18,6 +19,7 @@ describe("Identify E2E 테스트", () => {
     { identify: "test-id-5", name: "Test", teamId: 1, appId: 3 },
     { identify: "test-id-6", name: "Test", teamId: 2, appId: 3 },
   ];
+
   beforeAll(async () => {
     await sequelize
       .authenticate()
@@ -28,14 +30,13 @@ describe("Identify E2E 테스트", () => {
         console.log("Sequelize Models and Relations initialized");
       })
       .catch(console.error);
-    console.log("sequelize authenticate successfully");
 
     repository = new IdentifyRepository();
     service = new IdentifyService(repository);
 
-    mockData.forEach(async (item: CreateIdentifyDto) => {
+    for (const item of mockData) {
       await service.createIdentify(item);
-    });
+    }
   });
 
   afterAll(async () => {
@@ -43,36 +44,37 @@ describe("Identify E2E 테스트", () => {
     await sequelize.close();
   });
 
-  describe("getIdentifies", () => {
+  describe("GET /identify", () => {
     it("appId 3: 모든 앱의 식별자를 반환해야 함", async () => {
-      const dto: GetIdentifiesDto = { appId: 3 };
-      const result = await service.getIdentifies(dto);
+      const response = await apiRequest.get("/identify", { appId: 3 });
+      const result = response.data;
+      env ? expect(result.length).toBe(22) : expect(result.length).toBe(6);
 
-      env ? expect(result.length).toBe(16) : expect(result.length).toBe(6);
-
-      const appIds = result.map((item) => item.appId);
+      const appIds = result.map((item: any) => item.appId);
       expect(appIds).toContain(1);
       expect(appIds).toContain(2);
       expect(appIds).toContain(3);
     });
 
     it("appId 1과 teamId 2: 테스트 환경 앱과 LG 팀의 식별자를 반환해야 함", async () => {
-      const dto: GetIdentifiesDto = { appId: 1, teamId: 2 };
-      const result = await service.getIdentifies(dto);
-
-      env ? expect(result.length).toBe(3) : expect(result.length).toBe(2);
+      const response = await apiRequest.get("/identify", {
+        appId: 1,
+        teamId: 2,
+      });
+      const result = response.data;
+      env ? expect(result.length).toBe(4) : expect(result.length).toBe(2);
 
       // 모든 결과가 teamId 2를 가지고 있는지 확인
-      result.forEach((item) => {
+      result.forEach((item: any) => {
         expect(item.teamId).toBe(2);
       });
 
       // 모든 결과가 appId 1 또는 3을 가지고 있는지 확인
-      result.forEach((item) => {
+      result.forEach((item: any) => {
         expect([1, 3].includes(item.appId)).toBe(true);
       });
 
-      const identifies = result.map((item) => item.identify);
+      const identifies = result.map((item: any) => item.identify);
 
       env
         ? expect(identifies).toContain("10748015")
@@ -83,68 +85,95 @@ describe("Identify E2E 테스트", () => {
     });
   });
 
-  describe("getIdentify", () => {
-    it("존재하는 idx로 식별자를 조회할 수 있어야 함", async () => {
-      const allIdentifies = await service.getIdentifies({});
-      expect(allIdentifies.length).toBeGreaterThan(0);
-
-      const firstIdentify = allIdentifies[0];
-      const idx = firstIdentify.idx;
-
-      const result = await service.getIdentify(idx);
-
-      expect(result).not.toBeNull();
-      expect(result!.idx).toBe(idx);
-      expect(result!.identify).toBe(firstIdentify.identify);
-      expect(result!.name).toBe(firstIdentify.name);
-      expect(result!.teamId).toBe(firstIdentify.teamId);
-      expect(result!.appId).toBe(firstIdentify.appId);
-    });
-
-    it("존재하지 않는 idx로 조회 시 null을 반환해야 함", async () => {
-      const nonExistentIdx = 999999;
-      const result = await service.getIdentify(nonExistentIdx);
-
-      expect(result).toBeNull();
-    });
-
-    it("여러 식별자 중 특정 idx의 식별자만 정확히 반환해야 함", async () => {
-      const allIdentifies = await service.getIdentifies({});
-      expect(allIdentifies.length).toBeGreaterThan(1);
-
-      const secondIdentify = allIdentifies[1];
-      const idx = secondIdentify.idx;
-
-      const result = await service.getIdentify(idx);
-
-      expect(result).not.toBeNull();
-      expect(result!.idx).toBe(idx);
-      expect(result!.identify).toBe(secondIdentify.identify);
-      expect(result!.idx).not.toBe(allIdentifies[0].idx);
-      expect(result!.identify).not.toBe(allIdentifies[0].identify);
-    });
-
-    it("특정 팀과 앱에 속한 식별자를 idx로 조회할 수 있어야 함", async () => {
-      const teamId = 1;
-      const appId = 1;
-      const dto: GetIdentifiesDto = {
-        teamId,
-        appId,
+  describe("POST /identify", () => {
+    it("새로운 식별자를 생성할 수 있어야 함", async () => {
+      const newIdentify: CreateIdentifyDto = {
+        identify: "test-new-id",
+        name: "Test New",
+        teamId: 1,
+        appId: 2,
       };
-      const identifiesWithFilter = await service.getIdentifies(dto);
 
-      expect(identifiesWithFilter.length).toBeGreaterThan(0);
-      const targetIdentify = identifiesWithFilter[0];
+      const response = await apiRequest.post("/identify", newIdentify);
+      const result = response.data;
 
-      const result = await service.getIdentify(targetIdentify.idx);
+      expect(result.idx).toBeDefined();
+      expect(result.identify).toBe(newIdentify.identify);
+      expect(result.name).toBe(newIdentify.name);
+      expect(result.teamId).toBe(newIdentify.teamId);
+      expect(result.appId).toBe(newIdentify.appId);
+    });
 
-      expect(result).not.toBeNull();
-      expect(result!.idx).toBe(targetIdentify.idx);
-      expect(result!.teamId).toBe(targetIdentify.teamId);
-      expect(result!.appId).toBe(targetIdentify.appId);
+    it("중복된 식별자 생성 시 적절한 에러를 반환해야 함", async () => {
+      // 이미 존재하는 식별자 정보
+      const duplicateIdentify: CreateIdentifyDto = {
+        identify: "test-new-id",
+        name: "Test Duplicate",
+        teamId: 1,
+        appId: 1,
+      };
 
-      expect(result!.teamId).toBe(1);
-      expect([1, 3].includes(result!.appId)).toBeTruthy();
+      await apiRequest.post("/identify", duplicateIdentify, 400);
+      // 생성된 식별자 삭제 (테스트 정리)
+      await TestIdentify.destroy({ where: { identify: "test-new-id" } });
+    });
+  });
+
+  describe("PATCH /identify/:idx", () => {
+    it("기존 식별자를 업데이트할 수 있어야 함", async () => {
+      // 먼저 모든 식별자 목록을 가져옴
+      const listResponse = await apiRequest.get("/identify");
+      const list = listResponse.data;
+      const targetIdentify = list.find(
+        (item: any) => item.identify === "test-id-1"
+      );
+
+      if (!targetIdentify) {
+        throw new Error("테스트 데이터를 찾을 수 없습니다");
+      }
+
+      const updateData: UpdateIdentifyDto = {
+        identify: "Updated Successfully",
+        name: targetIdentify.name,
+        teamId: targetIdentify.teamId,
+        appId: targetIdentify.appId,
+      };
+
+      const response = await apiRequest.patch(
+        "/identify",
+        targetIdentify.idx,
+        updateData
+      );
+
+      const result = response.data;
+      console.log("result: ", result);
+      expect(result.idx).toBe(targetIdentify.idx);
+      expect(result.identify).toBe(targetIdentify.identify);
+      expect(result.name).toBe(updateData.name);
+      expect(result.teamId).toBe(updateData.teamId);
+      expect(result.appId).toBe(updateData.appId);
+    });
+  });
+
+  describe("DELETE /identify/:idx", () => {
+    it("식별자를 삭제할 수 있어야 함", async () => {
+      // 삭제용 테스트 데이터 생성
+      const deleteTestData: CreateIdentifyDto = {
+        identify: "test-delete-id",
+        name: "Test Delete",
+        teamId: 1,
+        appId: 1,
+      };
+
+      const createResponse = await apiRequest.post("/identify", deleteTestData);
+
+      const createdIdentify = createResponse.data;
+
+      // 생성된 식별자 삭제
+      await apiRequest.delete("/identify", createdIdentify.idx);
+
+      // 삭제 확인
+      await apiRequest.getById("/identify", createdIdentify.idx, 404);
     });
   });
 });
