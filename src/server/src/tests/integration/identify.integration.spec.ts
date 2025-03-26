@@ -27,9 +27,9 @@ describe("Identify 통합 테스트", () => {
       const dto: GetIdentifiesDto = { appId: 3 };
 
       const mockIdentifies = [
-        { idx: 1, identify: "id-1", name: "Name 1", teamid: 1, appId: 1 },
-        { idx: 2, identify: "id-2", name: "Name 2", teamid: 1, appId: 2 },
-        { idx: 3, identify: "id-3", name: "Name 3", teamid: 2, appId: 3 },
+        { idx: 1, identify: "id-1", name: "Name 1", teamId: 1, appId: 1 },
+        { idx: 2, identify: "id-2", name: "Name 2", teamId: 1, appId: 2 },
+        { idx: 3, identify: "id-3", name: "Name 3", teamId: 2, appId: 3 },
       ];
 
       (TestIdentify.findAll as jest.Mock).mockResolvedValue(mockIdentifies);
@@ -44,7 +44,7 @@ describe("Identify 통합 테스트", () => {
           [Op.and]: [{ APPID: { [Op.in]: [1, 2, 3] } }],
         },
         order: [["idx", "ASC"]],
-        attributes: ["idx", "identify", "name", "teamid", "appId"],
+        attributes: ["idx", "identify", "name", "teamId", "appId"],
         raw: true,
       });
     });
@@ -53,8 +53,8 @@ describe("Identify 통합 테스트", () => {
       const dto: GetIdentifiesDto = { appId: 1, teamId: 2 };
 
       const mockIdentifies = [
-        { idx: 3, identify: "id-3", name: "Name 3", teamid: 2, appId: 1 },
-        { idx: 6, identify: "id-6", name: "Name 6", teamid: 2, appId: 3 },
+        { idx: 3, identify: "id-3", name: "Name 3", teamId: 2, appId: 1 },
+        { idx: 6, identify: "id-6", name: "Name 6", teamId: 2, appId: 3 },
       ];
 
       (TestIdentify.findAll as jest.Mock).mockResolvedValue(mockIdentifies);
@@ -72,7 +72,7 @@ describe("Identify 통합 테스트", () => {
           ],
         },
         order: [["idx", "ASC"]],
-        attributes: ["idx", "identify", "name", "teamid", "appId"],
+        attributes: ["idx", "identify", "name", "teamId", "appId"],
         raw: true,
       });
     });
@@ -81,12 +81,12 @@ describe("Identify 통합 테스트", () => {
       const dto: GetIdentifiesDto = {};
 
       const mockIdentifies = [
-        { idx: 1, identify: "id-1", name: "Name 1", teamid: 1, appId: 1 },
-        { idx: 2, identify: "id-2", name: "Name 2", teamid: 1, appId: 2 },
-        { idx: 3, identify: "id-3", name: "Name 3", teamid: 2, appId: 1 },
-        { idx: 4, identify: "id-4", name: "Name 4", teamid: 2, appId: 2 },
-        { idx: 5, identify: "id-5", name: "Name 5", teamid: 1, appId: 3 },
-        { idx: 6, identify: "id-6", name: "Name 6", teamid: 2, appId: 3 },
+        { idx: 1, identify: "id-1", name: "Name 1", teamId: 1, appId: 1 },
+        { idx: 2, identify: "id-2", name: "Name 2", teamId: 1, appId: 2 },
+        { idx: 3, identify: "id-3", name: "Name 3", teamId: 2, appId: 1 },
+        { idx: 4, identify: "id-4", name: "Name 4", teamId: 2, appId: 2 },
+        { idx: 5, identify: "id-5", name: "Name 5", teamId: 1, appId: 3 },
+        { idx: 6, identify: "id-6", name: "Name 6", teamId: 2, appId: 3 },
       ];
 
       (TestIdentify.findAll as jest.Mock).mockResolvedValue(mockIdentifies);
@@ -99,7 +99,7 @@ describe("Identify 통합 테스트", () => {
       expect(TestIdentify.findAll).toHaveBeenCalledWith({
         where: {},
         order: [["idx", "ASC"]],
-        attributes: ["idx", "identify", "name", "teamid", "appId"],
+        attributes: ["idx", "identify", "name", "teamId", "appId"],
         raw: true,
       });
     });
