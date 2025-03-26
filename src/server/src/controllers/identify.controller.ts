@@ -34,7 +34,10 @@ export class IdentifyController {
   updateIdentify = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const dto = await validateDto(UpdateIdentifyDto, req.body);
-      const identify = await this.identifyService.updateIdentify(dto);
+      const identify = await this.identifyService.updateIdentify(
+        Number(req.params.idx),
+        dto
+      );
       res.success(identify);
     } catch (error) {
       next(error);
@@ -43,9 +46,8 @@ export class IdentifyController {
 
   deleteIdentify = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const dto = await validateDto(GetIdentifyDto, req.params);
-      const identify = await this.identifyService.deleteIdentify(dto.idx);
-      res.success(identify);
+      await this.identifyService.deleteIdentify(Number(req.params.idx));
+      res.success(null, 204);
     } catch (error) {
       next(error);
     }
