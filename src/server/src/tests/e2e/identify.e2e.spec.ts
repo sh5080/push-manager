@@ -64,7 +64,7 @@ describe("Identify E2E 테스트", () => {
 
       // 모든 결과가 teamId 2를 가지고 있는지 확인
       result.forEach((item) => {
-        expect(item.teamid).toBe(2);
+        expect(item.teamId).toBe(2);
       });
 
       // 모든 결과가 appId 1 또는 3을 가지고 있는지 확인
@@ -80,6 +80,71 @@ describe("Identify E2E 테스트", () => {
       env
         ? expect(identifies).toContain("1010290213")
         : expect(identifies).toContain("test-id-6");
+    });
+  });
+
+  describe("getIdentify", () => {
+    it("존재하는 idx로 식별자를 조회할 수 있어야 함", async () => {
+      const allIdentifies = await service.getIdentifies({});
+      expect(allIdentifies.length).toBeGreaterThan(0);
+
+      const firstIdentify = allIdentifies[0];
+      const idx = firstIdentify.idx;
+
+      const result = await service.getIdentify(idx);
+
+      expect(result).not.toBeNull();
+      expect(result!.idx).toBe(idx);
+      expect(result!.identify).toBe(firstIdentify.identify);
+      expect(result!.name).toBe(firstIdentify.name);
+      expect(result!.teamId).toBe(firstIdentify.teamId);
+      expect(result!.appId).toBe(firstIdentify.appId);
+    });
+
+    it("존재하지 않는 idx로 조회 시 null을 반환해야 함", async () => {
+      const nonExistentIdx = 999999;
+      const result = await service.getIdentify(nonExistentIdx);
+
+      expect(result).toBeNull();
+    });
+
+    it("여러 식별자 중 특정 idx의 식별자만 정확히 반환해야 함", async () => {
+      const allIdentifies = await service.getIdentifies({});
+      expect(allIdentifies.length).toBeGreaterThan(1);
+
+      const secondIdentify = allIdentifies[1];
+      const idx = secondIdentify.idx;
+
+      const result = await service.getIdentify(idx);
+
+      expect(result).not.toBeNull();
+      expect(result!.idx).toBe(idx);
+      expect(result!.identify).toBe(secondIdentify.identify);
+      expect(result!.idx).not.toBe(allIdentifies[0].idx);
+      expect(result!.identify).not.toBe(allIdentifies[0].identify);
+    });
+
+    it("특정 팀과 앱에 속한 식별자를 idx로 조회할 수 있어야 함", async () => {
+      const teamId = 1;
+      const appId = 1;
+      const dto: GetIdentifiesDto = {
+        teamId,
+        appId,
+      };
+      const identifiesWithFilter = await service.getIdentifies(dto);
+
+      expect(identifiesWithFilter.length).toBeGreaterThan(0);
+      const targetIdentify = identifiesWithFilter[0];
+
+      const result = await service.getIdentify(targetIdentify.idx);
+
+      expect(result).not.toBeNull();
+      expect(result!.idx).toBe(targetIdentify.idx);
+      expect(result!.teamId).toBe(targetIdentify.teamId);
+      expect(result!.appId).toBe(targetIdentify.appId);
+
+      expect(result!.teamId).toBe(1);
+      expect([1, 3].includes(result!.appId)).toBeTruthy();
     });
   });
 });
