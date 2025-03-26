@@ -1,12 +1,16 @@
+import { IdentifyService } from "../../services/identify.service";
 import { IIdentifyService } from "../../interfaces/identify.interface";
+import { IdentifyRepository } from "../../repositories/identify.repository";
 import { GetIdentifiesDto } from "@push-manager/shared";
-import { createMockService } from "../mock.test";
+import { createMockService } from "../test.util";
 
 describe("Identify 통합 테스트", () => {
-  let service: jest.Mocked<IIdentifyService>;
+  let service: IIdentifyService;
+  let repository: jest.Mocked<IdentifyRepository>;
 
   beforeEach(() => {
-    service = createMockService<IIdentifyService>();
+    repository = createMockService<IdentifyRepository>();
+    service = new IdentifyService(repository);
     jest.clearAllMocks();
   });
 
@@ -20,13 +24,13 @@ describe("Identify 통합 테스트", () => {
         { idx: 3, identify: "id-3", name: "Name 3", teamId: 2, appId: 3 },
       ];
 
-      (service.getIdentifies as jest.Mock).mockResolvedValue(mockIdentifies);
+      (repository.findAll as jest.Mock).mockResolvedValue(mockIdentifies);
 
       const result = await service.getIdentifies(dto);
       expect(result).toEqual(mockIdentifies);
       expect(result.length).toBe(3);
 
-      expect(service.getIdentifies).toHaveBeenCalledWith(dto);
+      expect(repository.findAll).toHaveBeenCalledWith([], [1, 2, 3]);
     });
 
     it("appId 1과 teamId 2: 테스트 환경 앱과 LG 팀의 식별자를 반환해야 함", async () => {
@@ -37,13 +41,13 @@ describe("Identify 통합 테스트", () => {
         { idx: 6, identify: "id-6", name: "Name 6", teamId: 2, appId: 3 },
       ];
 
-      (service.getIdentifies as jest.Mock).mockResolvedValue(mockIdentifies);
+      (repository.findAll as jest.Mock).mockResolvedValue(mockIdentifies);
 
       const result = await service.getIdentifies(dto);
       expect(result).toEqual(mockIdentifies);
       expect(result.length).toBe(2);
 
-      expect(service.getIdentifies).toHaveBeenCalledWith(dto);
+      expect(repository.findAll).toHaveBeenCalledWith([2], [1, 3]);
     });
 
     it("필터링 조건이 없을 때 모든 식별자를 반환해야 함", async () => {
@@ -58,13 +62,13 @@ describe("Identify 통합 테스트", () => {
         { idx: 6, identify: "id-6", name: "Name 6", teamId: 2, appId: 3 },
       ];
 
-      (service.getIdentifies as jest.Mock).mockResolvedValue(mockIdentifies);
+      (repository.findAll as jest.Mock).mockResolvedValue(mockIdentifies);
 
       const result = await service.getIdentifies(dto);
       expect(result).toEqual(mockIdentifies);
       expect(result.length).toBe(6);
 
-      expect(service.getIdentifies).toHaveBeenCalledWith(dto);
+      expect(repository.findAll).toHaveBeenCalledWith([], []);
     });
   });
 });
