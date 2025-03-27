@@ -1,10 +1,10 @@
-import { IdentifyService } from "../../services/identify.service";
-import { IIdentifyService } from "../../interfaces/identify.interface";
-import { IdentifyRepository } from "../../repositories/identify.repository";
+import { IdentifyService } from "@/src/services/identify.service";
+import { IIdentifyService } from "@/src/interfaces/identify.interface";
+import { IdentifyRepository } from "@/src/repositories/identify.repository";
 import { GetIdentifiesDto } from "@push-manager/shared";
-import { createMockService } from "../test.util";
+import { createMockService } from "@/src/tests/test.util";
 
-describe("Identify 통합 테스트", () => {
+describe("Identify 단위 테스트", () => {
   let service: IIdentifyService;
   let repository: jest.Mocked<IdentifyRepository>;
 

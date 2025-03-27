@@ -1,13 +1,13 @@
 import { CreateIdentifyDto, UpdateIdentifyDto } from "@push-manager/shared";
-import { TestIdentify } from "../../models/TestIdentify";
-import { sequelize } from "../../configs/db.config";
-import { initModels } from "../../models/init-models";
-import { initializeRelations } from "../../models/relations";
-import { IdentifyService } from "../../services/identify.service";
-import { IdentifyRepository } from "../../repositories/identify.repository";
-import { apiRequest } from "../test.util";
+import { TestIdentify } from "@/src/models/TestIdentify";
+import { sequelize } from "@/src/configs/db.config";
+import { initModels } from "@/src/models/init-models";
+import { initializeRelations } from "@/src/models/relations";
+import { IdentifyService } from "@/src/services/identify.service";
+import { IdentifyRepository } from "@/src/repositories/identify.repository";
+import { apiRequest } from "@/src/tests/test.util";
 
-describe("Identify E2E 테스트", () => {
+describe("Identify 통합 테스트", () => {
   let env = process.env.NODE_ENV === "test";
   let service: IdentifyService;
   let repository: IdentifyRepository;
