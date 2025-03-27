@@ -1,4 +1,4 @@
-import { CreatePushDto, StepEnum, PModeEnum } from "@push-manager/shared";
+import { CreatePushDto, AppIdEnum } from "@push-manager/shared";
 import { createMockService } from "@/src/tests/test.util";
 import { IPushService } from "@/src/interfaces/push.interface";
 import { PushMasterRepository } from "@/src/repositories/pushMaster.repository";
@@ -45,7 +45,7 @@ describe("Push 단위 테스트", () => {
         identifyArray: ["test-id-1", "test-id-2"],
         sendDateString: "9999-12-31 23:59",
         isReady: isReady,
-        appId: 1,
+        appId: AppIdEnum.PROD,
         fName: "https://example.com/image.jpg",
         pLink: "https://example.com/landing",
       };
@@ -85,7 +85,7 @@ describe("Push 단위 테스트", () => {
         identifyArray: ["test-id-1", "test-id-2"],
         sendDateString: sendDateString,
         isReady: false,
-        appId: 1,
+        appId: AppIdEnum.PROD,
         fName: "https://example.com/image.jpg",
         pLink: "https://example.com/landing",
       };
@@ -137,7 +137,7 @@ describe("Push 단위 테스트", () => {
         ],
         sendDateString: "9999-12-31 23:59",
         isReady: false,
-        appId: 1,
+        appId: AppIdEnum.PROD,
         fName: "https://example.com/image.jpg",
         pLink: "https://example.com/landing",
       };
