@@ -105,7 +105,6 @@ describe("Identify E2E 테스트", () => {
     });
 
     it("중복된 식별자 생성 시 적절한 에러를 반환해야 함", async () => {
-      // 이미 존재하는 식별자 정보
       const duplicateIdentify: CreateIdentifyDto = {
         identify: "test-new-id",
         name: "Test Duplicate",
@@ -114,14 +113,12 @@ describe("Identify E2E 테스트", () => {
       };
 
       await apiRequest.post("/identify", duplicateIdentify, 400);
-      // 생성된 식별자 삭제 (테스트 정리)
       await TestIdentify.destroy({ where: { identify: "test-new-id" } });
     });
   });
 
   describe("PATCH /identify/:idx", () => {
     it("기존 식별자를 업데이트할 수 있어야 함", async () => {
-      // 먼저 모든 식별자 목록을 가져옴
       const listResponse = await apiRequest.get("/identify");
       const list = listResponse.data;
       const targetIdentify = list.find(
@@ -133,22 +130,21 @@ describe("Identify E2E 테스트", () => {
       }
 
       const updateData: UpdateIdentifyDto = {
-        identify: "Updated Successfully",
+        identify: "updated-id-1",
         name: targetIdentify.name,
         teamId: targetIdentify.teamId,
         appId: targetIdentify.appId,
       };
 
-      const response = await apiRequest.patch(
-        "/identify",
-        targetIdentify.idx,
-        updateData
+      await apiRequest.patch("/identify", targetIdentify.idx, updateData);
+      const updatedResponse = await apiRequest.get("/identify");
+      const updatedList = updatedResponse.data;
+      const result = updatedList.find(
+        (item: any) => item.identify === "updated-id-1"
       );
 
-      const result = response.data;
-      console.log("result: ", result);
       expect(result.idx).toBe(targetIdentify.idx);
-      expect(result.identify).toBe(targetIdentify.identify);
+      expect(result.identify).toBe(updateData.identify);
       expect(result.name).toBe(updateData.name);
       expect(result.teamId).toBe(updateData.teamId);
       expect(result.appId).toBe(updateData.appId);
@@ -157,7 +153,6 @@ describe("Identify E2E 테스트", () => {
 
   describe("DELETE /identify/:idx", () => {
     it("식별자를 삭제할 수 있어야 함", async () => {
-      // 삭제용 테스트 데이터 생성
       const deleteTestData: CreateIdentifyDto = {
         identify: "test-delete-id",
         name: "Test Delete",
@@ -169,11 +164,15 @@ describe("Identify E2E 테스트", () => {
 
       const createdIdentify = createResponse.data;
 
-      // 생성된 식별자 삭제
       await apiRequest.delete("/identify", createdIdentify.idx);
+      const listResponse = await apiRequest.get("/identify");
+      const list = listResponse.data;
 
-      // 삭제 확인
-      await apiRequest.getById("/identify", createdIdentify.idx, 404);
+      const result = list.find(
+        (item: any) => item.identify === deleteTestData.identify
+      );
+
+      expect(result).toBeUndefined();
     });
   });
 });
