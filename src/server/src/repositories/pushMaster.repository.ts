@@ -15,21 +15,23 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
     super(TblFpMaster);
   }
 
-  async getOnePushMaster(cmpncode: number): Promise<TblFpMaster> {
+  async getOnePushMaster(cmpncode: number) {
     const columns = Object.keys(TblFpMaster.getAttributes());
     const [result] = await TblFpMaster.findAll({
       where: { cmpncode },
       attributes: columns,
+      raw: true,
     });
 
     return result!;
   }
 
-  async getLastCampaignCode(transaction?: Transaction): Promise<TblFpMaster[]> {
+  async getLastCampaignCode(transaction?: Transaction) {
     const [result] = await TblFpMaster.findAll({
       attributes: ["cmpncode"],
       order: [["cmpncode", "DESC"]],
       transaction: transaction || undefined,
+      raw: true,
     });
 
     return result ? [result] : [];
