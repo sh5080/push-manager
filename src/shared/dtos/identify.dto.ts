@@ -53,11 +53,6 @@ export class CreateIdentifyDto {
 }
 
 export class UpdateIdentifyDto {
-  @IsNumber()
-  @Type(() => Number)
-  @IsNotEmpty()
-  idx!: number;
-
   @IsString()
   @IsNotEmpty()
   identify!: string;

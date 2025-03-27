@@ -22,7 +22,7 @@ import {
   convertToSysdate,
 } from "../utils/transform.util";
 import { createPushBaseData } from "../utils/push.util";
-import { CreateBasePushDto } from "../types/push.type";
+import { CreateBasePushDto, UpdateMasterStatusDto } from "../types/push.type";
 import { TblPushstsmsg } from "../models/TblPushstsmsg";
 import {
   TblFpMaster,
@@ -250,11 +250,12 @@ export class PushService implements IPushService {
     campaignCode: number,
     step: (typeof StepEnum)[keyof typeof StepEnum]
   ): Promise<void> {
-    await this.pushMasterRepository.updateMasterRecord(transaction, {
+    const dto: UpdateMasterStatusDto = {
       campaignCode,
       endDate: "SYSDATE",
       step,
-    });
+    };
+    await this.pushMasterRepository.updateMasterRecord(dto, transaction);
   }
 
   private async createPushBatch(

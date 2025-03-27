@@ -3,14 +3,14 @@ import { SuccessResponse } from "@push-manager/shared";
 
 export const responseMiddleware = () => {
   return (req: Request, res: Response, next: NextFunction) => {
-    res.success = function <T>(data?: T, message?: string) {
+    res.success = function <T>(data?: T, status?: number, message?: string) {
       const response: SuccessResponse<T> = {
         success: true,
         data,
         ...(message && { message }),
       };
 
-      return this.json(response);
+      return this.status(status || 200).json(response);
     };
 
     next();
@@ -21,7 +21,7 @@ export const responseMiddleware = () => {
 declare global {
   namespace Express {
     interface Response {
-      success<T>(data: T, message?: string): Response;
+      success<T>(data: T, status?: number, message?: string): Response;
     }
   }
 }

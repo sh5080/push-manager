@@ -7,4 +7,7 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest",
   },
   setupFiles: ["<rootDir>/../../src/shared/configs/env.config.ts"],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/$1",
+  },
 };

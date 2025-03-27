@@ -6,9 +6,6 @@ export async function validateDto<T extends object>(
   dto: ClassConstructor<T>,
   data: object
 ): Promise<T> {
-  if (Object.keys(data).length === 0) {
-    throw new BadRequestException("Invalid data");
-  }
   const dtoInstance = plainToInstance(dto, data);
   try {
     await validateOrReject(dtoInstance, {

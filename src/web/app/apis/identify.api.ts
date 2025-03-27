@@ -36,16 +36,16 @@ class IdentifyAPI extends BaseAPI {
   }
 
   // 식별자 수정
-  async updateIdentify(dto: UpdateIdentifyDto): Promise<ITestIdentify> {
+  async updateIdentify(
+    idx: number,
+    dto: UpdateIdentifyDto
+  ): Promise<ITestIdentify> {
     const validatedDto = await validateDto(UpdateIdentifyDto, dto);
 
-    return this.customFetch<ITestIdentify>(
-      `/api/identify/${validatedDto.idx}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify(validatedDto),
-      }
-    );
+    return this.customFetch<ITestIdentify>(`/api/identify/${idx}`, {
+      method: "PATCH",
+      body: JSON.stringify(validatedDto),
+    });
   }
 
   // 식별자 삭제

@@ -8,27 +8,30 @@ import {
 } from "@push-manager/shared";
 import { TblFpMaster } from "../models/TblFpMaster";
 import { Transaction, QueryTypes } from "sequelize";
+import { UpdateMasterStatusDto } from "../types/push.type";
 
 export class PushMasterRepository extends BaseRepository<TblFpMaster> {
   constructor() {
     super(TblFpMaster);
   }
 
-  async getOnePushMaster(cmpncode: number): Promise<TblFpMaster> {
+  async getOnePushMaster(cmpncode: number) {
     const columns = Object.keys(TblFpMaster.getAttributes());
     const [result] = await TblFpMaster.findAll({
       where: { cmpncode },
       attributes: columns,
+      raw: true,
     });
 
     return result!;
   }
 
-  async getLastCampaignCode(transaction: Transaction): Promise<TblFpMaster[]> {
+  async getLastCampaignCode(transaction?: Transaction) {
     const [result] = await TblFpMaster.findAll({
       attributes: ["cmpncode"],
       order: [["cmpncode", "DESC"]],
-      transaction,
+      transaction: transaction || undefined,
+      raw: true,
     });
 
     return result ? [result] : [];
@@ -64,12 +67,8 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
   }
 
   async updateMasterRecord(
-    transaction: Transaction,
-    dto: {
-      campaignCode: number;
-      step: (typeof StepEnum)[keyof typeof StepEnum];
-      endDate: string;
-    }
+    dto: UpdateMasterStatusDto,
+    transaction?: Transaction
   ) {
     const query = `
     UPDATE COKR_MBR_APP.TBL_FP_MASTER 
@@ -84,7 +83,7 @@ export class PushMasterRepository extends BaseRepository<TblFpMaster> {
         campaignCode: dto.campaignCode,
       },
       type: QueryTypes.UPDATE,
-      transaction,
+      transaction: transaction || undefined,
     });
   }
 

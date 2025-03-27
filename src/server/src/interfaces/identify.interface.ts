@@ -9,6 +9,6 @@ export interface IIdentifyService {
   createIdentify(dto: CreateIdentifyDto): Promise<TestIdentify>;
   getIdentifies(dto: GetIdentifiesDto): Promise<TestIdentify[]>;
   getIdentify(idx: number): Promise<TestIdentify | null>;
-  updateIdentify(dto: UpdateIdentifyDto): Promise<void>;
+  updateIdentify(idx: number, dto: UpdateIdentifyDto): Promise<void>;
   deleteIdentify(idx: number): Promise<void>;
 }

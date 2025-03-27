@@ -62,12 +62,12 @@ export class IdentifyService implements IIdentifyService {
     return data;
   }
 
-  async updateIdentify(dto: UpdateIdentifyDto) {
-    const identify = await this.identifyRepository.findOne(dto.idx);
+  async updateIdentify(idx: number, dto: UpdateIdentifyDto) {
+    const identify = await this.identifyRepository.findOne(idx);
     if (!identify) {
       throw new NotFoundException("존재하지 않는 식별자입니다.");
     }
-    return await this.identifyRepository.update(dto);
+    return await this.identifyRepository.update(idx, dto);
   }
 
   async deleteIdentify(idx: number) {

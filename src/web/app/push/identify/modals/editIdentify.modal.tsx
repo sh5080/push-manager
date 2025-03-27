@@ -36,13 +36,12 @@ export function EditIdentifyModal({
 
     try {
       const dto: UpdateIdentifyDto = {
-        idx: identify.idx,
         name: formData.name,
         identify: formData.identify,
         teamId: Number(formData.teamId),
         appId: Number(formData.appId),
       };
-      await identifyApi.updateIdentify(dto);
+      await identifyApi.updateIdentify(identify.idx, dto);
       onEdit();
     } catch (error: any) {
       Toast.error(error.message);

@@ -39,7 +39,8 @@ export class IdentifyRepository extends BaseRepository<TestIdentify> {
     }
 
     return await TestIdentify.findAll({
-      where: whereConditions.length > 0 ? { [Op.and]: whereConditions } : {},
+      where:
+        whereConditions.length > 0 ? { [Op.and]: whereConditions } : undefined,
       order: [["idx", "ASC"]],
       attributes: ["idx", "identify", "name", "teamId", "appId"],
       raw: true,
@@ -57,10 +58,10 @@ export class IdentifyRepository extends BaseRepository<TestIdentify> {
     });
   }
 
-  async update(dto: UpdateIdentifyDto) {
-    const { idx, identify, name, teamId, appId } = dto;
+  async update(idx: number, dto: UpdateIdentifyDto) {
+    const { identify, name, teamId, appId } = dto;
     await TestIdentify.update(
-      { identify, name, teamId: teamId, appId: appId },
+      { identify, name, teamId, appId },
       { where: { idx } }
     );
     return;
