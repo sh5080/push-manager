@@ -1,10 +1,9 @@
 import {
   GetMemberDto,
   GetMemberListDto,
-  IMemberGetRes,
   IMemberWithNewbestInfo,
 } from "@push-manager/shared";
-import { admin, member } from "../../db/schema";
+import { admin } from "../../db/migrations/schema";
 export interface IMemberService {
   getMember(dto: GetMemberDto): Promise<IMemberWithNewbestInfo>;
   getMemberList(dto: GetMemberListDto): Promise<

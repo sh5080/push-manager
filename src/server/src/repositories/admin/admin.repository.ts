@@ -1,5 +1,5 @@
 import { drizzle } from "../../configs/db.config";
-import { admin } from "../../db/schema";
+import { admin } from "../../db/migrations/schema";
 import { eq } from "drizzle-orm";
 
 export class AdminRepository {
