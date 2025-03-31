@@ -11,8 +11,6 @@ const envPath =
 dotenv.config({ path: envPath });
 
 const envSchema = Joi.object({
-  JWT_HS256_SECRET: Joi.string().required(),
-
   PUSH_DB_HOST: Joi.string().required(),
   PUSH_DB_PORT: Joi.number().required(),
   PUSH_DB_USERNAME: Joi.string().required(),
@@ -48,6 +46,16 @@ const envSchema = Joi.object({
 
   AWS_ACCESS_KEY_ID: Joi.string().required(),
   AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+
+  JWT_RS256_PUBLIC_KEY: Joi.string().required(),
+  JWT_RS256_PRIVATE_KEY: Joi.string().required(),
+  JWT_HS256_SECRET: Joi.string().required(),
+  ACCESS_JWT_EXPIRATION: Joi.number().required(),
+  REFRESH_JWT_EXPIRATION: Joi.number().required(),
+
+  REDIS_HOST: Joi.string().required(),
+  REDIS_PORT: Joi.number().required(),
+  REDIS_PASSWORD: Joi.string().required(),
 });
 
 const { error, value: envVars } = envSchema.validate(process.env, {
@@ -113,6 +121,20 @@ export const envConfig: EnvConfig = {
   },
   server: {
     port: envVars.NEXT_PUBLIC_SERVER_PORT,
-    jwtSecret: envVars.JWT_HS256_SECRET,
+    env: envVars.NODE_ENV,
+    jwt: {
+      rs256: {
+        publicKey: envVars.JWT_RS256_PUBLIC_KEY,
+        privateKey: envVars.JWT_RS256_PRIVATE_KEY,
+      },
+      hs256: envVars.JWT_HS256_SECRET,
+      accessJwtExpiration: envVars.ACCESS_JWT_EXPIRATION,
+      refreshJwtExpiration: envVars.REFRESH_JWT_EXPIRATION,
+    },
+    redis: {
+      host: envVars.REDIS_HOST,
+      port: envVars.REDIS_PORT,
+      password: envVars.REDIS_PASSWORD,
+    },
   },
 };

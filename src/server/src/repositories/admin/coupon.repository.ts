@@ -68,6 +68,8 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
           },
           { model: Member, attributes: ["name", "memNo"] },
         ],
+        raw: true,
+        nest: true,
       }),
       CouponPool.count({ where }),
     ]);

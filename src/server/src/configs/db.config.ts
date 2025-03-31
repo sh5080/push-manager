@@ -87,9 +87,9 @@ export const sequelizeAdmin = new Sequelize({
 });
 
 export const redisConfig = {
-  host: process.env.REDIS_HOST || "127.0.0.1",
-  port: parseInt(process.env.REDIS_PORT || "6379"),
-  password: process.env.REDIS_PASSWORD,
+  host: envConfig.server.redis.host,
+  port: envConfig.server.redis.port,
+  password: envConfig.server.redis.password,
   enableReadyCheck: false,
   maxRetriesPerRequest: null,
   retryStrategy: (times: number) => Math.min(times * 50, 2000),

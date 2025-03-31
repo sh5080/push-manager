@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { SuccessResponse } from "@push-manager/shared";
+import { UserPayload } from "../types/response.type";
 
 export const responseMiddleware = () => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -17,9 +18,11 @@ export const responseMiddleware = () => {
   };
 };
 
-// Response 인터페이스 확장
 declare global {
   namespace Express {
+    interface Request {
+      user?: UserPayload;
+    }
     interface Response {
       success<T>(data: T, status?: number, message?: string): Response;
     }

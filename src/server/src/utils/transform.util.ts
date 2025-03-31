@@ -23,6 +23,12 @@ export function transformDbToEntity<T extends Record<string, any>>(
  * @throws {Error} 유효하지 않은 날짜 형식이거나 과거 시간인 경우
  */
 export function convertToSysdate(dateString: string): string {
+  const dateFormatRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
+  if (!dateFormatRegex.test(dateString)) {
+    throw new BadRequestException(
+      `유효하지 않은 날짜 형식입니다. 'YYYY-MM-DD HH:MM' 형식이어야 합니다: ${dateString}`
+    );
+  }
   // 입력된 날짜 문자열을 명시적으로 한국 시간으로 파싱
   const [datePart, timePart] = dateString.split(" ");
   const [year, month, day] = datePart.split("-").map(Number);

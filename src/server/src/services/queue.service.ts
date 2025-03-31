@@ -14,17 +14,17 @@ export class QueueService {
     const redisService = RedisService.getInstance();
     this.defaultQueue = new Queue("default", {
       createClient: (type) => {
-        return redisService.getClient(`default-${type}`);
+        return redisService.getClient(`bull-default-${type}`);
       },
     });
     this.bullBoardQueue = new Queue("bullBoard", {
       createClient: (type) => {
-        return redisService.getClient(`bullBoard-${type}`);
+        return redisService.getClient(`bull-bullBoard-${type}`);
       },
     });
     this.pushQueue = new Queue("push", {
       createClient: (type) => {
-        return redisService.getClient(`push-${type}`);
+        return redisService.getClient(`bull-push-${type}`);
       },
     });
 
@@ -38,7 +38,6 @@ export class QueueService {
   }
 
   async addPushJob(data: PushNotificationJobData) {
-    console.log("data: ", data);
     try {
       const result = await this.pushQueue.add(data, {
         attempts: 3,
