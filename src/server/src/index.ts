@@ -44,7 +44,7 @@ export const setupApp = () => {
   app.use("/admin/queues", serverAdapter.getRouter());
 
   app.use(responseMiddleware());
-  app.use("/api", authMiddleware.authenticate, apiRoutes);
+  app.use("/api", apiRoutes);
   app.use(errorMiddleware);
 
   return app;
