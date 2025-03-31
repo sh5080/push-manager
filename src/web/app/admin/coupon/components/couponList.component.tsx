@@ -1,12 +1,11 @@
 import { IMembershipAppCoupon } from "@push-manager/shared/types/entities/admin/coupon.entity";
-import { formatDate } from "@push-manager/shared/utils/date.util";
-
 import { Pagination } from "@commonComponents/dataDisplay/pagination.component";
 import { getCouponStatusChipStyle } from "app/utils/chip/common/style.util";
 import { EmptyState } from "@commonComponents/feedback/emptyState.component";
 import { getCouponStatusChipText } from "app/utils/chip/common/text.util";
 import { useSort } from "app/common/hooks/useTableSort.hook";
 import { TableHeader } from "app/types/prop.type";
+import { DateInfo, TextInfo } from "./columnInfo.component";
 
 interface CouponListProps {
   coupons: IMembershipAppCoupon[];
@@ -16,19 +15,6 @@ interface CouponListProps {
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
 }
-
-const DateInfo = ({
-  label,
-  date,
-}: {
-  label: string;
-  date: Date | undefined;
-}) => (
-  <div className="flex justify-between text-sm py-1">
-    <span className="text-gray-500">{label}</span>
-    <span>{date ? formatDate(date, "+00:00") : "-"}</span>
-  </div>
-);
 
 const TABLE_HEADERS: TableHeader[] = [
   { key: "sn", label: "쿠폰번호", sortable: true },
@@ -67,13 +53,31 @@ export function CouponList({
         );
       case "status":
         return (
-          <span
-            className={`px-2 py-1 rounded-full text-xs ${getCouponStatusChipStyle(
-              coupon.status
-            )}`}
-          >
-            {getCouponStatusChipText(coupon.status)}
-          </span>
+          <div className="space-y-1 min-w-[130px]">
+            <span
+              className={`px-2 py-1 rounded-full text-xs ${getCouponStatusChipStyle(
+                coupon.status
+              )}`}
+            >
+              {getCouponStatusChipText(coupon.status)}
+            </span>
+            <TextInfo
+              label="회원명"
+              text={
+                coupon.status === "REDEEMED"
+                  ? coupon.Member?.name || "오류"
+                  : coupon.Member?.name || "-"
+              }
+            />
+            <TextInfo
+              label="회원번호"
+              text={
+                coupon.status === "REDEEMED"
+                  ? coupon.Member?.memNo || "오류"
+                  : coupon.Member?.memNo || "-"
+              }
+            />
+          </div>
         );
       case "dates":
         return (
