@@ -1,5 +1,7 @@
 import { cbc } from "@noble/ciphers/aes";
-import { hexToBytes, utf8ToBytes } from "@noble/ciphers/utils";
+import { hmac } from "@noble/hashes/hmac";
+import { sha512 } from "@noble/hashes/sha512";
+import { bytesToHex, hexToBytes, utf8ToBytes } from "@noble/ciphers/utils";
 import { envConfig } from "@push-manager/shared";
 
 export const base64ToBytes = (base64: string): Uint8Array => {
@@ -8,7 +10,7 @@ export const base64ToBytes = (base64: string): Uint8Array => {
 export const bytesToBase64 = (bytes: Uint8Array): string => {
   return Buffer.from(bytes).toString("base64");
 };
-const jwtSecret = envConfig.server.jwtSecret;
+const jwtSecret = envConfig.server.jwt.hs256;
 export const aes = () =>
   cbc(hexToBytes(`${jwtSecret}${jwtSecret}`), hexToBytes(`${jwtSecret}`));
 
@@ -23,4 +25,13 @@ export const encryptFields = (
   });
 
   return data;
+};
+export const passwordCompare = async (
+  salt: string,
+  inputPassword: string,
+  originPassword: string
+): Promise<boolean> => {
+  return (
+    bytesToHex(hmac(sha512, hexToBytes(salt), inputPassword)) === originPassword
+  );
 };

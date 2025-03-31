@@ -1,6 +1,7 @@
 import Redis from "ioredis";
 import { redisConfig } from "../configs/db.config";
 import { DatabaseLogger } from "../utils/logger.util";
+import { CertificationType, RedisKeyType } from "../types/enum.type";
 
 export class RedisService {
   private static instance: RedisService;
@@ -42,5 +43,21 @@ export class RedisService {
     });
 
     this.clientMap.set(name, client);
+  }
+
+  /** 인증 Redis key
+   * @params type: CertificationType
+   * @params email: string
+   */
+  certificationKey(type: CertificationType, email: string): string {
+    return `certification:${type}:${email}`;
+  }
+
+  /** 회원 Redis key
+   * @params type: RedisKeyType
+   * @params userId: string
+   */
+  userKey(type: RedisKeyType, userId: string): string {
+    return `user:${type}:${userId}`;
   }
 }

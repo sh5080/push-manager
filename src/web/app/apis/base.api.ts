@@ -3,7 +3,8 @@ import {
   ErrorResponse,
   SuccessResponse,
 } from "@push-manager/shared/types/response.type";
-import { useLoadingStore } from "../store";
+import { useLoadingStore, useAuthStore } from "../store";
+import { useLoginModal } from "../common/hooks/useLoginModal.hook";
 
 export class BaseAPI {
   protected baseURL: string;
@@ -21,6 +22,20 @@ export class BaseAPI {
   ): Promise<T> {
     try {
       useLoadingStore.getState().setIsLoading(true);
+
+      const requestOptions: RequestInit = {
+        ...options,
+        credentials: "include",
+        headers: this.getHeaders(options?.headers),
+      };
+
+      const accessToken = useAuthStore.getState().accessToken;
+      if (accessToken) {
+        requestOptions.headers = {
+          ...requestOptions.headers,
+          Authorization: `Bearer ${accessToken}`,
+        };
+      }
 
       if (path.includes("?")) {
         const [basePath, queryString] = path.split("?");
@@ -42,19 +57,28 @@ export class BaseAPI {
 
         path = `${basePath}?${encodedParams}`;
       }
-      const headers = {
-        ...this.defaultHeaders,
-        ...(options?.headers || {}),
-      };
 
-      const response = await fetch(this.getFullURL(path), {
-        ...options,
-        headers,
-      });
+      const response = await fetch(this.getFullURL(path), requestOptions);
 
       const serverResponse = (await response.json()) as
         | SuccessResponse<T>
         | ErrorResponse;
+
+      if (
+        response.status === 401 ||
+        ("error" in serverResponse &&
+          serverResponse.error.message.startsWith("로그인"))
+      ) {
+        useLoginModal.getState().onOpen();
+        throw new Error("로그인이 필요합니다.");
+      }
+
+      const newAccessToken = response.headers.get("Authorization");
+      if (newAccessToken) {
+        useAuthStore
+          .getState()
+          .setAccessToken(newAccessToken.replace("Bearer ", ""));
+      }
 
       if (!serverResponse.success) {
         const error = serverResponse as ErrorResponse;
@@ -75,6 +99,13 @@ export class BaseAPI {
     this.defaultHeaders = {
       ...this.defaultHeaders,
       ...headers,
+    };
+  }
+
+  protected getHeaders(additionalHeaders?: HeadersInit): HeadersInit {
+    return {
+      ...this.defaultHeaders,
+      ...(additionalHeaders || {}),
     };
   }
 }

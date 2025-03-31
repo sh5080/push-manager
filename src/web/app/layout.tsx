@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingOverlay from "./common/components/feedback/loading.component";
 import { ErrorBoundary } from "./common/components/feedback/errorBoundary.component";
+import { LoginModal } from "./auth/login/login.modal";
 
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
@@ -28,25 +29,22 @@ export default function RootLayout({
     <html lang="ko" className={notoSansKr.className}>
       <body className="min-h-screen">
         <ErrorBoundary>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              minHeight: "100vh",
-            }}
-          >
-            <div style={{ height: "64px" }}>
+          <div className="flex flex-col min-h-screen">
+            <div className="h-16">
               <Header />
             </div>
-            <div style={{ display: "flex", flex: 1 }}>
-              <div style={{ width: "200px" }}>
+            <div className="flex flex-1">
+              <div className="w-52">
                 <Sidebar />
               </div>
-              <div style={{ padding: "1rem" }}>{children}</div>
+              <div className="flex-1 flex items-center justify-center">
+                <div className="w-full max-w-7xl px-4">{children}</div>
+              </div>
             </div>
           </div>
           <ToastContainer />
           <LoadingOverlay />
+          <LoginModal />
         </ErrorBoundary>
       </body>
     </html>

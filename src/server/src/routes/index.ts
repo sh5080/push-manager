@@ -5,10 +5,12 @@ import { appSettingRoutes } from "./admin/appSetting.route";
 import { couponRoutes } from "./admin/coupon.route";
 import { memberRoutes } from "./admin/member.route";
 import { imageRoutes } from "./image.route";
-
+import { authRoutes } from "./admin/auth.route";
 const router = Router();
 
+router.use("/auth", authRoutes);
 router.use("/push", pushRoutes);
+
 router.use("/identify", identifyRoutes);
 
 router.use("/admin/appSetting", appSettingRoutes);

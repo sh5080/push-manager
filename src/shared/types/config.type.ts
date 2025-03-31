@@ -44,7 +44,21 @@ export interface PushConfig {
 
 export interface ServerConfig {
   port: number;
-  jwtSecret: string;
+  env: string;
+  jwt: {
+    rs256: {
+      publicKey: string;
+      privateKey: string;
+    };
+    hs256: string;
+    accessJwtExpiration: number;
+    refreshJwtExpiration: number;
+  };
+  redis: {
+    host: string;
+    port: number;
+    password: string;
+  };
 }
 
 export interface WebConfig {
