@@ -22,6 +22,10 @@ export class MemberService implements IMemberService {
     return { ...member, newbestInfo: newbestInfo[0] };
   }
 
+  async getMemberList() {
+    return await this.memberRepository.getMemberList();
+  }
+
   async getAdminByEmail(email: string) {
     return await this.adminRepository.findByEmail(email);
   }

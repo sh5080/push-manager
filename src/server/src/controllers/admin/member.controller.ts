@@ -14,4 +14,14 @@ export class MemberController {
       next(error);
     }
   };
+
+  getMemberList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const members = await this.memberService.getMemberList();
+
+      res.success(members);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
