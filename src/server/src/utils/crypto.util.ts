@@ -10,6 +10,12 @@ export const base64ToBytes = (base64: string): Uint8Array => {
 export const bytesToBase64 = (bytes: Uint8Array): string => {
   return Buffer.from(bytes).toString("base64");
 };
+export const utf8ToBase64 = (utf8: string): string => {
+  return Buffer.from(utf8).toString("base64");
+};
+export const base64ToUtf8 = (base64: string): string => {
+  return Buffer.from(base64, "base64").toString("utf8");
+};
 const jwtSecret = envConfig.server.jwt.hs256;
 export const aes = () =>
   cbc(hexToBytes(`${jwtSecret}${jwtSecret}`), hexToBytes(`${jwtSecret}`));

@@ -42,6 +42,9 @@ export interface IMemberGetRes {
   cphn: string;
   mbrNm?: string;
   memNo: string;
+  bestshopNm?: string;
+  address1?: string;
+  address2?: string;
 }
 
 export interface INewBestRes<T> {
