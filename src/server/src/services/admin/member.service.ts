@@ -1,4 +1,8 @@
-import { BadRequestException, GetMemberDto } from "@push-manager/shared";
+import {
+  BadRequestException,
+  GetMemberDto,
+  GetMemberListDto,
+} from "@push-manager/shared";
 import { IMemberService } from "../../interfaces/admin/member.interface";
 import { MemberRepository } from "../../repositories/admin/member.repository";
 import { AdminRepository } from "../../repositories/admin/admin.repository";
@@ -22,8 +26,8 @@ export class MemberService implements IMemberService {
     return { ...member, newbestInfo: newbestInfo[0] };
   }
 
-  async getMemberList() {
-    return await this.memberRepository.getMemberList();
+  async getMemberList(dto: GetMemberListDto) {
+    return await this.memberRepository.getMemberList(dto);
   }
 
   async getAdminByEmail(email: string) {

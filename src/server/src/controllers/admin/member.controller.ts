@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { GetMemberDto, validateDto } from "@push-manager/shared";
+import {
+  GetMemberDto,
+  GetMemberListDto,
+  validateDto,
+} from "@push-manager/shared";
 import { IMemberService } from "../../interfaces/admin/member.interface";
 
 export class MemberController {
@@ -17,8 +21,8 @@ export class MemberController {
 
   getMemberList = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const members = await this.memberService.getMemberList();
-
+      const dto = await validateDto(GetMemberListDto, req.query);
+      const members = await this.memberService.getMemberList(dto);
       res.success(members);
     } catch (error) {
       next(error);

@@ -2,10 +2,15 @@ import { BaseRepository } from "../base.repository";
 import { Encrypted } from "../../decorators/encrypted.decorator";
 import { Decrypted } from "../../decorators/decrypted.decorator";
 import { Member } from "../../models/admin/init-models";
-import { GetMemberDto } from "@push-manager/shared";
+import {
+  GetMemberDto,
+  GetMemberListDto,
+  Order,
+  SortOption,
+} from "@push-manager/shared";
 import { drizzle } from "../../configs/db.config";
 import { member } from "../../db/schema";
-import { gte, asc } from "drizzle-orm";
+import { gte, asc, desc } from "drizzle-orm";
 
 export class MemberRepository extends BaseRepository<Member> {
   constructor() {
@@ -37,22 +42,18 @@ export class MemberRepository extends BaseRepository<Member> {
   }
 
   @Decrypted()
-  async getMemberList() {
-    const targetDate = new Date("2025-04-01T01:00:00.000Z");
-    const memberList = await drizzle
-      .select({ memNo: member.memNo, createdAt: member.createdAt })
-      .from(member)
-      .where(gte(member.createdAt, targetDate.toISOString()))
-      .orderBy(asc(member.createdAt));
+  async getMemberList(dto: GetMemberListDto) {
+    const query = drizzle.select().from(member);
 
-    return memberList.map((member) => ({
-      ...member,
-      createdAt: new Date(
-        new Date(member.createdAt).getTime() + 9 * 60 * 60 * 1000
-      )
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " "),
-    }));
+    if (dto.createdAt) {
+      const targetDate = new Date(dto.createdAt);
+      query.where(gte(member.createdAt, targetDate.toISOString()));
+    }
+
+    const order = dto.order === Order.ASC ? asc : desc;
+    const option =
+      dto.option === SortOption.LATEST ? member.createdAt : member.name;
+
+    return query.orderBy(order(option));
   }
 }
