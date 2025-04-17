@@ -6,6 +6,7 @@ import { NewbestApi } from "../../services/external/newbest.api";
 import { MemberService } from "../../services/admin/member.service";
 import { MemberRepository } from "../../repositories/admin/member.repository";
 import { AdminRepository } from "../../repositories/admin/admin.repository";
+import { AccountApi } from "../../services/external/account.api";
 
 const router = Router();
 const couponService = new CouponService(
@@ -14,7 +15,8 @@ const couponService = new CouponService(
   new MemberService(
     new MemberRepository(),
     new AdminRepository(),
-    new NewbestApi()
+    new NewbestApi(),
+    new AccountApi()
   )
 );
 const couponController = new CouponController(couponService);

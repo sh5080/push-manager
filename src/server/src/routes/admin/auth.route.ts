@@ -7,13 +7,15 @@ import { AdminRepository } from "../../repositories/admin/admin.repository";
 import { NewbestApi } from "../../services/external/newbest.api";
 import { RedisService } from "../../services/redis.service";
 import { DatabaseLogger } from "../../utils/logger.util";
+import { AccountApi } from "../../services/external/account.api";
 
 const router = Router();
 const authService = new AuthService(
   new MemberService(
     new MemberRepository(),
     new AdminRepository(),
-    new NewbestApi()
+    new NewbestApi(),
+    new AccountApi()
   ),
   RedisService.getInstance(),
   DatabaseLogger.getInstance()
