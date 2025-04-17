@@ -17,6 +17,7 @@ import { MemberService } from "../services/admin/member.service";
 import { NewbestApi } from "../services/external/newbest.api";
 import { AdminRepository } from "../repositories/admin/admin.repository";
 import { MemberRepository } from "../repositories/admin/member.repository";
+import { AccountApi } from "../services/external/account.api";
 
 export class AuthMiddleware {
   constructor(private authService: AuthService) {}
@@ -141,7 +142,8 @@ export const authMiddleware = new AuthMiddleware(
     new MemberService(
       new MemberRepository(),
       new AdminRepository(),
-      new NewbestApi()
+      new NewbestApi(),
+      new AccountApi()
     ),
     RedisService.getInstance(),
     DatabaseLogger.getInstance()
