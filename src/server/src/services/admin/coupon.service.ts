@@ -6,6 +6,7 @@ import {
   IMembershipAppCoupon,
   INewbestCommonCoupons,
   INewbestObsCoupons,
+  PaginatedResponse,
 } from "@push-manager/shared";
 import { CouponRepository } from "../../repositories/admin/coupon.repository";
 import { ICouponService } from "../../interfaces/admin/coupon.interface";
@@ -18,17 +19,42 @@ export class CouponService implements ICouponService {
     private readonly newbestService: NewbestApi,
     private readonly memberService: MemberService
   ) {}
-
+  async getNewbestMemberDetail(ci: string) {
+    const newbestInfo = await this.newbestService.getMemberInfo(ci);
+    return newbestInfo[0];
+  }
   async getCoupons(dto: GetCouponsDto) {
     let memberId: string;
+
     if (dto.memNo) {
       const member = await this.memberService.getMember({
         memNo: dto.memNo,
       });
       memberId = member.id;
       const result = await this.couponRepository.getCoupons(dto, memberId);
-      return { ...result, memberName: member.name };
-    } else return await this.couponRepository.getCoupons(dto);
+
+      const newbestInfo = await Promise.all(
+        result.data.map(async (result) => {
+          const newbestInfo = await this.getNewbestMemberDetail(
+            result.Member?.ci as string
+          );
+          return { ...result, newbestInfo: newbestInfo };
+        })
+      );
+
+      return { ...result, data: newbestInfo };
+    } else {
+      const result = await this.couponRepository.getCoupons(dto);
+      const newbestInfo = await Promise.all(
+        result.data.map(async (result) => {
+          const newbestInfo = await this.getNewbestMemberDetail(
+            result.Member?.ci as string
+          );
+          return { ...result, newbestInfo: newbestInfo };
+        })
+      );
+      return { ...result, newbestInfo: newbestInfo };
+    }
   }
 
   async getMemberCoupons(dto: GetMemberCouponsDto) {

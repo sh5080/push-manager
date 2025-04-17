@@ -21,7 +21,7 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
   async getCoupons(
     dto: GetCouponsDto,
     memberId?: string
-  ): Promise<PaginatedResponse<CouponPool>> {
+  ): Promise<PaginatedResponse<IMembershipAppCoupon>> {
     const {
       page = 1,
       pageSize = 10,
@@ -75,7 +75,7 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
     ]);
 
     return {
-      data: items,
+      data: items as unknown as IMembershipAppCoupon[],
       total,
       page,
       pageSize,

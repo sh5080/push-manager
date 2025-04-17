@@ -8,10 +8,11 @@ import {
   PaginatedResponse,
 } from "@push-manager/shared";
 import { SubscriptionRewardRequest } from "../../models/admin/SubscriptionRewardRequest";
-import { CouponPool } from "@/src/models/admin/CouponPool";
 
 export interface ICouponService {
-  getCoupons(dto: GetCouponsDto): Promise<PaginatedResponse<CouponPool>>;
+  getCoupons(
+    dto: GetCouponsDto
+  ): Promise<PaginatedResponse<IMembershipAppCoupon>>;
   getMemberCoupons(
     dto: GetMemberCouponsDto
   ): Promise<
