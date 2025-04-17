@@ -8,6 +8,7 @@ import { IMember } from "./member.entity";
 import {
   IRetrieveMoblCoupCustArrayNewRes,
   IRetrieveObsUserMbsCouponListRes,
+  IRetrieveRestMbsCustRes,
 } from "./newbest.entity";
 
 export interface ICouponPool {
@@ -44,6 +45,7 @@ export interface ICoupon {
 export interface IMembershipAppCoupon extends ICouponPool {
   Coupon: ICoupon;
   Member?: IMember;
+  newbestInfo?: IRetrieveRestMbsCustRes;
 }
 
 export interface INewbestCommonCoupons {
