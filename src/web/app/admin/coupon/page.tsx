@@ -15,8 +15,7 @@ import {
   StatusOption,
 } from "./components/searchFields.component";
 import { formatDate } from "@push-manager/shared/utils/date.util";
-import { ExcelHandler } from "@push-manager/shared/utils/excel.util";
-import Image from "next/image";
+import { CouponExcelDownloader } from "./components/excelDownload.component";
 
 export default function CouponPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -139,62 +138,6 @@ export default function CouponPage() {
     setStatus(newStatus.key);
   };
 
-  const handleExcelDownload = async () => {
-    try {
-      if (total === 0) {
-        throw new Error("먼저 조회한 뒤 저장이 가능합니다.");
-      }
-
-      // 전체 데이터를 가져오기 위해 pageSize를 total로 설정하여 API 호출
-      const dto: GetCouponsDto = {
-        type: "app",
-        page: 1,
-        pageSize: total, // 전체 데이터를 한 번에 가져오기 위해 total 값 사용
-        ...(sn && { sn }),
-        ...(status && {
-          status:
-            status as (typeof CouponPoolStatus)[keyof typeof CouponPoolStatus],
-        }),
-        ...(memNo && { memNo }),
-        ...(startDate && {
-          redeemedAtFrom: new Date(formatDate(startDate, "+09:00")),
-        }),
-        ...(endDate && {
-          redeemedAtTo: new Date(formatDate(endDate, "+09:00", "+1d")),
-        }),
-      };
-
-      Toast.info("엑셀 파일 생성 중입니다...");
-
-      const response = await couponApi.getCoupons(dto);
-
-      if (response.data.length === 0) {
-        throw new Error("다운로드할 데이터가 없습니다.");
-      }
-
-      const formattedCoupons = response.data.map((coupon) => ({
-        ...coupon,
-        Coupon: coupon.Coupon?.name,
-        Member: coupon.Member?.memNo,
-        createdAt: formatDate(coupon.createdAt, "+00:00"),
-        updatedAt: formatDate(coupon.updatedAt, "+00:00"),
-        redeemedAt: coupon.redeemedAt
-          ? formatDate(coupon.redeemedAt, "+00:00")
-          : "",
-        issuedAt: coupon.issuedAt ? formatDate(coupon.issuedAt, "+00:00") : "",
-        startDate: formatDate(coupon.startDate, "+00:00"),
-        endDate: formatDate(coupon.endDate, "+00:00"),
-      }));
-
-      ExcelHandler.convertDataToExcel(formattedCoupons);
-      Toast.success(
-        `총 ${formattedCoupons.length}건의 데이터가 다운로드되었습니다.`
-      );
-    } catch (error: any) {
-      Toast.error(error.message);
-    }
-  };
-
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
@@ -231,21 +174,14 @@ export default function CouponPage() {
             <Button variant="solid" size="38" onClick={handleSearch}>
               조회하기
             </Button>
-            <Button
-              variant="green-point"
-              size="38"
-              onClick={handleExcelDownload}
-              disabled={coupons.length === 0}
-              title="엑셀 다운로드"
-            >
-              <Image
-                src="/icons/excel.svg"
-                width={20}
-                height={20}
-                alt="엑셀 다운로드"
-                className={coupons.length === 0 ? "opacity-40" : ""}
-              />
-            </Button>
+            <CouponExcelDownloader
+              total={total}
+              sn={sn}
+              status={selectedStatus.key}
+              memNo={memNo}
+              startDate={startDate}
+              endDate={endDate}
+            />
           </div>
         </div>
 
