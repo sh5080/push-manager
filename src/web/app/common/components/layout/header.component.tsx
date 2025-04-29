@@ -8,7 +8,7 @@ export default function Header() {
           href="/"
           className="text-xl font-bold hover:text-gray-700 transition-colors"
         >
-          Push Manager
+          LG SM ADMIN
         </Link>
       </div>
     </header>
