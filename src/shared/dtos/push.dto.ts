@@ -208,6 +208,16 @@ export class AddToQueueDto {
   cmpncode!: number;
 }
 
+export class UpdateQueueDto {
+  @IsString()
+  @IsOptional()
+  title?: string;
+
+  @IsString()
+  @IsOptional()
+  content?: string;
+}
+
 export class OneSignalPushDto {
   @IsArray()
   @ArrayMinSize(1, { message: "최소 1개 이상의 식별자가 필요합니다." })
