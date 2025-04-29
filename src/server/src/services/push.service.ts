@@ -11,6 +11,7 @@ import {
   ConfirmPushQueueDto,
   GetTargetPushesDto,
   IPushStsMsgWithDetail,
+  UpdateQueueDto,
 } from "@push-manager/shared";
 
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
@@ -222,14 +223,10 @@ export class PushService implements IPushService {
   }
 
   async confirmPushQueue(dto: ConfirmPushQueueDto): Promise<TblFpMaster> {
-    const existingMaster = await this.pushMasterRepository.getOnePushMaster(
-      dto.campaignCode
-    );
-
+   const existingMaster = await this.getOnePushMaster(dto.campaignCode);
     if (!existingMaster) {
       throw new BadRequestException("예약된 푸시가 없습니다.");
     }
-
     if (existingMaster.step !== StepEnum.PENDING) {
       throw new BadRequestException("예약 확정 가능한 상태의 푸시가 아닙니다.");
     }
@@ -242,7 +239,11 @@ export class PushService implements IPushService {
   }
 
   async getOnePushMaster(cmpncode: number): Promise<TblFpMaster> {
-    return await this.pushMasterRepository.getOnePushMaster(cmpncode);
+    const masterData = await this.pushMasterRepository.getOnePushMaster(cmpncode);
+    if (!masterData) {
+      throw new BadRequestException("예약된 푸시가 없습니다.");
+    }
+    return masterData;
   }
 
   private async updateMasterStatus(
@@ -269,4 +270,22 @@ export class PushService implements IPushService {
       identify,
     }));
   }
+
+  async updateQueue(
+    cmpncode: number,
+    dto: UpdateQueueDto
+  ): Promise<void> {
+    await this.getOnePushMaster(cmpncode);
+    await sequelize.transaction(async (transaction) => {
+      await this.pushQueueRepository.updateQueue(transaction, cmpncode, dto);
+    });
+  }
+
+  async deleteQueue(cmpncode: number): Promise<void> {
+    await this.getOnePushMaster(cmpncode);
+    await sequelize.transaction(async (transaction) => {
+      await this.pushQueueRepository.deleteQueue(cmpncode, transaction);
+    });
+  }
 }
+

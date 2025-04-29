@@ -10,7 +10,6 @@ import { BullAdapter } from "@bull-board/api/bullAdapter";
 import { createBullBoard } from "@bull-board/api";
 import { ExpressAdapter } from "@bull-board/express";
 import { QueueService } from "./services/queue.service";
-import { authMiddleware } from "./middlewares/auth.middleware";
 
 export const setupApp = () => {
   const app = express();

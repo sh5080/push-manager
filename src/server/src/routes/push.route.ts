@@ -31,6 +31,8 @@ router.get("/detail/:idx", pushController.getPushStsMsgDetail);
 router.get("/queue/:cmpncode", pushController.getPushQueues);
 router.post("/queue/:cmpncode", pushController.addToQueue);
 router.patch("/queue/confirm", pushController.confirmPushQueue);
+router.patch("/queue/:cmpncode", pushController.updateQueue);
+router.delete("/queue/:cmpncode", pushController.deleteQueue);
 
 router.get("/token", pushController.validateToken);
 router.post("/oneSignal", pushController.sendOneSignalPush);

@@ -5,9 +5,6 @@ import {
   HiOutlineUser,
   HiOutlineClock,
   HiOutlineChevronRight,
-  HiOutlineSearch,
-  HiOutlineFilter,
-  HiOutlineCalendar,
 } from "react-icons/hi";
 import { StatusChip } from "@commonComponents/dataDisplay/statusChip.component";
 
@@ -45,7 +42,7 @@ export function PushList({ pushes, onPushSelect }: PushListProps) {
             {/* 제목 및 발송자 */}
             <div className="col-span-6">
               <div className="text-sm font-medium text-gray-900 group-hover:text-blue-600 mb-1 line-clamp-1">
-                {push.title || "오늘의 어드벤트 캘린더 열어보기"}
+                {push.title || "오류"}
               </div>
               <div className="flex items-center gap-3 text-xs text-gray-500">
                 <div className="flex items-center gap-1">

@@ -7,6 +7,7 @@ import {
   ConfirmPushQueueDto,
   GetTargetPushesDto,
   OneSignalPushDto,
+  UpdateQueueDto,
 } from "@push-manager/shared/dtos/push.dto";
 import { IPushMasterWithMsg } from "@push-manager/shared/types/entities/pushMaster.entity";
 import {
@@ -111,6 +112,20 @@ export class PushAPI extends BaseAPI {
     return this.customFetch<void>(`/api/push/queue/${cmpncode}`, {
       method: "POST",
       body: JSON.stringify(validatedDto),
+    });
+  }
+  async updateQueue(cmpncode: number, dto: UpdateQueueDto): Promise<void> {
+    const validatedDto = await validateDto(UpdateQueueDto, dto);
+
+    return this.customFetch<void>(`/api/push/queue/${cmpncode}`, {
+      method: "PATCH",
+      body: JSON.stringify(validatedDto),
+    });
+  }
+
+  async deleteQueue(cmpncode: number): Promise<void> {
+    return this.customFetch<void>(`/api/push/queue/${cmpncode}`, {
+      method: "DELETE",
     });
   }
 
