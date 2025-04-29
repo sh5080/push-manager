@@ -19,7 +19,7 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
     super(SubscriptionRewardRequest);
   }
 
-  @Decrypted(["memberId"], { Member: ["memNo", "ci"] })
+  @Decrypted(["memberId"], { member: ["memNo", "ci"] })
   async getCoupons(
     dto: GetCouponsDto,
     memberId?: string
