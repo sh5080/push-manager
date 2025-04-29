@@ -40,7 +40,7 @@ export function AppCouponList({ coupons }: AppCouponListProps) {
           <tr key={coupon.id}>
             <td className="px-6 py-4 whitespace-nowrap text-sm">{coupon.sn}</td>
             <td className="px-6 py-4 whitespace-nowrap text-sm">
-              {coupon.Coupon.name}
+              {coupon.coupon.name}
             </td>
             <td className="px-4 py-4 whitespace-nowrap text-sm">
               <span
@@ -54,10 +54,10 @@ export function AppCouponList({ coupons }: AppCouponListProps) {
             <td className="px-4 py-4 whitespace-nowrap text-sm">
               <span
                 className={`px-2 py-1 rounded-full text-xs ${getDiscountTypeChipStyle(
-                  coupon.Coupon.discountType
+                  coupon.coupon.discountType
                 )}`}
               >
-                {coupon.Coupon.discountType}
+                {coupon.coupon.discountType}
               </span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm">

@@ -34,9 +34,9 @@ export class CouponService implements ICouponService {
 
       const enhancedData = await Promise.all(
         result.data.map(async (item) => {
-          if (item.Member?.ci) {
+          if (item.member?.ci) {
             const newbestInfo = await this.getNewbestMemberDetail(
-              item.Member.ci
+              item.member.ci
             );
             return { ...item, newbestInfo };
           }
@@ -50,9 +50,9 @@ export class CouponService implements ICouponService {
 
       const enhancedData = await Promise.all(
         result.data.map(async (item) => {
-          if (item.Member?.ci) {
+          if (item.member?.ci) {
             const newbestInfo = await this.getNewbestMemberDetail(
-              item.Member.ci
+              item.member.ci
             );
             return { ...item, newbestInfo };
           }
