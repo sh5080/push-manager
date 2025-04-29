@@ -9,8 +9,10 @@ import {
   IMembershipAppCoupon,
   PaginatedResponse,
 } from "@push-manager/shared";
-import { Member } from "../../models/admin/Member";
 import { Decrypted } from "../../decorators/decrypted.decorator";
+import { drizzle } from "../../configs/db.config";
+import { coupon, couponPool, member } from "../../db/migrations/schema";
+import { and, count, desc, eq, like, gte, lt } from "drizzle-orm";
 
 export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> {
   constructor() {
@@ -31,55 +33,79 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
       redeemedAtTo,
     } = dto;
 
-    const where: any = {};
+    const conditions = [];
 
     // 쿠폰 번호 검색
     if (sn) {
-      where.sn = { [Op.iLike]: `%${sn}%` };
+      conditions.push(like(couponPool.sn, `%${sn}%`));
     }
 
     // 상태 검색
     if (status && status !== "ALL") {
-      where.status = status;
+      conditions.push(eq(couponPool.status, status));
     }
 
-    if (redeemedAtFrom || redeemedAtTo) {
-      where.redeemedAt = {
-        ...(redeemedAtFrom && { [Op.gte]: redeemedAtFrom }),
-        ...(redeemedAtTo && { [Op.lt]: redeemedAtTo }),
-      };
+    // 기간 검색
+    if (redeemedAtFrom) {
+      conditions.push(gte(couponPool.redeemedAt, redeemedAtFrom.toISOString()));
+    }
+    
+    if (redeemedAtTo) {
+      conditions.push(lt(couponPool.redeemedAt, redeemedAtTo.toISOString()));
     }
 
     // 회원 ID 검색
     if (memberId) {
-      where.memberId = memberId;
+      conditions.push(eq(couponPool.memberId, memberId));
     }
 
-    const [items, total] = await Promise.all([
-      CouponPool.findAll({
-        where,
-        limit: pageSize,
-        offset: (page - 1) * pageSize,
-        order: [["createdAt", "DESC"]],
-        include: [
-          {
-            model: Coupon,
-            attributes: ["name", "discountType", "discountValue"],
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+    const [items, totalResult] = await Promise.all([
+      drizzle
+        .select({
+          id: couponPool.id,
+          sn: couponPool.sn,
+          status: couponPool.status,
+          issuedAt: couponPool.issuedAt,
+          redeemedAt: couponPool.redeemedAt,
+          startDate: couponPool.startDate,
+          endDate: couponPool.endDate,
+          createdAt: couponPool.createdAt,
+          updatedAt: couponPool.updatedAt,
+          gradeAtIssue: couponPool.gradeAtIssue,
+          coupon: {
+            name: coupon.name,
+            discountType: coupon.discountType,
+            discountValue: coupon.discountValue,
           },
-          { model: Member, attributes: ["name", "memNo", "ci"] },
-        ],
-        raw: true,
-        nest: true,
-      }),
-      CouponPool.count({ where }),
+          member: {
+            name: member.name,
+            memNo: member.memNo,
+            ci: member.ci,
+          },
+        })
+        .from(couponPool)
+        .innerJoin(coupon, eq(couponPool.couponId, coupon.id))
+        .innerJoin(member, eq(couponPool.memberId, member.id))
+        .where(whereClause)
+        .limit(Number(pageSize))
+        .offset(Number((page - 1) * pageSize))
+        .orderBy(desc(couponPool.createdAt)).execute(),
+
+      drizzle
+        .select({ count: count() })
+        .from(couponPool)
+        .where(whereClause)
+        .execute(),
     ]);
 
     return {
       data: items as unknown as IMembershipAppCoupon[],
-      total,
+      total: totalResult[0].count,
       page,
       pageSize,
-      totalPages: Math.ceil(total / pageSize),
+      totalPages: Math.ceil(totalResult[0].count / pageSize),
     };
   }
   async getAppCouponsByMemberId(id: string): Promise<IMembershipAppCoupon[]> {
