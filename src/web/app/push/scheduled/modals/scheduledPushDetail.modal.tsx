@@ -52,6 +52,24 @@ export function ScheduledPushDetailModal({
     }
   };
 
+  const handleDeleteSchedule = async () => {
+    const toastId = Toast.loading("푸시 예약 삭제 처리중...");
+    try {
+      await pushApi.deleteQueue(Number(push.cmpncode));
+      Toast.update(toastId, "푸시 예약이 삭제되었습니다.", "success");
+      onClose();
+    } catch (error) {
+      console.error("푸시 예약 삭제 실패:", error);
+      Toast.update(
+        toastId,
+        error instanceof Error
+          ? error.message
+          : "알 수 없는 에러가 발생했습니다.",
+        "error"
+      );
+    }
+  };
+
   const handleCheckStatus = () => {
     setIsStatusModalOpen(true);
   };
@@ -113,9 +131,14 @@ export function ScheduledPushDetailModal({
                 닫기
               </Button>
               {push.step === "R" && (
-                <Button onClick={handleConfirmSchedule} variant="square-solid">
+                <>
+                  <Button onClick={handleDeleteSchedule} variant="square-red">
+                    발송 대기 삭제
+                  </Button>
+                  <Button onClick={handleConfirmSchedule} variant="square-solid">
                   발송 요청하기
-                </Button>
+                  </Button>
+                </>
               )}
             </div>
           </DialogPanel>
