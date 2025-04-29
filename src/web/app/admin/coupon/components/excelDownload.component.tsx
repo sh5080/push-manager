@@ -66,12 +66,14 @@ export function CouponExcelDownloader({
       }
 
       const formattedCoupons = response.data.map((coupon) => ({
-        ...coupon,
-        coupon: coupon.coupon?.name,
-        member: coupon.member?.memNo,
-        grade: coupon.newbestInfo?.LGE_CUST_GRD_NM_DISP,
-        gradeStartDate: coupon.newbestInfo?.CUST_GRD_ST_DATE,
-        gradeAtIssue: coupon.gradeAtIssue || "-",
+        id: coupon.id,
+        sn: coupon.sn,
+        status: coupon.status,
+        couponName: coupon.coupon?.name,
+        memNo: coupon.member?.memNo,
+        "currentGrade (현재 등급)": coupon.newbestInfo?.LGE_CUST_GRD_NM_DISP,
+        "gradeStartDate (현재 등급 시작일)": coupon.newbestInfo?.CUST_GRD_ST_DATE,
+        "gradeAtIssue (발급당시 등급)": coupon.gradeAtIssue || "-",
         createdAt: formatDate(coupon.createdAt, "+00:00"),
         updatedAt: formatDate(coupon.updatedAt, "+00:00"),
         redeemedAt: coupon.redeemedAt
