@@ -43,12 +43,12 @@ export function CouponList({
       case "sn":
         return coupon.sn;
       case "name":
-        return coupon.Coupon?.name;
+        return coupon.coupon?.name;
       case "discountValue":
         return (
           <>
-            {coupon.Coupon?.discountValue.toString().slice(0, -5)}
-            {coupon.Coupon?.discountType === "AMOUNT" ? "원" : "%"}
+            {coupon.coupon?.discountValue.toString().slice(0, -5)}
+            {coupon.coupon?.discountType === "AMOUNT" ? "원" : "%"}
           </>
         );
       case "status":
@@ -65,16 +65,16 @@ export function CouponList({
               label="회원명"
               text={
                 coupon.status === "REDEEMED"
-                  ? coupon.Member?.name || "오류"
-                  : coupon.Member?.name || "-"
+                  ? coupon.member?.name || "오류"
+                  : coupon.member?.name || "-"
               }
             />
             <TextInfo
               label="회원번호"
               text={
                 coupon.status === "REDEEMED"
-                  ? coupon.Member?.memNo || "오류"
-                  : coupon.Member?.memNo || "-"
+                  ? coupon.member?.memNo || "오류"
+                  : coupon.member?.memNo || "-"
               }
             />
           </div>

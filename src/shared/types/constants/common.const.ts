@@ -32,3 +32,11 @@ export const Order = {
 } as const;
 
 export type OrderType = (typeof Order)[keyof typeof Order];
+
+export const memberGrade = {
+  AS05: "AS05",
+  AS04: "AS04",
+  AS03: "AS03",
+  AS02: "AS02",
+  AS01: "AS01",
+} as const;

@@ -67,10 +67,11 @@ export function CouponExcelDownloader({
 
       const formattedCoupons = response.data.map((coupon) => ({
         ...coupon,
-        Coupon: coupon.Coupon?.name,
-        Member: coupon.Member?.memNo,
+        coupon: coupon.coupon?.name,
+        member: coupon.member?.memNo,
         grade: coupon.newbestInfo?.LGE_CUST_GRD_NM_DISP,
         gradeStartDate: coupon.newbestInfo?.CUST_GRD_ST_DATE,
+        gradeAtIssue: coupon.gradeAtIssue || "-",
         createdAt: formatDate(coupon.createdAt, "+00:00"),
         updatedAt: formatDate(coupon.updatedAt, "+00:00"),
         redeemedAt: coupon.redeemedAt

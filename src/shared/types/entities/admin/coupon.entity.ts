@@ -1,3 +1,4 @@
+import { memberGrade } from "../../constants/common.const";
 import {
   CouponKind,
   CouponIssuanceType,
@@ -23,6 +24,7 @@ export interface ICouponPool {
   memberId?: string;
   createdAt: Date;
   updatedAt: Date;
+  gradeAtIssue?: (typeof memberGrade)[keyof typeof memberGrade];
 }
 
 export interface ICoupon {
@@ -43,8 +45,8 @@ export interface ICoupon {
 }
 
 export interface IMembershipAppCoupon extends ICouponPool {
-  Coupon: ICoupon;
-  Member?: IMember;
+  coupon: ICoupon;
+  member?: IMember;
   newbestInfo?: IRetrieveRestMbsCustRes;
 }
 

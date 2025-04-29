@@ -16,8 +16,8 @@ const notoSansKr = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "Push Manager",
-  description: "Push notification management system",
+  title: "LG SM ADMIN",
+  description: "management system",
 };
 
 export default function RootLayout({
