@@ -14,6 +14,7 @@ import {
   OneSignalUserDto,
   OneSignalMessageIdDto,
   OneSignalOutcomeDto,
+  UpdateQueueDto,
 } from "@push-manager/shared";
 import { initFirebase } from "../configs/firebase.config";
 import { pushConfig } from "../configs/push.config";
@@ -148,6 +149,27 @@ export class PushController {
     }
   };
 
+  updateQueue = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const cmpncode = Number(req.params.cmpncode);
+      console.log(req.body);
+      const dto = await validateDto(UpdateQueueDto, req.body);
+      await this.pushService.updateQueue(cmpncode, dto);
+      res.success({ message: "Queue updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  deleteQueue = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const cmpncode = Number(req.params.cmpncode);
+      await this.pushService.deleteQueue(cmpncode);
+      res.success({ message: "Queue deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
   validateToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.query.token as string;

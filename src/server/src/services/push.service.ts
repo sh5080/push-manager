@@ -11,6 +11,7 @@ import {
   ConfirmPushQueueDto,
   GetTargetPushesDto,
   IPushStsMsgWithDetail,
+  UpdateQueueDto,
 } from "@push-manager/shared";
 
 import { PushStsMsgRepository } from "../repositories/pushStsMsg.repository";
@@ -269,4 +270,20 @@ export class PushService implements IPushService {
       identify,
     }));
   }
+
+  async updateQueue(
+    cmpncode: number,
+    dto: UpdateQueueDto
+  ): Promise<void> {
+    await sequelize.transaction(async (transaction) => {
+      await this.pushQueueRepository.updateQueue(transaction, cmpncode, dto);
+    });
+  }
+
+  async deleteQueue(cmpncode: number): Promise<void> {
+    await sequelize.transaction(async (transaction) => {
+      await this.pushQueueRepository.deleteQueue(cmpncode, transaction);
+    });
+  }
 }
+

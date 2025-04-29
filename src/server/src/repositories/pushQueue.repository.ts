@@ -1,10 +1,11 @@
 import { sequelize } from "../configs/db.config";
 import { BaseRepository, paginationQuery } from "./base.repository";
-import { GetPushQueuesDto, PaginatedResponse } from "@push-manager/shared";
+import { GetPushQueuesDto, PaginatedResponse, UpdateQueueDto } from "@push-manager/shared";
 import {
   TblFpQueue,
   TblFpQueueCreationAttributes,
   TblFpQueueAttributes,
+  TblFpMaster,
 } from "../models/init-models";
 import { Optional, QueryTypes, Transaction } from "sequelize";
 
@@ -104,45 +105,21 @@ export class PushQueueRepository extends BaseRepository<TblFpQueue> {
     });
   }
 
-  // async bulkCreateWithSeq<T>({
-  //   values,
-  //   fields,
-  //   pkField,
-  //   sequenceName,
-  // }: {
-  //   values: any[];
-  //   fields: string[];
-  //   pkField: string;
-  //   sequenceName: string;
-  // }): Promise<void> {
-  //   await sequelize.transaction(async (transaction) => {
-  //     // 시퀀스 값들을 미리 가져옴
-  //     const seqQuery = `
-  //       SELECT COKR_MBR_APP.${sequenceName}.NEXTVAL AS ID
-  //       FROM DUAL
-  //       CONNECT BY LEVEL <= :count
-  //     `;
-
-  //     const seqResults = await sequelize.query<{ ID: number }>(seqQuery, {
-  //       replacements: { count: values.length },
-  //       type: QueryTypes.SELECT,
-  //       transaction,
-  //     });
-
-  //     // 각 레코드에 시퀀스 값 할당
-  //     const recordsWithIds = values.map((value, index) => ({
-  //       ...value,
-  //       [pkField]: seqResults[index].ID,
-  //     }));
-
-  //     // bulk insert 실행
-  //     await TblFpQueue.bulkCreate(recordsWithIds, {
-  //       fields: [
-  //         ...fields,
-  //         pkField.toLowerCase(),
-  //       ] as (keyof TblFpQueueAttributes)[],
-  //       transaction,
-  //     });
-  //   });
-  // }
+  async updateQueue(
+    transaction: Transaction,
+    cmpncode: number,
+    dto: UpdateQueueDto
+  ): Promise<void> {
+    await TblFpQueue.update(
+      {
+        msgTitle: dto.title,
+        msgContents: dto.content,
+      },
+      { where: { cmpncode }, transaction }
+    );
+  }
+  async deleteQueue(cmpncode: number, transaction: Transaction): Promise<void> {
+    await TblFpMaster.destroy({ where: { cmpncode }, transaction });
+    await TblFpQueue.destroy({ where: { cmpncode }, transaction });
+  }
 }
