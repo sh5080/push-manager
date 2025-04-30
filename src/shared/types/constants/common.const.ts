@@ -39,4 +39,5 @@ export const memberGrade = {
   AS03: "AS03",
   AS02: "AS02",
   AS01: "AS01",
+  AS00: "AS00",
 } as const;

@@ -73,7 +73,20 @@ export function CouponExcelDownloader({
         memNo: coupon.member?.memNo,
         "currentGrade (현재 등급)": coupon.newbestInfo?.LGE_CUST_GRD_NM_DISP,
         "gradeStartDate (현재 등급 시작일)": coupon.newbestInfo?.CUST_GRD_ST_DATE,
-        "gradeAtIssue (발급당시 등급)": coupon.gradeAtIssue || "-",
+        "gradeAtIssue (발급당시 등급)":
+          coupon.gradeAtIssue === "AS00"
+            ? "다이아몬드 블랙"
+            : coupon.gradeAtIssue === "AS01"
+            ? "다이아몬드"
+            : coupon.gradeAtIssue === "AS02"
+            ? "플래티넘"
+            : coupon.gradeAtIssue === "AS03"
+            ? "골드"
+            : coupon.gradeAtIssue === "AS04"
+            ? "실버"
+            : coupon.gradeAtIssue === "AS05"
+            ? "브론즈"
+            : "-",
         createdAt: formatDate(coupon.createdAt, "+00:00"),
         updatedAt: formatDate(coupon.updatedAt, "+00:00"),
         redeemedAt: coupon.redeemedAt
