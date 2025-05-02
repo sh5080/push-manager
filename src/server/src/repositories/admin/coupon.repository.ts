@@ -47,11 +47,11 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
 
     // 기간 검색
     if (redeemedAtFrom) {
-      conditions.push(gte(couponPool.redeemedAt, redeemedAtFrom.toISOString()));
+      conditions.push(gte(couponPool.redeemedAt, redeemedAtFrom));
     }
-    
+
     if (redeemedAtTo) {
-      conditions.push(lt(couponPool.redeemedAt, redeemedAtTo.toISOString()));
+      conditions.push(lt(couponPool.redeemedAt, redeemedAtTo));
     }
 
     // 회원 ID 검색
@@ -91,7 +91,8 @@ export class CouponRepository extends BaseRepository<SubscriptionRewardRequest> 
         .where(whereClause)
         .limit(Number(pageSize))
         .offset(Number((page - 1) * pageSize))
-        .orderBy(desc(couponPool.createdAt)).execute(),
+        .orderBy(desc(couponPool.createdAt))
+        .execute(),
 
       drizzle
         .select({ count: count() })

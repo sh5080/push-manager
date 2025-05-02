@@ -23,10 +23,10 @@ export class GetCouponsDto {
   memNo?: string;
 
   @IsOptional()
-  redeemedAtFrom?: Date;
+  redeemedAtFrom?: string;
 
   @IsOptional()
-  redeemedAtTo?: Date;
+  redeemedAtTo?: string;
 }
 
 export class GetMemberCouponsDto {
