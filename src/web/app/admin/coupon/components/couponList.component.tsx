@@ -6,6 +6,7 @@ import { getCouponStatusChipText } from "app/utils/chip/common/text.util";
 import { useSort } from "app/common/hooks/useTableSort.hook";
 import { TableHeader } from "app/types/prop.type";
 import { DateInfo, TextInfo } from "./columnInfo.component";
+import { formatDate } from "@push-manager/shared/utils/date.util";
 
 interface CouponListProps {
   coupons: IMembershipAppCoupon[];
@@ -82,9 +83,18 @@ export function CouponList({
       case "dates":
         return (
           <div className="space-y-1 min-w-[180px]">
-            <DateInfo label="사용일시" date={coupon.redeemedAt} />
-            <DateInfo label="유효기간" date={coupon.endDate} />
-            <DateInfo label="발급일시" date={coupon.issuedAt} />
+            <DateInfo
+              label="사용일시"
+              date={new Date(formatDate(coupon.redeemedAt || "-", "-09:00"))}
+            />
+            <DateInfo
+              label="유효기간"
+              date={new Date(formatDate(coupon.endDate, "-09:00"))}
+            />
+            <DateInfo
+              label="발급일시"
+              date={new Date(formatDate(coupon.issuedAt || "-", "-09:00"))}
+            />
           </div>
         );
       default:

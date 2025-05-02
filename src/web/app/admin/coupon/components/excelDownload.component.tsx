@@ -50,10 +50,10 @@ export function CouponExcelDownloader({
         }),
         ...(memNo && { memNo }),
         ...(startDate && {
-          redeemedAtFrom: new Date(formatDate(startDate, "+09:00")),
+          redeemedAtFrom: formatDate(startDate, "+09:00"),
         }),
         ...(endDate && {
-          redeemedAtTo: new Date(formatDate(endDate, "+09:00", "+1d")),
+          redeemedAtTo: formatDate(endDate, "+09:00", "+1d"),
         }),
       };
 
@@ -72,7 +72,8 @@ export function CouponExcelDownloader({
         couponName: coupon.coupon?.name,
         memNo: coupon.member?.memNo,
         "currentGrade (현재 등급)": coupon.newbestInfo?.LGE_CUST_GRD_NM_DISP,
-        "gradeStartDate (현재 등급 시작일)": coupon.newbestInfo?.CUST_GRD_ST_DATE,
+        "gradeStartDate (현재 등급 시작일)":
+          coupon.newbestInfo?.CUST_GRD_ST_DATE,
         "gradeAtIssue (발급당시 등급)":
           coupon.gradeAtIssue === "AS00"
             ? "다이아몬드 블랙"
@@ -87,14 +88,14 @@ export function CouponExcelDownloader({
             : coupon.gradeAtIssue === "AS05"
             ? "브론즈"
             : "-",
-        createdAt: formatDate(coupon.createdAt, "+00:00"),
-        updatedAt: formatDate(coupon.updatedAt, "+00:00"),
+        createdAt: formatDate(coupon.createdAt, "-09:00"),
+        updatedAt: formatDate(coupon.updatedAt, "-09:00"),
         redeemedAt: coupon.redeemedAt
-          ? formatDate(coupon.redeemedAt, "+00:00")
+          ? formatDate(coupon.redeemedAt, "-09:00")
           : "",
-        issuedAt: coupon.issuedAt ? formatDate(coupon.issuedAt, "+00:00") : "",
-        startDate: formatDate(coupon.startDate, "+00:00"),
-        endDate: formatDate(coupon.endDate, "+00:00"),
+        issuedAt: coupon.issuedAt ? formatDate(coupon.issuedAt, "-09:00") : "",
+        startDate: formatDate(coupon.startDate, "-09:00"),
+        endDate: formatDate(coupon.endDate, "-09:00"),
       }));
 
       ExcelHandler.convertDataToExcel(formattedCoupons);

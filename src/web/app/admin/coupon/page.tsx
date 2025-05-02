@@ -56,10 +56,10 @@ export default function CouponPage() {
         }),
         ...(memNo && { memNo }),
         ...(startDate && {
-          redeemedAtFrom: new Date(formatDate(startDate, "+09:00")),
+          redeemedAtFrom: formatDate(startDate, "+09:00"),
         }),
         ...(endDate && {
-          redeemedAtTo: new Date(formatDate(endDate, "+09:00", "+1d")),
+          redeemedAtTo: formatDate(endDate, "+09:00", "+1d"),
         }),
       };
 

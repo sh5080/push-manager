@@ -27,8 +27,12 @@ class CouponAPI extends BaseAPI {
       sn,
       status,
       memNo,
-      redeemedAtFrom: redeemedAtFrom?.toISOString(),
-      redeemedAtTo: redeemedAtTo?.toISOString(),
+      redeemedAtFrom: redeemedAtFrom
+        ? new Date(redeemedAtFrom).toISOString()
+        : undefined,
+      redeemedAtTo: redeemedAtTo
+        ? new Date(redeemedAtTo).toISOString()
+        : undefined,
     };
 
     const queryParams = new URLSearchParams(
