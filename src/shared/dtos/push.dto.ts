@@ -13,6 +13,7 @@ import {
   ArrayMinSize,
   IsDateString,
   IsNumber,
+  MaxLength,
   ArrayMaxSize,
 } from "class-validator";
 import "reflect-metadata";
@@ -48,6 +49,7 @@ export interface PushResponse {
 
 export class CreatePushDto {
   @IsString()
+  @MaxLength(50, { message: "푸시 제목은 최대 50자까지만 가능합니다." })
   @IsNotEmpty({ message: "푸시 제목은 필수입니다." })
   title!: string;
 

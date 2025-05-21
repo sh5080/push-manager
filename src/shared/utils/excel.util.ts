@@ -84,12 +84,73 @@ export class ExcelHandler {
     console.log(`푸시 결과가 ${filePath} 파일의 2번째 시트에 저장되었습니다.`);
   }
 
-  static async convertDataToExcel(data: any[]): Promise<void> {
+  static async convertDataToExcel(data: any[], fileName?: string): Promise<string> {
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(data);
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
 
     const now = formatDate(new Date());
-    XLSX.writeFile(workbook, `subscriptionRewardRequest-${now}.xlsx`);
+    const outputFileName = fileName || `subscriptionRewardRequest-${now}.xlsx`;
+    XLSX.writeFile(workbook, outputFileName);
+    
+    return outputFileName;
+  }
+
+  /**
+   * 예약 데이터를 엑셀 파일로 내보냅니다.
+   * @param reservations 예약 데이터 배열
+   * @param fileName 저장할 파일 이름 (기본값: reservations-{현재날짜}.xlsx)
+   * @returns 저장된 파일 경로
+   */
+  static async exportReservations(
+    reservations: any[],
+    fileName?: string
+  ): Promise<string> {
+    // 데이터 변환 및 가공
+    const formattedData = reservations.map(reservation => {
+      // 날짜 형식 변환 또는 필요한 가공 처리
+      const data = { ...reservation };
+      
+      // 날짜 필드가 있으면 형식 변환
+      if (data.createdAt) {
+        data.createdAt = formatDate(new Date(data.createdAt));
+      }
+      if (data.updatedAt) {
+        data.updatedAt = formatDate(new Date(data.updatedAt));
+      }
+      
+      return data;
+    });
+
+    // 엑셀 워크북 생성
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    
+    // 컬럼 너비 자동 조정
+    const colWidths: { [key: string]: number } = {};
+    formattedData.forEach(row => {
+      Object.keys(row).forEach(key => {
+        const value = String(row[key] || '');
+        colWidths[key] = Math.max(colWidths[key] || 0, value.length);
+      });
+    });
+    
+    // 워크시트에 너비 설정
+    worksheet['!cols'] = Object.keys(colWidths).map(key => ({
+      wch: Math.min(50, Math.max(10, colWidths[key] + 2)) // 최소 10, 최대 50 너비
+    }));
+    
+    // 워크북에 시트 추가
+    XLSX.utils.book_append_sheet(workbook, worksheet, "예약 목록");
+
+    // 파일명 생성 및 저장
+    const now = formatDate(new Date()).replace(/[^0-9]/g, '');
+    const outputFileName = fileName || `reservations-${now}.xlsx`;
+    
+    // 파일 저장
+    XLSX.writeFile(workbook, outputFileName);
+    console.log(`예약 데이터가 ${outputFileName} 파일로 저장되었습니다.`);
+    
+    return outputFileName;
   }
 }

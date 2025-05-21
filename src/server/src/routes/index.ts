@@ -6,16 +6,19 @@ import { couponRoutes } from "./admin/coupon.route";
 import { memberRoutes } from "./admin/member.route";
 import { imageRoutes } from "./image.route";
 import { authRoutes } from "./admin/auth.route";
+import { functionRoutes } from "./admin/function.route";
 import { authMiddleware } from "../middlewares/auth.middleware";
+
 const router = Router();
 
 router.use("/auth", authRoutes);
-router.use("/push", authMiddleware.authenticate, pushRoutes);
+router.use("/push",  pushRoutes);
 
 router.use("/identify", authMiddleware.authenticate, identifyRoutes);
 
 router.use("/admin/appSetting", authMiddleware.authenticate, appSettingRoutes);
-router.use("/admin/coupon", authMiddleware.authenticate, couponRoutes);
-router.use("/admin/member", authMiddleware.authenticate, memberRoutes);
+router.use("/admin/coupon",  couponRoutes);
+router.use("/admin/member", memberRoutes);
+router.use("/admin/function", functionRoutes);
 router.use("/image", authMiddleware.authenticate, imageRoutes);
 export const apiRoutes = router;
