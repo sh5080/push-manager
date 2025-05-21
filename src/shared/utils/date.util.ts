@@ -84,3 +84,16 @@ export const convertKSTtoUTC = (kstDateTimeString: string): string => {
   // ISO 형식으로 변환 (YYYY-MM-DDTHH:MM:SS.sssZ)
   return utcTime.toISOString();
 };
+
+export const formatDateToKSTString = (date: Date): string => {
+  return date.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "Asia/Seoul",
+    hour12: false // 24시간 형식으로 표시 (오전/오후 표시 없음)
+  });
+};
