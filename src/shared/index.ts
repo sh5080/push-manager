@@ -39,3 +39,4 @@ export * from "./types/response.type";
 
 export * from "./utils/validate.util";
 export * from "./utils/date.util";
+export * from "./utils/excel.util";

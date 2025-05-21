@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { FunctionService } from "../../services/admin/function.service";
-import { ExcelHandler } from "@push-manager/shared/utils/excel.util";
+import { ExcelHandler } from "@push-manager/shared";
 export class FunctionController {
   constructor(private readonly functionService: FunctionService) {}
 
