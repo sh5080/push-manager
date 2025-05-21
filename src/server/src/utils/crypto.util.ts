@@ -16,6 +16,9 @@ export const utf8ToBase64 = (utf8: string): string => {
 export const base64ToUtf8 = (base64: string): string => {
   return Buffer.from(base64, "base64").toString("utf8");
 };
+export const bytesToUtf8 = (bytes: Uint8Array): string => {
+  return Buffer.from(bytes).toString("utf8");
+};
 const jwtSecret = envConfig.server.jwt.hs256;
 export const aes = () =>
   cbc(hexToBytes(`${jwtSecret}${jwtSecret}`), hexToBytes(`${jwtSecret}`));
