@@ -86,7 +86,8 @@ export const convertKSTtoUTC = (kstDateTimeString: string): string => {
 };
 
 export const formatDateToKSTString = (date: Date): string => {
-  return date.toLocaleString("ko-KR", {
+  // 날짜를 KST로 변환
+  const formattedDate = date.toLocaleString("ko-KR", {    
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -94,6 +95,21 @@ export const formatDateToKSTString = (date: Date): string => {
     minute: "2-digit",
     second: "2-digit",
     timeZone: "Asia/Seoul",
-    hour12: false // 24시간 형식으로 표시 (오전/오후 표시 없음)
+    hour12: false,
   });
+  
+  // 날짜와 시간 분리
+  const lastSpaceIndex = formattedDate.lastIndexOf(" ");
+  const datePart = formattedDate.substring(0, lastSpaceIndex);
+  const timePart = formattedDate.substring(lastSpaceIndex + 1);
+  
+  const [hours, minutes, seconds] = timePart.split(":");
+
+
+  // 24시인 경우 00시로 변환
+  if (hours === "24") {
+    return `${datePart} 00:${minutes}:${seconds}`;
+  }
+
+  return formattedDate;
 };
