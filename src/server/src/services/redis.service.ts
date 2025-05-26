@@ -21,7 +21,7 @@ export class RedisService {
     return RedisService.instance;
   }
 
-  public getClient(): Redis {
+  public getClient(name: string): Redis {
     if (!this.client) {
       this.createClient();
     }
