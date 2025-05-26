@@ -10,7 +10,7 @@ export class FunctionService implements IFunctionService {
     const reservations = await this.reservationRepository.getAllReservations();
 
     // 날짜 형식 변환 및 필요한 데이터 구조 변환 처리
-    const formattedReservations = reservations.map((item) => {
+    return reservations.map((item) => {
       // memNo 복호화 처리
       let decryptedMemNo = "";
       if (item.member?.memNo) {
@@ -46,12 +46,14 @@ export class FunctionService implements IFunctionService {
 
       return formattedReservation;
     });
-
-    return formattedReservations;
   }
 
   async exportReservationsToExcel(fileName?: string): Promise<string> {
     const reservations = await this.getAllReservations();
-    return await ExcelHandler.exportReservations(reservations, fileName);
+    return await ExcelHandler.convertDataToExcel(reservations, fileName);
+  }
+
+  async updateContactInfo(id: string, contactInfo: string) {
+    return await this.reservationRepository.updateContactInfo(id, contactInfo);
   }
 }

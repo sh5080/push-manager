@@ -10,6 +10,8 @@ import { BullAdapter } from "@bull-board/api/bullAdapter";
 import { createBullBoard } from "@bull-board/api";
 import { ExpressAdapter } from "@bull-board/express";
 import { QueueService } from "./services/queue.service";
+import { CronJobService } from "./services/cronJob.service";
+import { RedisService } from "./services/redis.service";
 
 export const setupApp = () => {
   const app = express();
@@ -56,10 +58,40 @@ if (require.main === module) {
   const { url } = envConfig.web;
 
   setupDatabase().then(() => {
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
       console.log(`Server is running on ${url}:${port}`);
       console.log("port: ", port);
       console.log("url: ", url);
+
+      // 예약 데이터 자동 엑셀 내보내기 크론 작업 시작
+      try {
+        const cronJobService = new CronJobService();
+        cronJobService.startCronJobs();
+        console.log("예약 데이터 자동 내보내기 크론 작업이 시작되었습니다.");
+      } catch (error) {
+        console.error("크론 작업 시작 중 오류 발생:", error);
+      }
     });
+
+    // 애플리케이션 종료 처리
+    const gracefulShutdown = () => {
+      console.log("애플리케이션 종료 시작...");
+      server.close(() => {
+        console.log("HTTP 서버가 종료되었습니다.");
+        // Redis 연결 종료
+        try {
+          RedisService.getInstance().closeConnection();
+          console.log("Redis 연결이 종료되었습니다.");
+        } catch (error) {
+          console.error("Redis 연결 종료 중 오류 발생:", error);
+        }
+        console.log("애플리케이션이 안전하게 종료되었습니다.");
+        process.exit(0);
+      });
+    };
+
+    // 종료 신호 처리
+    process.on("SIGTERM", gracefulShutdown);
+    process.on("SIGINT", gracefulShutdown);
   });
 }

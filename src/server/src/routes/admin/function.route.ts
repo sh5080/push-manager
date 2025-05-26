@@ -9,5 +9,6 @@ const functionController = new FunctionController(functionService);
 
 // 모든 예약 조회 및 엑셀 다운로드
 router.get("/reservations", functionController.getAllReservations);
+router.get("/reservations/contactInfo", functionController.updateContactInfo);
 
 export const functionRoutes = router;

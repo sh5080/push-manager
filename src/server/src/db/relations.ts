@@ -10,9 +10,7 @@ import {
   termsAgreement,
   couponPoolHist,
   termsAgreementHist,
-  pushSendLog,
-  pushSendErrorLog,
-} from "./schema";
+} from "../db/migrations/schema";
 
 export const adminPasswordHistRelations = relations(
   adminPasswordHist,
@@ -92,20 +90,6 @@ export const termsAgreementHistRelations = relations(
     termsAgreement: one(termsAgreement, {
       fields: [termsAgreementHist.termsAgreementId],
       references: [termsAgreement.id],
-    }),
-  })
-);
-
-export const pushSendLogRelations = relations(pushSendLog, ({ many }) => ({
-  pushSendErrorLogs: many(pushSendErrorLog),
-}));
-
-export const pushSendErrorLogRelations = relations(
-  pushSendErrorLog,
-  ({ one }) => ({
-    pushSendLog: one(pushSendLog, {
-      fields: [pushSendErrorLog.pushSendLogId],
-      references: [pushSendLog.id],
     }),
   })
 );
