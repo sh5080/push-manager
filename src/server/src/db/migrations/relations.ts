@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { admin, adminPasswordHist, lifeStyleCollectionItem, lifeStyleCollectionItemPage, lifeStyleCollectionPage, member, personalTraits, adminTrail, reservationHost, reservationSpace, reservation, reservationHist, reservationTimeSlot, reservationContent, coupon, couponPool, terms, vehicleRegistration, termsAgreement, couponPoolHist, termsAgreementHist } from "./schema";
+import { admin, adminPasswordHist, lifeStyleCollectionItem, lifeStyleCollectionItemPage, lifeStyleCollectionPage, member, personalTraits, adminTrail, reservationHost, reservationSpace, reservationContent, reservationTimeSlot, reservation, couponPool, terms, termsAgreement, termsAgreementHist, coupon, vehicleRegistration, couponPoolHist, reservationHist } from "./schema";
 
 export const adminPasswordHistRelations = relations(adminPasswordHist, ({one}) => ({
 	admin: one(admin, {
@@ -42,9 +42,9 @@ export const personalTraitsRelations = relations(personalTraits, ({one}) => ({
 export const memberRelations = relations(member, ({many}) => ({
 	personalTraits: many(personalTraits),
 	reservations: many(reservation),
+	termsAgreements: many(termsAgreement),
 	couponPools: many(couponPool),
 	vehicleRegistrations: many(vehicleRegistration),
-	termsAgreements: many(termsAgreement),
 }));
 
 export const adminTrailRelations = relations(adminTrail, ({one}) => ({
@@ -67,47 +67,45 @@ export const reservationHostRelations = relations(reservationHost, ({many}) => (
 	reservationContents: many(reservationContent),
 }));
 
-export const reservationHistRelations = relations(reservationHist, ({one}) => ({
-	reservation: one(reservation, {
-		fields: [reservationHist.reservationId],
-		references: [reservation.id]
-	}),
-}));
-
-export const reservationRelations = relations(reservation, ({one, many}) => ({
-	reservationHists: many(reservationHist),
-	member: one(member, {
-		fields: [reservation.memberId],
-		references: [member.id]
-	}),
-	reservationTimeSlot: one(reservationTimeSlot, {
-		fields: [reservation.timeSlotId],
-		references: [reservationTimeSlot.id]
-	}),
-}));
-
-export const reservationTimeSlotRelations = relations(reservationTimeSlot, ({one, many}) => ({
-	reservations: many(reservation),
-	reservationContent: one(reservationContent, {
-		fields: [reservationTimeSlot.contentId],
-		references: [reservationContent.id]
-	}),
-}));
-
 export const reservationContentRelations = relations(reservationContent, ({one, many}) => ({
-	reservationSpace: one(reservationSpace, {
-		fields: [reservationContent.spaceId],
-		references: [reservationSpace.id]
-	}),
 	reservationHost: one(reservationHost, {
 		fields: [reservationContent.hostId],
 		references: [reservationHost.id]
+	}),
+	reservationSpace: one(reservationSpace, {
+		fields: [reservationContent.spaceId],
+		references: [reservationSpace.id]
 	}),
 	reservationTimeSlots: many(reservationTimeSlot),
 	terms: many(terms),
 }));
 
+export const reservationTimeSlotRelations = relations(reservationTimeSlot, ({one, many}) => ({
+	reservationContent: one(reservationContent, {
+		fields: [reservationTimeSlot.contentId],
+		references: [reservationContent.id]
+	}),
+	reservations: many(reservation),
+}));
+
+export const reservationRelations = relations(reservation, ({one, many}) => ({
+	reservationTimeSlot: one(reservationTimeSlot, {
+		fields: [reservation.timeSlotId],
+		references: [reservationTimeSlot.id]
+	}),
+	member: one(member, {
+		fields: [reservation.memberId],
+		references: [member.id]
+	}),
+	couponPool: one(couponPool, {
+		fields: [reservation.couponPoolId],
+		references: [couponPool.id]
+	}),
+	reservationHists: many(reservationHist),
+}));
+
 export const couponPoolRelations = relations(couponPool, ({one, many}) => ({
+	reservations: many(reservation),
 	coupon: one(coupon, {
 		fields: [couponPool.couponId],
 		references: [coupon.id]
@@ -119,23 +117,12 @@ export const couponPoolRelations = relations(couponPool, ({one, many}) => ({
 	couponPoolHists: many(couponPoolHist),
 }));
 
-export const couponRelations = relations(coupon, ({many}) => ({
-	couponPools: many(couponPool),
-}));
-
 export const termsRelations = relations(terms, ({one, many}) => ({
 	reservationContent: one(reservationContent, {
 		fields: [terms.reservationContentId],
 		references: [reservationContent.id]
 	}),
 	termsAgreements: many(termsAgreement),
-}));
-
-export const vehicleRegistrationRelations = relations(vehicleRegistration, ({one}) => ({
-	member: one(member, {
-		fields: [vehicleRegistration.memberId],
-		references: [member.id]
-	}),
 }));
 
 export const termsAgreementRelations = relations(termsAgreement, ({one, many}) => ({
@@ -150,6 +137,24 @@ export const termsAgreementRelations = relations(termsAgreement, ({one, many}) =
 	termsAgreementHists: many(termsAgreementHist),
 }));
 
+export const termsAgreementHistRelations = relations(termsAgreementHist, ({one}) => ({
+	termsAgreement: one(termsAgreement, {
+		fields: [termsAgreementHist.termsAgreementId],
+		references: [termsAgreement.id]
+	}),
+}));
+
+export const couponRelations = relations(coupon, ({many}) => ({
+	couponPools: many(couponPool),
+}));
+
+export const vehicleRegistrationRelations = relations(vehicleRegistration, ({one}) => ({
+	member: one(member, {
+		fields: [vehicleRegistration.memberId],
+		references: [member.id]
+	}),
+}));
+
 export const couponPoolHistRelations = relations(couponPoolHist, ({one}) => ({
 	couponPool: one(couponPool, {
 		fields: [couponPoolHist.couponPoolId],
@@ -157,9 +162,9 @@ export const couponPoolHistRelations = relations(couponPoolHist, ({one}) => ({
 	}),
 }));
 
-export const termsAgreementHistRelations = relations(termsAgreementHist, ({one}) => ({
-	termsAgreement: one(termsAgreement, {
-		fields: [termsAgreementHist.termsAgreementId],
-		references: [termsAgreement.id]
+export const reservationHistRelations = relations(reservationHist, ({one}) => ({
+	reservation: one(reservation, {
+		fields: [reservationHist.reservationId],
+		references: [reservation.id]
 	}),
 }));
