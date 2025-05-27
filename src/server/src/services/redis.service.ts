@@ -7,11 +7,11 @@ export class RedisService {
   private static instance: RedisService;
   private readonly logger = DatabaseLogger.getInstance();
 
-  // 단일 클라이언트 인스턴스 사용
-  private client: Redis | null = null;
+  // 일반 작업용과 구독용 클라이언트 맵으로 관리
+  private clientMap: Map<string, Redis> = new Map();
 
   private constructor() {
-    this.createClient();
+    this.createClient("default"); // 기본 클라이언트 생성
   }
 
   public static getInstance(): RedisService {
@@ -21,21 +21,22 @@ export class RedisService {
     return RedisService.instance;
   }
 
-  public getClient(name: string): Redis {
-    if (!this.client) {
-      this.createClient();
+  public getClient(name: string = "default"): Redis {
+    if (!this.clientMap.has(name)) {
+      this.createClient(name);
     }
-    return this.client!;
+    return this.clientMap.get(name)!;
   }
 
-  private createClient(): void {
+  private createClient(name: string): void {
     // 기존 연결이 있으면 닫기
-    if (this.client) {
+    if (this.clientMap.has(name)) {
       try {
-        this.client.disconnect();
+        this.clientMap.get(name)!.disconnect();
+        this.clientMap.delete(name);
       } catch (err: unknown) {
         this.logger.logPushError(
-          "Redis client disconnect error",
+          `Redis client '${name}' disconnect error`,
           err as Error,
           {
             context: "Redis",
@@ -44,35 +45,37 @@ export class RedisService {
       }
     }
 
-    this.client = new Redis(redisConfig);
+    const client = new Redis(redisConfig);
 
-    this.client.on("connect", () => {
-      this.logger.logPushEvent(`Redis client connected`, {
+    client.on("connect", () => {
+      this.logger.logPushEvent(`Redis client '${name}' connected`, {
         context: "Redis",
       });
     });
 
-    this.client.on("error", (error) => {
-      this.logger.logPushError(`Redis client error`, error, {
+    client.on("error", (error) => {
+      this.logger.logPushError(`Redis client '${name}' error`, error, {
         context: "Redis",
       });
     });
+
+    this.clientMap.set(name, client);
   }
 
   /**
    * 안전하게 Redis 연결을 닫는 메서드
    */
   public closeConnection(): void {
-    if (this.client) {
+    for (const [name, client] of this.clientMap) {
       try {
-        this.client.disconnect();
-        this.client = null;
-        this.logger.logPushEvent("Redis connection closed", {
+        client.disconnect();
+        this.clientMap.delete(name);
+        this.logger.logPushEvent(`Redis connection '${name}' closed`, {
           context: "Redis",
         });
       } catch (err: unknown) {
         this.logger.logPushError(
-          "Error closing Redis connection",
+          `Error closing Redis connection '${name}'`,
           err as Error,
           {
             context: "Redis",
