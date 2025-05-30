@@ -63,6 +63,13 @@ export class BaseAPI {
       const serverResponse = (await response.json()) as
         | SuccessResponse<T>
         | ErrorResponse;
+      if (
+        "error" in serverResponse &&
+        serverResponse.error.message.startsWith("비밀번호")
+      ) {
+        useLoginModal.getState().onOpen();
+        throw serverResponse.error;
+      }
 
       if (
         response.status === 401 ||

@@ -37,7 +37,7 @@ export const useAuth = () => {
       return true;
     } catch (error: any) {
       console.error(error);
-      Toast.error(error);
+      Toast.error(error.message);
       return false;
     } finally {
       setIsLoading(false);
