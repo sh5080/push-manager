@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLoginModal } from "../../common/hooks/useLoginModal.hook";
 import { authApi } from "app/apis/admin/auth.api";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { Toast } from "app/utils/toast.util";
 
 export const useAuth = () => {
   const [email, setEmail] = useState("");
@@ -34,8 +35,9 @@ export const useAuth = () => {
       }
 
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      Toast.error(error);
       return false;
     } finally {
       setIsLoading(false);
