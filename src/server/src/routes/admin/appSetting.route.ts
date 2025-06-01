@@ -10,6 +10,7 @@ const appSettingController = new AppSettingController(appSettingService);
 router.post("/maintenance", appSettingController.createMaintenance);
 router.put("/maintenance/:id", appSettingController.updateMaintenance);
 router.put("/noticeBar", appSettingController.updateNoticeBar);
+router.get("/activity", appSettingController.getActivity);
 router.get("/", appSettingController.getAppSettings);
 
 export const appSettingRoutes = router;

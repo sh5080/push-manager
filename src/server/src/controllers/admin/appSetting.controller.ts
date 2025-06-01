@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { IAppSettingService } from "../../interfaces/admin/appSetting.interface";
 import {
   CreateMaintenanceDto,
+  GetActivityDto,
   UpdateMaintenanceDto,
   UpdateNoticeBarDto,
   validateDto,
@@ -52,6 +53,16 @@ export class AppSettingController {
     try {
       const appSettings = await this.appSettingService.getAppSettings();
       res.success(appSettings);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getActivity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = await validateDto(GetActivityDto, req.query);
+      const activity = await this.appSettingService.getActivity(dto);
+      res.success(activity);
     } catch (error) {
       next(error);
     }
