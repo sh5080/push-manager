@@ -74,13 +74,14 @@ export class MemberController {
       // 헤더 행 제외하고 데이터 행 처리
       for (let rowIndex = 1; rowIndex < data.length; rowIndex++) {
         const memNo = data[rowIndex][0]?.toString();
-        const bestshopNm = data[rowIndex][2];
-        const address1 = data[rowIndex][5];
-        const address2 = data[rowIndex][6];
-
-        // bestshopNm 또는 address2가 비어있는 경우에만 처리 대상에 추가
-        if (memNo && (!bestshopNm || !address1 || !address2)) {
-          pendingMemNos.push({ memNo, rowIndex });
+        if (memNo) {
+          pendingMemNos.push({
+            memNo,
+            rowIndex,
+            eventId: data[rowIndex][1],
+            eventData: data[rowIndex][2],
+            createdAt: data[rowIndex][3],
+          });
         }
       }
 
@@ -92,14 +93,19 @@ export class MemberController {
           filePath: updatedPath,
         });
       }
-      // const members = await this.memberService.getMemberListByActivity();
 
       // 배치 크기 설정
       const batchSize = 100;
       const batches = [];
 
       // 엑셀 헤더 설정
-      const headers = ["memNo", "bestshopNm", "address1", "address2"];
+      const headers = [
+        "memNo",
+        "eventId",
+        "eventData",
+        "createdAt",
+        "bestshopNm",
+      ];
       const excelData = [headers];
 
       // members를 배치로 나누기
@@ -125,13 +131,14 @@ export class MemberController {
         });
 
         // 현재 배치의 데이터를 엑셀 데이터에 추가
-        batches[i].forEach(({ memNo }) => {
-          const memberInfo = memberInfoMap.get(memNo);
+        batches[i].forEach((item) => {
+          const memberInfo = memberInfoMap.get(item.memNo);
           excelData.push([
-            memNo,
+            item.memNo,
+            item.eventId,
+            item.eventData,
+            item.createdAt,
             memberInfo?.bestshopNm || "",
-            memberInfo?.address1 || "",
-            memberInfo?.address2 || "",
           ]);
         });
 
@@ -141,9 +148,12 @@ export class MemberController {
         }
       }
 
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Members");
+      // 새로운 워크시트 생성
+      const newWorksheet = XLSX.utils.aoa_to_sheet(excelData);
+      const newWorkbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, "Members");
 
-      XLSX.writeFile(workbook, updatedPath);
+      XLSX.writeFile(newWorkbook, updatedPath);
 
       res.success({
         message: "Excel file created successfully",
