@@ -37,13 +37,21 @@ export class MemberService implements IMemberService {
   async getMemberList(dto: GetMemberListDto) {
     return await this.memberRepository.getMemberList(dto);
   }
+  async getMemberListByActivity() {
+    return await this.memberRepository.getMemberListByActivity();
+  }
 
   async getAdminByEmail(email: string) {
     return await this.adminRepository.findByEmail(email);
   }
-  async getMembersAccountInfo(
-    memNoList: string[]
-  ): Promise<{ bestshopNm?: string; address1?: string; address2?: string }[]> {
+  async getMembersAccountInfo(memNoList: string[]): Promise<
+    {
+      memNo?: string;
+      bestshopNm?: string;
+      address1?: string;
+      address2?: string;
+    }[]
+  > {
     const ciList = await Promise.all(
       memNoList.map(async (memNo) => {
         const member = await this.memberRepository.findByDto({ memNo });
@@ -56,6 +64,7 @@ export class MemberService implements IMemberService {
           const res = await this.accountApi.getMemberInfo(ci as string);
           console.log(">>>>>", res);
           return {
+            memNo,
             bestshopNm: res.bestshopNm,
             address1: res.address1,
             address2: res.address2,
@@ -72,7 +81,12 @@ export class MemberService implements IMemberService {
     return accountInfo.map((item) =>
       item
         ? item
-        : { bestshopNm: undefined, address1: undefined, address2: undefined }
+        : {
+            memNo: undefined,
+            bestshopNm: undefined,
+            address1: undefined,
+            address2: undefined,
+          }
     );
   }
 }

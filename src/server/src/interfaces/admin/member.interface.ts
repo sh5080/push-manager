@@ -15,5 +15,13 @@ export interface IMemberService {
   getAdminByEmail(email: string): Promise<typeof admin.$inferSelect | null>;
   getMembersAccountInfo(
     memNoList: string[]
-  ): Promise<{ bestshopNm?: string; address1?: string; address2?: string }[]>;
+  ): Promise<
+    {
+      memNo?: string;
+      bestshopNm?: string;
+      address1?: string;
+      address2?: string;
+    }[]
+  >;
+  getMemberListByActivity(): Promise<{ memNo: string; createdAt: string }[]>;
 }

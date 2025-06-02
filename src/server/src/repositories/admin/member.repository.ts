@@ -10,7 +10,8 @@ import {
 } from "@push-manager/shared";
 import { drizzle } from "../../configs/db.config";
 import { member } from "../../db/schema";
-import { gte, asc, desc, between } from "drizzle-orm";
+import { eq, sql, asc, desc, between, and } from "drizzle-orm";
+import { activity } from "@/src/db/migrations/schema";
 
 export class MemberRepository extends BaseRepository<Member> {
   constructor() {
@@ -78,5 +79,18 @@ export class MemberRepository extends BaseRepository<Member> {
     //   };
     // });
     // return result;
+  }
+  async getMemberListByActivity() {
+    const query = drizzle
+      .select({ memNo: member.memNo, createdAt: member.createdAt })
+      .from(activity)
+      .where(
+        and(
+          eq(activity.kind, "EVENT_COMPLETED"),
+          sql`JSON_EXTRACT(${activity.value}, '$.eventId') = '68b7a284-4b5d-4ece-97ae-626ba7145675'`
+        )
+      );
+
+    return await query;
   }
 }
