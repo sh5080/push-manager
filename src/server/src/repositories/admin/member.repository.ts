@@ -82,16 +82,14 @@ export class MemberRepository extends BaseRepository<Member> {
   async getMemberListByActivity() {
     const query = drizzle
       .select({
-        memNo: sql<string>`JSON_EXTRACT(${activity.value}, '$.memNo')`.as(
-          "memNo"
-        ),
+        memNo: sql<string>`${activity.value}->>'memNo'`.as("memNo"),
         createdAt: activity.createdAt,
       })
       .from(activity)
       .where(
         and(
           eq(activity.kind, "EVENT_COMPLETED"),
-          sql`JSON_EXTRACT(${activity.value}, '$.eventId') = '68b7a284-4b5d-4ece-97ae-626ba7145675'`
+          sql`${activity.value}->>'eventId' = '68b7a284-4b5d-4ece-97ae-626ba7145675'`
         )
       );
 
