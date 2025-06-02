@@ -9,9 +9,8 @@ import {
   SortOption,
 } from "@push-manager/shared";
 import { drizzle } from "../../configs/db.config";
-import { member } from "../../db/schema";
 import { eq, sql, asc, desc, between, and } from "drizzle-orm";
-import { activity } from "@/src/db/migrations/schema";
+import { activity, member } from "../../db/migrations/schema";
 
 export class MemberRepository extends BaseRepository<Member> {
   constructor() {
