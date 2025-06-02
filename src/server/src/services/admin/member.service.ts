@@ -54,14 +54,17 @@ export class MemberService implements IMemberService {
       ciList.map(async ({ ci, memNo }) => {
         try {
           const res = await this.accountApi.getMemberInfo(ci as string);
-          // console.log('>>>>>',res);
+          console.log(">>>>>", res);
           return {
             bestshopNm: res.bestshopNm,
-            // address1: res.address1,
-            // address2: res.address2,
+            address1: res.address1,
+            address2: res.address2,
           };
         } catch (error) {
-          console.error(`Error fetching account info for memNo ${memNo}:`, error);
+          console.error(
+            `Error fetching account info for memNo ${memNo}:`,
+            error
+          );
         }
       })
     );
