@@ -81,7 +81,12 @@ export class MemberRepository extends BaseRepository<Member> {
   }
   async getMemberListByActivity() {
     const query = drizzle
-      .select({ memNo: member.memNo, createdAt: member.createdAt })
+      .select({
+        memNo: sql<string>`JSON_EXTRACT(${activity.value}, '$.memNo')`.as(
+          "memNo"
+        ),
+        createdAt: activity.createdAt,
+      })
       .from(activity)
       .where(
         and(
