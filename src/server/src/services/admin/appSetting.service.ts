@@ -2,6 +2,7 @@ import { IAppSettingService } from "@/src/interfaces/admin/appSetting.interface"
 import { AppSettingRepository } from "../../repositories/admin/appSetting.repository";
 import {
   CreateMaintenanceDto,
+  GetActivityDto,
   NotFoundException,
   UpdateMaintenanceDto,
   UpdateNoticeBarDto,
@@ -49,5 +50,9 @@ export class AppSettingService implements IAppSettingService {
     const maintenances = await this.appSettingRepository.getMaintenances();
 
     return { appSettings, maintenances };
+  }
+
+  async getActivity(dto: GetActivityDto) {
+    return await this.appSettingRepository.getActivity(dto);
   }
 }

@@ -73,6 +73,12 @@ export class UpdateNoticeBarDto {
 
 export class GetActivityDto {
   @IsOptional()
+  page?: number;
+
+  @IsOptional()
+  pageSize?: number;
+  
+  @IsOptional()
   kind?: "EVENT_COMPLETED" | "CPA_COMPLETED";
 
   @IsOptional()

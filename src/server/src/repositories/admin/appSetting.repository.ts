@@ -4,14 +4,15 @@ import {
   CreateMaintenanceDto,
   GetActivityDto,
   IAppSetting,
+  IActivity,
   IMaintenance,
   UpdateMaintenanceDto,
   UpdateNoticeBarDto,
+  PaginatedResponse,
 } from "@push-manager/shared";
 import { drizzle } from "../../configs/db.config";
-import { eq, sql, and } from "drizzle-orm";
+import { eq, sql, and, count } from "drizzle-orm";
 import { activity } from "../../db/migrations/schema";
-
 export class AppSettingRepository extends BaseRepository<AppSetting> {
   appSettingAttributes: string[];
   maintenanceAttributes: string[];
@@ -56,7 +57,9 @@ export class AppSettingRepository extends BaseRepository<AppSetting> {
     })) as unknown as IMaintenance[];
   }
 
-  async getActivity(dto: GetActivityDto) {
+  async getActivity(
+    dto: GetActivityDto
+  ): Promise<PaginatedResponse<IActivity>> {
     const conditions = [];
 
     // kind가 제공된 경우 조건 추가
@@ -93,14 +96,36 @@ export class AppSettingRepository extends BaseRepository<AppSetting> {
       }
     }
 
+    const page = dto.page || 1;
+    const pageSize = dto.pageSize || 10;
+
     // 기본 쿼리 생성
-    const query = drizzle.select().from(activity);
+    const query = drizzle
+      .select()
+      .from(activity)
+      .limit(Number(pageSize))
+      .offset(Number((page - 1) * pageSize));
 
     // 조건이 있을 경우 where 절 추가
     if (conditions.length > 0) {
       query.where(and(...conditions));
     }
 
-    return await query;
+    const [items, totalResult] = await Promise.all([
+      query,
+      drizzle
+        .select({ count: count() })
+        .from(activity)
+        .where(and(...conditions))
+        .execute(),
+    ]);
+
+    return {
+      data: items as unknown as IActivity[],
+      total: totalResult[0].count,
+      page,
+      pageSize,
+      totalPages: Math.ceil(totalResult[0].count / pageSize),
+    };
   }
 }
