@@ -91,9 +91,9 @@ export class ExcelHandler {
 
     const now = formatDate(new Date());
 
-    const outputFileName = fileName || `subscriptionRewardRequest-${now}.xlsx`;
+    const outputFileName = `${fileName || "subscriptionRewardRequest"}-${now}.xlsx`;
     XLSX.writeFile(workbook, outputFileName);
-    
+
     return outputFileName;
   }
 }
