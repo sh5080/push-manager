@@ -1,6 +1,7 @@
 import { validateDto } from "@push-manager/shared/utils/validate.util";
 import { BaseAPI } from "../base.api";
 import {
+  IActivityWithBestshopNm,
   IAppSettingWithMaintenance,
   IMaintenance,
   INoticeBar,
@@ -10,6 +11,8 @@ import {
   UpdateMaintenanceDto,
   UpdateNoticeBarDto,
 } from "@push-manager/shared/dtos/admin/appSetting.dto";
+import { GetActivityDto } from "@push-manager/shared/dtos/admin/appSetting.dto";
+import { PaginatedResponse } from "@push-manager/shared";
 
 class AppSettingAPI extends BaseAPI {
   async createMaintenance(dto: CreateMaintenanceDto) {
@@ -42,6 +45,40 @@ class AppSettingAPI extends BaseAPI {
   async getAppSettings(): Promise<IAppSettingWithMaintenance> {
     return this.customFetch<IAppSettingWithMaintenance>(
       `/api/admin/appSetting`
+    );
+  }
+  async getActivity(
+    dto: GetActivityDto
+  ): Promise<PaginatedResponse<IActivityWithBestshopNm>> {
+    const validatedDto = await validateDto(GetActivityDto, dto);
+    const {
+      page,
+      pageSize,
+      kind,
+      memNo,
+      eventId,
+      level,
+      submissions,
+    } = validatedDto;
+
+    const params = {
+      kind,
+      page: page?.toString(),
+      pageSize: pageSize?.toString(),
+      memNo,
+      eventId,
+      level,
+      submissions,
+    };
+
+    const queryParams = new URLSearchParams(
+      Object.entries(params)
+        .filter(([_, value]) => value !== undefined)
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+    );
+
+    return this.customFetch<PaginatedResponse<IActivityWithBestshopNm>>(
+      `/api/admin/appSetting/activity?${queryParams}`
     );
   }
 }
