@@ -164,4 +164,22 @@ export class MemberController {
       next(error);
     }
   };
+
+  getMemberAccountInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const memNo = req.query.memNo;
+      const ci = req.query.ci;
+      const member = await this.memberService.getMemberAccountInfo(
+        memNo as string,
+        ci as string
+      );
+      res.success(member);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
