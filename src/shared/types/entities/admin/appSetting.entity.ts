@@ -37,3 +37,21 @@ export interface IAppSettingWithMaintenance {
   appSettings: IAppSetting[];
   maintenances: IMaintenance[];
 }
+
+export interface IActivity {
+  id: string;
+  kind: string;
+  value: {
+    memNo?: string;
+    eventId?: string;
+    eventData?: {
+      level?: number;
+      submissions?: Record<string, string>;
+    };
+  };
+  createdAt: Date;
+}
+
+export interface IActivityWithBestshopNm extends IActivity {
+  bestshopNm?: string;
+}

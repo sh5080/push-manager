@@ -6,7 +6,7 @@ import {
   UpdateNoticeBarDto,
   GetActivityDto,
   PaginatedResponse,
-  IActivity,
+  IActivityWithBestshopNm,
 } from "@push-manager/shared";
 
 export interface IAppSettingService {
@@ -14,5 +14,7 @@ export interface IAppSettingService {
   updateMaintenance(dto: UpdateMaintenanceDto): Promise<Maintenance>;
   updateNoticeBar(dto: UpdateNoticeBarDto): Promise<AppSetting>;
   getAppSettings(): Promise<IAppSettingWithMaintenance>;
-  getActivity(dto: GetActivityDto): Promise<PaginatedResponse<IActivity>>;
+  getActivity(
+    dto: GetActivityDto
+  ): Promise<PaginatedResponse<IActivityWithBestshopNm>>;
 }
