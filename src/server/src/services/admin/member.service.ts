@@ -9,6 +9,7 @@ import { MemberRepository } from "../../repositories/admin/member.repository";
 import { AdminRepository } from "../../repositories/admin/admin.repository";
 import { NewbestApi } from "../external/newbest.api";
 import { AccountApi } from "../external/account.api";
+import { Member } from "@/src/models/admin/init-models";
 export class MemberService implements IMemberService {
   constructor(
     private readonly memberRepository: MemberRepository,
@@ -26,8 +27,7 @@ export class MemberService implements IMemberService {
     // 뉴베스트
     const newbestInfo = await this.newbestApi.getMemberInfo(member.ci);
     // 한영본
-    const accountInfo = await this.accountApi.getMemberInfo(member.ci);
-    console.log(accountInfo);
+    // const accountInfo = await this.accountApi.getMemberInfo(member.ci);
     return {
       ...member,
       newbestInfo: newbestInfo[0],
@@ -62,7 +62,6 @@ export class MemberService implements IMemberService {
       ciList.map(async ({ ci, memNo }) => {
         try {
           const res = await this.accountApi.getMemberInfo(ci as string);
-          console.log(">>>>>", res);
           return {
             memNo,
             bestshopNm: res.bestshopNm,
@@ -88,5 +87,25 @@ export class MemberService implements IMemberService {
             address2: undefined,
           }
     );
+  }
+  async getMemberAccountInfo(memNo: string, ci: string) {
+    let member: Member | null = null;
+    if (memNo) {
+      member = await this.memberRepository.findByDto({ memNo });
+    } else if (ci) {
+      member = await this.memberRepository.findByDto({ ci });
+    }
+    if (!member) {
+      throw new BadRequestException("Member not found");
+    }
+    const accountInfo = await this.accountApi.getMemberInfo(
+      member?.ci as string
+    );
+    return {
+      memNo: member?.memNo,
+      bestshopNm: accountInfo.bestshopNm,
+      address1: accountInfo.address1,
+      address2: accountInfo.address2,
+    };
   }
 }
