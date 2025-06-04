@@ -6,6 +6,7 @@ import {
   IsIn,
   ValidateNested,
   IsNotEmpty,
+  IsOptional,
 } from "class-validator";
 import "reflect-metadata";
 
@@ -68,4 +69,27 @@ export class UpdateNoticeBarDto {
   @Type(() => NoticeBarValue)
   @IsNotEmpty()
   value!: NoticeBarValue;
+}
+
+export class GetActivityDto {
+  @IsOptional()
+  page?: number;
+
+  @IsOptional()
+  pageSize?: number;
+  
+  @IsOptional()
+  kind?: "EVENT_COMPLETED" | "CPA_COMPLETED";
+
+  @IsOptional()
+  memNo?: string;
+
+  @IsOptional()
+  eventId?: string;
+
+  @IsOptional()
+  level?: number;
+
+  @IsOptional()
+  submissions?: Record<string, string>;
 }

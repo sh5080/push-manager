@@ -23,18 +23,35 @@ const jwtSecret = envConfig.server.jwt.hs256;
 export const aes = () =>
   cbc(hexToBytes(`${jwtSecret}${jwtSecret}`), hexToBytes(`${jwtSecret}`));
 
-export const encryptFields = (
-  data: { [key: string]: any },
-  fields: string[]
-) => {
+export function encryptFields(
+  data: any,
+  fields: string[],
+  isArray: boolean = false
+) {
+  if (!data) return data;
+
+  // 배열인 경우
+  if (isArray && Array.isArray(data)) {
+    return data.map((item) => {
+      if (typeof item === "string") {
+        return bytesToBase64(aes().encrypt(utf8ToBytes(item)));
+      }
+      return item;
+    });
+  }
+
+  // 객체인 경우
+  const encryptedData = { ...data };
   fields.forEach((field) => {
-    if (data[field]) {
-      data[field] = bytesToBase64(aes().encrypt(utf8ToBytes(data[field])));
+    if (encryptedData[field]) {
+      encryptedData[field] = bytesToBase64(
+        aes().encrypt(utf8ToBytes(encryptedData[field]))
+      );
     }
   });
+  return encryptedData;
+}
 
-  return data;
-};
 export const passwordCompare = async (
   salt: string,
   inputPassword: string,

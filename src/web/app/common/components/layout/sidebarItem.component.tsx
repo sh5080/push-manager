@@ -11,7 +11,7 @@ import {
   HiOutlineUser,
   HiOutlineCog,
 } from "react-icons/hi";
-import { HiOutlinePhoto } from "react-icons/hi2";
+import { HiOutlineClipboardDocumentList, HiOutlinePhoto } from "react-icons/hi2";
 
 export interface MenuItem {
   name: string;
@@ -170,6 +170,11 @@ export const menuItems: MenuItem[] = [
         name: "구독쿠폰 내역 조회",
         path: "/admin/subscriptionRewardRequest",
         icon: <HiOutlineClipboardList />,
+      },
+      {
+        name: "활동 내역 조회",
+        path: "/admin/activity",
+        icon: <HiOutlineClipboardDocumentList />,
       },
       {
         name: "앱 설정",

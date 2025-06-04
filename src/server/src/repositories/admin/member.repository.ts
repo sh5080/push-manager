@@ -9,7 +9,7 @@ import {
   SortOption,
 } from "@push-manager/shared";
 import { drizzle } from "../../configs/db.config";
-import { eq, sql, asc, desc, between, and } from "drizzle-orm";
+import { eq, sql, asc, desc, between, and, inArray } from "drizzle-orm";
 import { activity, member } from "../../db/migrations/schema";
 
 export class MemberRepository extends BaseRepository<Member> {
@@ -94,5 +94,14 @@ export class MemberRepository extends BaseRepository<Member> {
       );
 
     return await query;
+  }
+
+  @Encrypted(["memNo"])
+  @Decrypted(["memNo", "ci"])
+  async findByMemNos(memNos: string[]) {
+    return await drizzle
+      .select()
+      .from(member)
+      .where(inArray(member.memNo, memNos));
   }
 }
