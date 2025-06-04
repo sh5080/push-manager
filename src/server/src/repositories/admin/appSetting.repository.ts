@@ -11,7 +11,7 @@ import {
   PaginatedResponse,
 } from "@push-manager/shared";
 import { drizzle } from "../../configs/db.config";
-import { eq, sql, and, count } from "drizzle-orm";
+import { eq, sql, and, count, desc } from "drizzle-orm";
 import { activity } from "../../db/migrations/schema";
 export class AppSettingRepository extends BaseRepository<AppSetting> {
   appSettingAttributes: string[];
@@ -104,7 +104,8 @@ export class AppSettingRepository extends BaseRepository<AppSetting> {
       .select()
       .from(activity)
       .limit(Number(pageSize))
-      .offset(Number((page - 1) * pageSize));
+      .offset(Number((page - 1) * pageSize))
+      .orderBy(desc(activity.createdAt));
 
     // 조건이 있을 경우 where 절 추가
     if (conditions.length > 0) {
