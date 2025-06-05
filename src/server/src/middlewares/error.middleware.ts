@@ -27,7 +27,7 @@ export const errorMiddleware = (
         status: error.status,
       },
     };
-    return res.status(error.status).json(response);
+    res.status(error.status).json(response);
   }
 
   // 기본 에러 응답
@@ -39,5 +39,5 @@ export const errorMiddleware = (
     },
   };
 
-  return res.status(500).json(response);
+  res.status(500).json(response);
 };
