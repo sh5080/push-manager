@@ -53,7 +53,11 @@ export const GradeName = {
 
 export const ButtonText = {
   EXCEL_DOWNLOAD: "엑셀 다운로드",
+  UPDATE: "갱신",
   DOWNLOAD_LOADING: "다운로드 중...",
+  UPDATE_LOADING: "업로드 중...",
+  UPLOAD: "업로드",
+  CLOSE: "닫기",
 } as const;
 
 export type ButtonTextType = (typeof ButtonText)[keyof typeof ButtonText];
