@@ -54,4 +54,5 @@ export interface IActivity {
 
 export interface IActivityWithBestshopNm extends IActivity {
   bestshopNm?: string;
+  ci?: string;
 }
