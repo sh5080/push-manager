@@ -179,7 +179,7 @@ export class PushController {
         await admin
           .messaging()
           .send({ token, data: { validate: "true" } }, true);
-        return res.success({ isValid: true, platform: "FCM" });
+        res.success({ isValid: true, platform: "FCM" });
       } catch (fcmError) {
         // APNS 검증
         try {
@@ -198,13 +198,13 @@ export class PushController {
           const result = await apnProvider.send(notification, token);
           apnProvider.shutdown();
 
-          return res.success({
+          res.success({
             isValid: !result.failed.length,
             platform: "APNS",
             response: result,
           });
         } catch (apnsError: any) {
-          return res.success({
+          res.success({
             isValid: false,
             platform: "APNS",
             reason: apnsError.message,
