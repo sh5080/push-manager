@@ -9,20 +9,20 @@ import { DatePicker } from "@commonComponents/inputs/datePicker.component";
 import { ISubscriptionRewardRequest } from "@push-manager/shared/types/entities/admin/subscriptionRewardRequest.entity";
 import { ExcelHandler } from "@push-manager/shared/utils/excel.util";
 import { formatDate } from "@push-manager/shared/utils/date.util";
-import Image from "next/image";
 import { Button } from "@commonComponents/inputs/button.component";
+import { ButtonText } from "@push-manager/shared/types/constants/common.const";
 
 export default function SubscriptionRewardRequestPage() {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [rewards, setRewards] = useState<ISubscriptionRewardRequest[]>([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const fetchRewards = async () => {
     try {
       if (!startDate || !endDate) {
         throw new Error("날짜를 선택해주세요.");
       }
-
+      setIsLoading(true);
       // KST 00:00 = 전날 15:00 UTC
       const startDateTime = new Date(startDate);
       startDateTime.setUTCHours(15, 0, 0, 0);
@@ -40,6 +40,8 @@ export default function SubscriptionRewardRequestPage() {
       setRewards(response);
     } catch (error: any) {
       Toast.error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,19 +80,11 @@ export default function SubscriptionRewardRequestPage() {
             </Button>
 
             <Button
-              variant="green-point"
-              size="38"
               onClick={handleExcelDownload}
-              disabled={rewards.length === 0}
-              title="엑셀 다운로드"
+              disabled={isLoading || rewards.length === 0}
+              variant="square-line"
             >
-              <Image
-                src="/icons/excel.svg"
-                width={20}
-                height={20}
-                alt="엑셀 다운로드"
-                className={rewards.length === 0 ? "opacity-40" : ""}
-              />
+              {isLoading ? ButtonText.DOWNLOAD_LOADING : ButtonText.EXCEL_DOWNLOAD}
             </Button>
           </div>
         </div>
