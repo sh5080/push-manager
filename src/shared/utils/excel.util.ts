@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx";
 import { ExcelResult, PushResultStats } from "../types/push.type";
 import { formatDate } from "./date.util";
-
+import path from "path";
 export class ExcelHandler {
   /**
    * 엑셀의 1번 시트에는 푸시알림 내용, 2번 시트에는 식별자id를 입력합니다.
@@ -87,7 +87,7 @@ export class ExcelHandler {
   static async convertDataToExcel(data: any[], fileName?: string): Promise<string> {
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(data);
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.utils.book_append_sheet(workbook, worksheet, fileName);
 
     const now = formatDate(new Date());
 
@@ -95,5 +95,29 @@ export class ExcelHandler {
     XLSX.writeFile(workbook, outputFileName);
 
     return outputFileName;
+  }
+  static async parseExcelFile<T>(filePath: string): Promise<T[]> {
+    const workbook = XLSX.readFile(filePath);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const result = XLSX.utils.sheet_to_json(worksheet) as T[];
+    return result;
+  }
+
+  static async createExcelFile(data: any[], sheetName: string): Promise<string> {
+    // 엑셀 파일 생성 로직
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+
+    const now = formatDate(new Date());
+    const outputFileName = `${sheetName}-${now}.xlsx`;
+  
+    // 상대 경로로 public/uploads에 저장
+    const outputPath = path.join(__dirname, '../../public/uploads', outputFileName);
+  
+    // 파일 저장
+    XLSX.writeFile(workbook, outputPath);
+    return outputPath;
   }
 }
