@@ -1,4 +1,4 @@
-import { memberGrade } from "../../constants/common.const";
+import { MemberGrade } from "../../constants/common.const";
 import {
   CouponKind,
   CouponIssuanceType,
@@ -24,7 +24,7 @@ export interface ICouponPool {
   memberId?: string;
   createdAt: Date;
   updatedAt: Date;
-  gradeAtIssue?: (typeof memberGrade)[keyof typeof memberGrade];
+  gradeAtIssue?: (typeof MemberGrade)[keyof typeof MemberGrade];
 }
 
 export interface ICoupon {

@@ -45,6 +45,8 @@ export function Button({
       "rounded-lg border border-[#00CD3C] text-[#00CD3C] hover:bg-[#00CD3C]/10",
     "square-solid":
       "rounded-lg bg-[#00CD3C] text-white hover:bg-[#00B534] shadow-sm",
+    "square-green-transparent":
+      "rounded-lg border border-[#00CD3C] text-[#00CD3C] bg-[#00CD3C]/10 hover:bg-[#00CD3C]/20",
   }[variant];
 
   // disabled 스타일

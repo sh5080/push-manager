@@ -10,6 +10,7 @@ export type ButtonVariant =
   | "square-point"
   | "square-red"
   | "square-green"
+  | "square-green-transparent"
   | "square-solid";
 
 export type ButtonSize = "32" | "38" | "46";

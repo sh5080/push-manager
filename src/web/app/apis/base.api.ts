@@ -16,6 +16,19 @@ export class BaseAPI {
     this.baseURL = `${clientConfig.web.url}:${clientConfig.server.port}`;
   }
 
+  protected async fetchBlob(path: string, options?: RequestInit): Promise<Blob> {
+    const requestOptions: RequestInit = {
+      ...options,
+      credentials: "include",
+    };
+
+    const response = await fetch(this.getFullURL(path), requestOptions);
+    if (!response.ok) {
+      throw new Error("Blob fetch failed");
+    }
+    return response.blob();
+  }
+
   protected async customFetch<T>(
     path: string,
     options?: RequestInit
@@ -59,10 +72,10 @@ export class BaseAPI {
       }
 
       const response = await fetch(this.getFullURL(path), requestOptions);
-
       const serverResponse = (await response.json()) as
         | SuccessResponse<T>
         | ErrorResponse;
+
       if (
         "error" in serverResponse &&
         serverResponse.error.message.startsWith("비밀번호")

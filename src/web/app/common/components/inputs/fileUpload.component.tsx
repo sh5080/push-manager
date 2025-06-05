@@ -9,6 +9,7 @@ import {
   uploadImage,
 } from "../../../utils/s3.util";
 import { formatDate } from "@push-manager/shared/utils/date.util";
+import { ButtonText } from "@push-manager/shared/types/constants/common.const";
 
 interface FileUploadProps {
   onFileUpload: (file: File | null) => void;
@@ -188,7 +189,7 @@ export function FileUpload({
                 }
               `}
             >
-              {isUploading ? "업로드 중..." : "S3 업로드"}
+              {isUploading ? ButtonText.UPDATE_LOADING : ButtonText.UPLOAD}
             </button>
           </div>
         )}

@@ -6,17 +6,13 @@ import { MemberRepository } from "../../repositories/admin/member.repository";
 import { AccountApi } from "../../services/external/account.api";
 
 const router = Router();
-const appSettingService = new AppSettingService(
-  new AppSettingRepository(),
-  new MemberRepository(),
-  new AccountApi()
-);
+
+const appSettingService = new AppSettingService(new AppSettingRepository());
 const appSettingController = new AppSettingController(appSettingService);
 
 router.post("/maintenance", appSettingController.createMaintenance);
 router.put("/maintenance/:id", appSettingController.updateMaintenance);
 router.put("/noticeBar", appSettingController.updateNoticeBar);
-router.get("/activity", appSettingController.getActivity);
 router.get("/", appSettingController.getAppSettings);
 
 export const appSettingRoutes = router;

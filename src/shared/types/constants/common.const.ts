@@ -33,11 +33,31 @@ export const Order = {
 
 export type OrderType = (typeof Order)[keyof typeof Order];
 
-export const memberGrade = {
-  AS05: "AS05",
-  AS04: "AS04",
-  AS03: "AS03",
-  AS02: "AS02",
-  AS01: "AS01",
-  AS00: "AS00",
+export const MemberGrade = {
+  Bronze: "AS05",
+  Silver: "AS04",
+  Gold: "AS03",
+  Platinum: "AS02",
+  Diamond: "AS01",
+  DiamondBlack: "AS00",
 } as const;
+
+export const GradeName = {
+  AS05: "브론즈",
+  AS04: "실버",
+  AS03: "골드",
+  AS02: "플래티넘",
+  AS01: "다이아몬드",
+  AS00: "다이아몬드 블랙",
+} as const;
+
+export const ButtonText = {
+  EXCEL_DOWNLOAD: "엑셀 다운로드",
+  UPDATE: "갱신",
+  DOWNLOAD_LOADING: "다운로드 중...",
+  UPDATE_LOADING: "업로드 중...",
+  UPLOAD: "업로드",
+  CLOSE: "닫기",
+} as const;
+
+export type ButtonTextType = (typeof ButtonText)[keyof typeof ButtonText];
