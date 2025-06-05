@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react";
 import { PageHeader } from "@commonComponents/layout/pageHeader.component";
 import { Button } from "@commonComponents/inputs/button.component";
-import { appSettingApi } from "app/apis/admin/appSetting.api";
 import { Toast } from "app/utils/toast.util";
 import { GetActivityDto } from "@push-manager/shared";
 import { SearchConditions } from "./components/searchConditions.component";
 import { ActivityExcelDownloader } from "./components/excelDownload.component";
 import { SearchFields } from "./components/searchFields.component";
 import { ActivityList } from "./components/activityList.component";
+import { activityApi } from "app/apis/admin/acitivity.api";
+import { ExcelUploadModal } from "./modals/excelUpload.modal";
 
 export default function ActivityPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,6 +21,7 @@ export default function ActivityPage() {
   const [level, setLevel] = useState<number | undefined>();
   const [activities, setActivities] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [searchConditions, setSearchConditions] = useState({
     kind: false,
@@ -42,10 +44,7 @@ export default function ActivityPage() {
         ...(eventId && { eventId }),
         ...(level && { level }),
       };
-      console.log('>>',dto);
-      const response = await appSettingApi.getActivity(dto);
-
-      console.log('>>',response);
+      const response = await activityApi.getActivity(dto);
       if (response.data.length) {
         setActivities(response.data);
         setTotal(response.total);
@@ -107,6 +106,14 @@ export default function ActivityPage() {
     }
   };
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
@@ -140,14 +147,23 @@ export default function ActivityPage() {
             <Button variant="solid" size="38" onClick={handleSearch}>
               조회하기
             </Button>
-            <ActivityExcelDownloader
+      
+            
+          </div>
+          <div className="flex justify-end gap-2 mb-4">
+          <ActivityExcelDownloader
               total={total}
               kind={kind}
               memNo={memNo}
               eventId={eventId}
               level={level}
             />
-          </div>
+          <Button variant="square-green-transparent" size="38" onClick={handleOpenModal}>
+            선호매장 갱신
+          </Button>
+        </div>
+
+        <ExcelUploadModal isOpen={isModalOpen} onClose={handleCloseModal} />
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100">
