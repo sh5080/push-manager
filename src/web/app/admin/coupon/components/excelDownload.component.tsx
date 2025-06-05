@@ -8,6 +8,7 @@ import { ExcelHandler } from "@push-manager/shared/utils/excel.util";
 import { Toast } from "app/utils/toast.util";
 import { Button } from "@commonComponents/inputs/button.component";
 import { GetCouponsDto } from "@push-manager/shared";
+import { ButtonText, GradeName } from "@push-manager/shared/types/constants/common.const";
 
 interface CouponExcelDownloaderProps {
   total: number;
@@ -74,20 +75,8 @@ export function CouponExcelDownloader({
         "currentGrade (현재 등급)": coupon.newbestInfo?.LGE_CUST_GRD_NM_DISP,
         "gradeStartDate (현재 등급 시작일)":
           coupon.newbestInfo?.CUST_GRD_ST_DATE,
-        "gradeAtIssue (발급당시 등급)":
-          coupon.gradeAtIssue === "AS00"
-            ? "다이아몬드 블랙"
-            : coupon.gradeAtIssue === "AS01"
-            ? "다이아몬드"
-            : coupon.gradeAtIssue === "AS02"
-            ? "플래티넘"
-            : coupon.gradeAtIssue === "AS03"
-            ? "골드"
-            : coupon.gradeAtIssue === "AS04"
-            ? "실버"
-            : coupon.gradeAtIssue === "AS05"
-            ? "브론즈"
-            : "-",
+        "gradeAtIssue (발급당시 등급)": 
+          GradeName[coupon.gradeAtIssue as keyof typeof GradeName] || "-",
         createdAt: formatDate(coupon.createdAt, "-09:00"),
         updatedAt: formatDate(coupon.updatedAt, "-09:00"),
         redeemedAt: coupon.redeemedAt
@@ -115,7 +104,7 @@ export function CouponExcelDownloader({
       disabled={isLoading || total === 0}
       variant="square-line"
     >
-      {isLoading ? "다운로드 중..." : "엑셀 다운로드"}
+      {isLoading ? ButtonText.DOWNLOAD_LOADING : ButtonText.EXCEL_DOWNLOAD}
     </Button>
   );
 }

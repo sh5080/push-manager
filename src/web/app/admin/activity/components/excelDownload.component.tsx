@@ -7,6 +7,7 @@ import { Toast } from "app/utils/toast.util";
 import { Button } from "@commonComponents/inputs/button.component";
 import { GetActivityDto } from "@push-manager/shared";
 import { formatDate } from "@push-manager/shared/utils/date.util";
+import { ButtonText } from "@push-manager/shared/types/constants/common.const";
 
 interface ActivityExcelDownloaderProps {
   total: number;
@@ -93,7 +94,7 @@ export function ActivityExcelDownloader({
       disabled={isLoading || total === 0}
       variant="square-line"
     >
-      {isLoading ? "다운로드 중..." : "엑셀 다운로드"}
+      {isLoading ? ButtonText.DOWNLOAD_LOADING : ButtonText.EXCEL_DOWNLOAD}
     </Button>
   );
 } 
