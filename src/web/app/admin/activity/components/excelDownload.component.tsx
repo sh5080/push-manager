@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { appSettingApi } from "app/apis/admin/appSetting.api";
 import { ExcelHandler } from "@push-manager/shared/utils/excel.util";
 import { Toast } from "app/utils/toast.util";
 import { Button } from "@commonComponents/inputs/button.component";
 import { GetActivityDto } from "@push-manager/shared";
 import { formatDate } from "@push-manager/shared/utils/date.util";
 import { ButtonText } from "@push-manager/shared/types/constants/common.const";
+import { activityApi } from "app/apis/admin/acitivity.api";
 
 interface ActivityExcelDownloaderProps {
   total: number;
@@ -47,7 +47,7 @@ export function ActivityExcelDownloader({
 
       Toast.info("엑셀 파일 생성 중입니다...");
 
-      const response = await appSettingApi.getActivity(dto);
+      const response = await activityApi.getActivity(dto);
 
       if (response.data.length === 0) {
         throw new Error("다운로드할 데이터가 없습니다.");
@@ -69,6 +69,7 @@ export function ActivityExcelDownloader({
           id: activity.id,
           kind: activity.kind,
           memNo: activity.value.memNo,
+          ci: activity.ci,
           eventId: activity.value.eventId || "-",
           bestshopNm: activity.bestshopNm || "-",
           level: activity.value.eventData?.level || "-",
