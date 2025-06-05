@@ -52,6 +52,29 @@ export class ActivityController {
           next(err);
         } else {
           console.log("파일 전송 완료:", excelFilePath);
+
+          // excelFilePath 삭제
+          fs.unlink(excelFilePath, (unlinkErr) => {
+            if (unlinkErr) {
+              console.error("엑셀 파일 삭제 중 오류 발생:", unlinkErr);
+            }
+            const uploadsDir = path.join(__dirname, "../../../public/uploads");
+            fs.readdir(uploadsDir, (readErr, files) => {
+              if (readErr) {
+                console.error("디렉토리 읽기 중 오류 발생:", readErr);
+                return;
+              }
+
+              files.forEach((file) => {
+                const filePath = path.join(uploadsDir, file);
+                fs.unlink(filePath, (unlinkErr) => {
+                  if (unlinkErr) {
+                    console.error("파일 삭제 중 오류 발생:", unlinkErr);
+                  }
+                });
+              });
+            });
+          });
         }
       });
     } catch (error) {

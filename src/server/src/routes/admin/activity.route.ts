@@ -15,7 +15,7 @@ const activityService = new ActivityService(
 );
 const activityController = new ActivityController(activityService);
 
-const upload = multer({ dest: "public/" });
+const upload = multer({ dest: "public/uploads/" });
 
 router.get("/", activityController.getActivity);
 router.put(
