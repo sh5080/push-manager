@@ -88,7 +88,7 @@ export class MemberController {
       console.log(`총 ${pendingMemNos.length}개의 항목을 처리해야 합니다.`);
 
       if (pendingMemNos.length === 0) {
-        return res.success({
+        res.success({
           message: "모든 데이터가 이미 처리되었습니다.",
           filePath: updatedPath,
         });
