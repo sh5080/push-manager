@@ -44,11 +44,31 @@ export class ActivityService implements IActivityService {
         ...new Set(members.map((member) => member.ci).filter(Boolean)),
       ];
 
-      // 첫 번째 시도
+      // 재시도 함수 정의
+      const retryGetMemberInfo = async (
+        ci: string,
+        retryDelay: number = 5000
+      ) => {
+        try {
+          return await this.accountApi.getMemberInfo(ci);
+        } catch (error) {
+          console.log(
+            `첫 시도 실패 - CI: ${ci}, ${retryDelay / 1000}초 후 재시도`
+          );
+
+          // 지정된 시간만큼 대기
+          await new Promise((resolve) => setTimeout(resolve, retryDelay));
+
+          // 두 번째 시도
+          return await this.accountApi.getMemberInfo(ci);
+        }
+      };
+
+      // Promise.all 부분 수정
       await Promise.all(
         uniqueCIs.map(async (ci) => {
           try {
-            const info = await this.accountApi.getMemberInfo(ci);
+            const info = await retryGetMemberInfo(ci);
             const relatedMembers = members.filter((m) => m.ci === ci);
             relatedMembers.forEach((member) => {
               if (member.memNo) {
@@ -61,13 +81,13 @@ export class ActivityService implements IActivityService {
               .map((m) => m.memNo)
               .filter(Boolean);
 
-            // 실패한 경우 bestshopNm에 "err" 기재
+            // 두 번의 시도 모두 실패한 경우 bestshopNm에 "err" 기재
             relatedMemNos.forEach((memNo) => {
               memNoToBestshopNmMap.set(memNo, "err");
             });
 
             console.error(
-              `Failed to fetch info - CI: ${ci}, Related memNos: ${relatedMemNos.join(
+              `두 번째 시도도 실패 - CI: ${ci}, Related memNos: ${relatedMemNos.join(
                 ", "
               )}`,
               error
@@ -148,15 +168,38 @@ export class ActivityService implements IActivityService {
     const updatedData = await Promise.all(
       dto.map(async (excel) => {
         if (excel.ci && excel.bestshopNm === "err") {
-          const member = await this.accountApi.getMemberInfo(excel.ci);
-          if (member) {
-            excel.bestshopNm = member.bestshopNm;
-            updatedCount++;
+          try {
+            // 첫 번째 시도
+            const member = await this.accountApi.getMemberInfo(excel.ci);
+            if (member) {
+              excel.bestshopNm = member.bestshopNm;
+              updatedCount++;
+            }
+          } catch (error) {
+            console.log(`첫 시도 실패 - CI: ${excel.ci}, 5초 후 재시도`);
+
+            // 5초 대기
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+
+            try {
+              // 두 번째 시도
+              const member = await this.accountApi.getMemberInfo(excel.ci);
+              if (member) {
+                excel.bestshopNm = member.bestshopNm;
+                updatedCount++;
+              }
+            } catch (secondError) {
+              console.error(
+                `두 번째 시도도 실패 - CI: ${excel.ci}`,
+                secondError
+              );
+              excel.bestshopNm = "err";
+            }
           }
         }
-        return excel; // 업데이트된 엑셀 데이터 반환
+        return excel;
       })
     );
-    return { updatedCount, updatedData }; // 업데이트된 데이터 반환
+    return { updatedCount, updatedData };
   }
 }
