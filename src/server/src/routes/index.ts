@@ -21,6 +21,6 @@ router.use("/admin/appSetting", authMiddleware.authenticate, appSettingRoutes);
 router.use("/admin/coupon", authMiddleware.authenticate, couponRoutes);
 router.use("/admin/member", authMiddleware.authenticate, memberRoutes);
 router.use("/admin/activity", authMiddleware.authenticate, activityRoutes);
-router.use("/admin/function", authMiddleware.authenticate, functionRoutes);
+router.use("/admin/function", functionRoutes);
 router.use("/image", authMiddleware.authenticate, imageRoutes);
 export const apiRoutes = router;
