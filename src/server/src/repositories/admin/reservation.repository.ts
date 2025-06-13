@@ -1,22 +1,26 @@
 import { drizzle } from "../../configs/db.config";
-import {
-  member,
-  reservation,
-  reservationContent,
-  reservationTimeSlot,
-} from "../../db/migrations/schema";
+import { reservationContent } from "../../db/migrations/schema";
 import { eq } from "drizzle-orm";
 
 export class ReservationRepository {
   async getAllReservations() {
-    const result = await drizzle
-      .select()
-      .from(reservation)
-      .leftJoin(
-        reservationTimeSlot,
-        eq(reservation.timeSlotId, reservationTimeSlot.id)
-      )
-      .leftJoin(member, eq(reservation.memberId, member.id));
+    const result = await drizzle.query.reservation.findMany({
+      with: {
+        timeSlot: {
+          with: {
+            content: {
+              with: {
+                host: true,
+                space: true,
+              },
+            },
+          },
+        },
+        hists: true,
+        member: true,
+      },
+    });
+
     return result;
   }
 
