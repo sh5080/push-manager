@@ -8,7 +8,8 @@
       "@/*": ["./*"]
     },
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*", "jest.config.js"],
   "exclude": ["node_modules", "dist"]

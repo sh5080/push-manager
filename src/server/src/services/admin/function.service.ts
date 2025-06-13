@@ -1,7 +1,9 @@
-import { formatDateToKSTString, ExcelHandler } from "@push-manager/shared";
+import { ExcelHandler, formatDateToKSTString } from "@push-manager/shared";
 import { IFunctionService } from "../../interfaces/admin/function.interface";
 import { ReservationRepository } from "../../repositories/admin/reservation.repository";
 import { aes, base64ToBytes, bytesToUtf8 } from "../../utils/crypto.util";
+import i18next from "i18next";
+import { parsePhoneNumber } from "awesome-phonenumber";
 
 export class FunctionService implements IFunctionService {
   constructor(private readonly reservationRepository: ReservationRepository) {}
@@ -25,23 +27,32 @@ export class FunctionService implements IFunctionService {
         }
       }
 
-      // timeSlot의 정보를 포함하여 필요한 모든 필드를 합쳐서 새 객체 생성
       const formattedReservation = {
-        ...item.reservation,
-        memNo: decryptedMemNo,
-        // 날짜 필드들 KST로 변환
-        createdAt: item.reservation.createdAt
-          ? formatDateToKSTString(new Date(item.reservation.createdAt))
+        예약신청일시: item.createdAt
+          ? formatDateToKSTString(new Date(item.createdAt))
           : "",
-        updatedAt: item.reservation.updatedAt
-          ? formatDateToKSTString(new Date(item.reservation.updatedAt))
+        예약번호: item.sn,
+        "예약 상태": i18next.t(`ReservationStatus.${item.status}`),
+        "예약 상태 변경 사유":
+          item.hists?.length > 0
+            ? i18next.t(
+                `ReservationStatusReasonCode.${item.hists[0].reasonCode}`
+              )
+            : "",
+
+        회원번호: decryptedMemNo ?? "",
+        회원명: item.member?.name ?? "",
+        "회원 등급 (신청 당시)": item.gradeAtIssue
+          ? i18next.t(`MembershipGrade.${item.gradeAtIssue}`)
           : "",
-        // timeSlot 관련 정보 추가
-        timeSlotStartAt: item.reservationTimeSlot?.startAt
-          ? formatDateToKSTString(new Date(item.reservationTimeSlot.startAt))
-          : null,
-        // 타입 오류 해결: timeSlotId는 string이 되도록 빈 문자열로 기본값 설정
-        timeSlotId: item.reservationTimeSlot?.id || "",
+        연락처:
+          parsePhoneNumber(item.phoneNumber, { regionCode: "KR" }).number
+            ?.national ?? "",
+        호스트: item.timeSlot.content.host.name,
+        공간: item.timeSlot.content.space?.name ?? "",
+        콘텐츠: item.timeSlot.content.name,
+        인원수: String(item.groupSize),
+        이용일시: formatDateToKSTString(new Date(item.timeSlot.startAt)),
       };
 
       return formattedReservation;

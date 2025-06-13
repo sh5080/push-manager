@@ -12,6 +12,7 @@ import { ExpressAdapter } from "@bull-board/express";
 import { QueueService } from "./services/queue.service";
 import { CronJobService } from "./services/cronJob.service";
 import { RedisService } from "./services/redis.service";
+import i18next, { i18nextMiddleware } from "./configs/i18n.config";
 
 export const setupApp = () => {
   const app = express();
@@ -27,6 +28,7 @@ export const setupApp = () => {
   );
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(i18nextMiddleware.handle(i18next));
 
   const queueService = new QueueService();
 

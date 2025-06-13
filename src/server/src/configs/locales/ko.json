@@ -1,0 +1,51 @@
+{
+  "MembershipGrade.AS00": "Diamond Black",
+  "MembershipGrade.AS01": "Diamond",
+  "MembershipGrade.AS02": "Platinum",
+  "MembershipGrade.AS03": "Gold",
+  "MembershipGrade.AS04": "Silver",
+  "MembershipGrade.AS05": "Silver",
+
+  "CouponPoolStatus.PENDING": "발급 대기",
+  "CouponPoolStatus.ISSUED": "발급 완료",
+  "CouponPoolStatus.REDEEMED": "사용 완료",
+  "CouponPoolStatus.CANCELLED": "취소 완료",
+
+  "CouponKind.FREE_ADMISSION_ART_CENTER_SHOW": "LG아트센터 공연 초청",
+  "CouponKind.LG_TWINS_TICKET_DISCOUNT": "LG트윈스 홈경기 관람 할인 쿠폰",
+  "CouponKind.SUBSCRIPTION_REWARD": "구독 쿠폰",
+
+  "ReservationStatus.PENDING": "예약 대기",
+  "ReservationStatus.CONFIRMED": "예약 확정",
+  "ReservationStatus.USED": "이용 완료",
+  "ReservationStatus.CANCELLED": "예약 취소",
+  "ReservationStatus.NOSHOW": "노쇼",
+
+  "ReservationStatusReasonCode.USER_CREATE_PENDING": "사용자: PENDING 상태로 예약 생성",
+  "ReservationStatusReasonCode.ADMIN_CREATE_PENDING": "관리자: PENDING 상태로 예약 생성",
+  "ReservationStatusReasonCode.USER_CREATE_CONFIRMED": "사용자: 즉시 확정으로 예약 생성",
+  "ReservationStatusReasonCode.ADMIN_CREATE_CONFIRMED": "관리자: 즉시 확정으로 예약 생성",
+
+  "ReservationStatusReasonCode.ADMIN_CONFIRM": "관리자 승인",
+  "ReservationStatusReasonCode.SYSTEM_LOTTERY_WIN": "시스템: 추첨 당첨",
+
+  "ReservationStatusReasonCode.USER_CANCEL": "사용자 취소",
+  "ReservationStatusReasonCode.ADMIN_CANCEL": "관리자 취소",
+  "ReservationStatusReasonCode.SYSTEM_LOTTERY_FAIL": "시스템: 추첨 낙첨",
+  "ReservationStatusReasonCode.SYSTEM_EXPIRE": "시스템: 자동 만료",
+
+  "ReservationStatusReasonCode.USER_MODIFY_PENDING": "사용자 수정 (PENDING 상태 유지)",
+  "ReservationStatusReasonCode.ADMIN_MODIFY_PENDING": "관리자 수정 (PENDING 상태 유지)",
+  "ReservationStatusReasonCode.USER_MODIFY_CONFIRMED": "사용자 수정 (CONFIRMED 상태 유지)",
+  "ReservationStatusReasonCode.ADMIN_MODIFY_CONFIRMED": "관리자 수정 (CONFIRMED 상태 유지)",
+
+  "ReservationStatusReasonCode.USER_MODIFY_TO_PENDING": "사용자 변경으로 PENDING 전환",
+  "ReservationStatusReasonCode.ADMIN_MODIFY_TO_PENDING": "관리자 변경으로 PENDING 전환",
+
+  "ReservationStatusReasonCode.ADMIN_MARK_USED": "관리자 이용 완료 처리",
+  "ReservationStatusReasonCode.SYSTEM_QR_VERIFY": "시스템: QR 확인 완료",
+  "ReservationStatusReasonCode.SYSTEM_NOSHOW": "시스템: 자동 노쇼 처리",
+
+  "ReservationStatusReasonCode.ADMIN_USED_CANCEL": "관리자: 이용 완료 후 취소",
+  "ReservationStatusReasonCode.ADMIN_NOSHOW_CANCEL": "관리자: 노쇼 후 취소"
+}
