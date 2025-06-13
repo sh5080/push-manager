@@ -9,6 +9,8 @@ import { initAdminModels } from "../models/admin/init-models";
 import { initializeAdminRelations } from "../models/admin/relations";
 import { initModels } from "../models/init-models";
 import { initializeRelations } from "../models/relations";
+import * as relations from "../db/migrations/relations";
+import * as schema from "../db/migrations/schema";
 
 const logDMLQuery = (query: string) => {
   const isDMLQuery = /^(?!BEGIN|COMMIT).*\b(INSERT|UPDATE|DELETE)\b/i.test(
@@ -48,7 +50,9 @@ const client = postgres({
   },
 });
 
-export const drizzle = drizzleORM(client);
+export const drizzle = drizzleORM(client, {
+  schema: { ...schema, ...relations },
+});
 
 oracledb.initOracleClient({ libDir: envConfig.pushDB.clientDir });
 oracledb.fetchAsString = [oracledb.NUMBER];
