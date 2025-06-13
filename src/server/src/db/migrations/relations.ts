@@ -147,8 +147,21 @@ export const reservationRelations = relations(reservation, ({ one, many }) => ({
     fields: [reservation.couponPoolId],
     references: [couponPool.id],
   }),
-  hists: many(reservationHist),
+  hists: many(reservationHist, {
+    relationName: "ReservationToHists",
+  }),
 }));
+
+export const reservationHistRelations = relations(
+  reservationHist,
+  ({ one }) => ({
+    reservation: one(reservation, {
+      relationName: "ReservationToHists",
+      fields: [reservationHist.reservationId],
+      references: [reservation.id],
+    }),
+  })
+);
 
 export const couponPoolRelations = relations(couponPool, ({ one, many }) => ({
   reservations: many(reservation),
