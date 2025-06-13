@@ -19,13 +19,9 @@ import {
 import { initFirebase } from "../configs/firebase.config";
 import { pushConfig } from "../configs/push.config";
 import apn from "node-apn";
-import { IOneSignalService } from "../interfaces/oneSignal.interface";
 
 export class PushController {
-  constructor(
-    private readonly pushService: IPushService,
-    private readonly oneSignalService: IOneSignalService
-  ) {}
+  constructor(private readonly pushService: IPushService) {}
 
   createPushes = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -211,89 +207,6 @@ export class PushController {
           });
         }
       }
-    } catch (error) {
-      next(error);
-    }
-  };
-  sendOneSignalPush = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = await validateDto(OneSignalPushDto, req.body);
-      const result = await this.oneSignalService.sendPush(dto);
-      res.success(result);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  createOneSignalSubscription = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = await validateDto(OneSignalSubscriptionDto, req.body);
-      const result = await this.oneSignalService.createSubscription(dto);
-      res.success(result);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  createOneSignalUser = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = await validateDto(OneSignalUserDto, req.body);
-      const result = await this.oneSignalService.createUser(dto);
-      res.success(result);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  getOneSignalUser = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = await validateDto(OneSignalUserDto, req.query);
-      const result = await this.oneSignalService.getUser(dto.externalId);
-      res.success(result);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  getOneSignalMessage = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = await validateDto(OneSignalMessageIdDto, req.query);
-      const result = await this.oneSignalService.getMessage(dto);
-      res.success(result);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  getOneSignalOutcomes = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = await validateDto(OneSignalOutcomeDto, req.query);
-      const result = await this.oneSignalService.getOutcomes(dto);
-      res.success(result);
     } catch (error) {
       next(error);
     }
