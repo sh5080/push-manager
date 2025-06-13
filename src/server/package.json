@@ -46,7 +46,6 @@
     "pg": "^8.13.1",
     "postgres": "^3.4.5",
     "sequelize": "^6.37.5",
-    "spacetime": "^7.10.0",
     "supertest": "^7.1.0",
     "ts-jest": "^29.3.0",
     "xlsx": "^0.18.5"
